@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "cobe": "^0.6.4",
     "globe": "^0.2.0",
+    "gsap": "^3.13.0",
     "lamina": "^1.1.23",
     "motion": "^12.16.0",
     "react": "^19.1.0",

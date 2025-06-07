@@ -28,7 +28,7 @@ const HeroExperience = () => {
         // traverse 보다 getObjectByName() 으로 찾는게 더 효과적
         const buildingMesh = buildingScene.getObjectByName('buildings');
           if (buildingMesh?.isMesh) {
-            buildingMesh.material.color.set('#373737');
+            buildingMesh.material.color.set('#424040');
           }
 
     }, [buildingScene]);
@@ -66,13 +66,13 @@ const HeroExperience = () => {
 
             <EffectComposer disableNormalPass>
               <Bloom
-                luminanceThreshold={0.6}
-                luminanceSmoothing={0.2}
-                intensity={1.8}
+                luminanceThreshold={0.5}
+                luminanceSmoothing={0.5}
+                intensity={3}
                 mipmapBlur
               />
               <DepthOfField
-                target={[0, 0, 0]} // 전광판 위치
+                target={[0, -3, 0]} // 전광판 위치
                 focalLength={0.5}
                 bokehScale={15}
                 height={400}
@@ -129,7 +129,10 @@ function MovingText({ text, color }) {
 
 function ScreenTextMeshes({ screenGroup }) {
   const messages = ['안녕하세요', '개발자', '이민성입니다', 'UI/UX'];
-  const bgColors = ['#e34acb', '#3b4dff', '#845ef7', '#ff77aa', '#7f9cfc'];
+  // const bgColors = ['#e34acb', '#3b4dff', '#845ef7', '#ff77aa', '#7f9cfc'];
+  const bgColors = ['#00ffff', '#32ff7e', '#fff9e6', '#fffa65', '#ff90f0', '#ffd1b2'];
+
+
   const textColors = ['#1a1a2e', '#2e2c4d', '#3d2c8d', '#2f195f', '#4d3c77'];
 
   const meshData = useMemo(() => {
