@@ -25,40 +25,34 @@ export const slides = [
   {
     id: 1,
     title: "스포츠 커뮤니티",
-    img: "/assets/images/projects/sport_commu.png",
+    img: "/assets/images/projects/Frame 1.png",
   },
   {
     id: 2,
     title: "스포츠 커뮤니티",
-    img: "/assets/images/projects/sport_commu_mb.png",
+    img: "/assets/images/projects/Frame 3.png",
 
   },
   {
     id: 3,
     title: "d.tampe",
-    img: "/assets/images/projects/project3.png",
+    img: "/assets/images/projects/Frame 4.png",
 
   },
   {
     id: 4,
     title: "Blimp.gr",
-    img: "/assets/images/projects/project4.png",
+    img: "/assets/images/projects/Frame 5.png",
   },
   {
     id: 5,
     title: "Hawk Style Design",
-    img: "/assets/images/projects/project1.png",
+    img: "/assets/images/projects/Frame 6.png",
   },
   {
     id: 6,
-    title: "Lewis",
-    img: "/assets/images/projects/project1.png",
+    title: "스포츠 커뮤니티",
+    img: "/assets/images/projects/Frame 2.png",
 
-  },
-  {
-    id: 7,
-    title: "Sofi",
-    img: "/assets/images/projects/project1.png",
-
-  },
+  }
 ];

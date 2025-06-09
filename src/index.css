@@ -90,6 +90,42 @@ section {
     right: 300px;
     animation: wander-right 12s ease-in-out infinite;
   }
+  .marquee {
+    width: 100dvw;
+    overflow: hidden;
+    position: relative;
+  }
+  .marquee-box {
+    display: flex;
+    align-items: center;
+    width: 200%;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+    animation: marquee 60s linear infinite;
+  }
+  .marquee-item {
+    float: left;
+  }
+  .marquee-item:after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    right: -100%;
+    bottom: -100%;
+    left: -100%;
+    background: linear-gradient(
+      to bottom,
+      rgba(229, 172, 142, 0),
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(229, 172, 142, 0)
+    );
+  }
+  /*This activates the shine once the button has been hovered*/
+  .marquee-item:hover::after,
+  button:focus::after {
+    animation: shine 1s forwards;
+  }
 }
 
 @keyframes wander-left {
@@ -208,3 +244,4 @@ section {
       rgba(11, 6, 32, 0) 100%
     );
   }
+
