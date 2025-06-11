@@ -1,7 +1,9 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { PerspectiveCamera, RenderTexture, Text, useGLTF, MeshReflectorMaterial } from '@react-three/drei'
 import { EffectComposer, Bloom, DepthOfField } from '@react-three/postprocessing'
-import { useState, useRef, useEffect, Suspense, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
+
+import { LayerMaterial, Color, Fresnel } from 'lamina/vanilla'
 
 const HeroExperience = () => {
     const buildingRef = useRef();
@@ -28,9 +30,29 @@ const HeroExperience = () => {
         // traverse 보다 getObjectByName() 으로 찾는게 더 효과적
         const buildingMesh = buildingScene.getObjectByName('buildings');
         
-          if (buildingMesh?.isMesh) {
-            buildingMesh.material.color.set('#424040');
-          }
+          // if (buildingMesh?.isMesh) {
+          //   buildingMesh.material.color.set('#424040');
+          // }
+        if (buildingMesh?.isMesh) {
+          // 기존 material 정리
+          if (buildingMesh.material?.dispose) buildingMesh.material.dispose()
+
+          // LayerMaterial로 교체
+          buildingMesh.material = new LayerMaterial({
+            lighting: 'standard',
+            layers: [
+              new Color({ color: '#000000', alpha: 1 }), // 순수 검정색 기본 색상
+              new Fresnel({
+                color: '#111111', // 매우 미묘한 어두운 회색 실루엣
+                alpha: 1.0, // 완전히 불투명하게
+                intensity: 0.1, // 매우 낮은 강도
+                power: 50.0, // 매우 얇고 날카로운 윤곽선
+                bias: 0.99, // 가장자리에 매우 밀착
+                mode: 'add',
+              }),
+            ],
+          })
+        }
 
     }, [buildingScene]);
 
@@ -44,8 +66,8 @@ const HeroExperience = () => {
               ref={cameraRef} 
             />
             
-            <ambientLight intensity={0.05} />
-            <directionalLight position={[5, 10, 5]} intensity={5} />
+            <ambientLight intensity={0.01} />
+            {/* <directionalLight position={[5, 10, 5]} intensity={3} color={'#ffffff'} /> */}
 
             <primitive
               ref={buildingRef}
@@ -53,7 +75,7 @@ const HeroExperience = () => {
               position={[0, -5, 0]}
               scale={[0.1, 0.1, 0.1]}
             />
-
+             
             {screenGroup && (
                 <group
                     position={[0, -5, 0]}
@@ -71,12 +93,12 @@ const HeroExperience = () => {
                 intensity={3}
                 mipmapBlur
               />
-              <DepthOfField
+              {/* <DepthOfField
                 target={[0, -3, 0]} // 전광판 위치
                 focalLength={0.5}
                 bokehScale={15}
                 height={400}
-              />
+              /> */}
             </EffectComposer>
 
 
@@ -129,9 +151,7 @@ function MovingText({ text, color }) {
 
 function ScreenTextMeshes({ screenGroup }) {
   const messages = ['안녕하세요', '개발자', '이민성입니다', 'UI/UX'];
-  // const bgColors = ['#e34acb', '#3b4dff', '#845ef7', '#ff77aa', '#7f9cfc'];
   const bgColors = ['#00ffff', '#32ff7e', '#fff9e6', '#fffa65', '#ff90f0', '#ffd1b2'];
-
 
   const textColors = ['#1a1a2e', '#2e2c4d', '#3d2c8d', '#2f195f', '#4d3c77'];
 
