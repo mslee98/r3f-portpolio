@@ -19,8 +19,6 @@ const Carousel = () => {
   useGSAP(() => {
     const tl = gsap.timeline();
 
-    console.log("SSSSS")
-
     tl.to(".slider-item", {
       x: `-${currentSlide * 63}vw`,
       duration: 1,

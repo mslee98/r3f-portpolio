@@ -27,6 +27,7 @@ const HeroExperience = () => {
 
         // traverse 보다 getObjectByName() 으로 찾는게 더 효과적
         const buildingMesh = buildingScene.getObjectByName('buildings');
+        
           if (buildingMesh?.isMesh) {
             buildingMesh.material.color.set('#424040');
           }
@@ -42,7 +43,6 @@ const HeroExperience = () => {
               rotation={[-0.4636476090008061, 0.21998797739545942, 0.10867903971378187]}
               ref={cameraRef} 
             />
-
             
             <ambientLight intensity={0.05} />
             <directionalLight position={[5, 10, 5]} intensity={5} />
@@ -87,7 +87,7 @@ const HeroExperience = () => {
                 resolution={1024}
                 mixBlur={1}
                 mixStrength={100}
-                roughness={1}
+                roughness={10}
                 depthScale={3}
                 minDepthThreshold={0.4}
                 maxDepthThreshold={1.4}

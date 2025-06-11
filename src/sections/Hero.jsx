@@ -15,33 +15,34 @@ const Hero = () => {
                 sphere2Class="gradient-sphere sphere-2"
             />
 
-            <div className="w-full h-full flex-center">
+            {/* <div className="w-full h-full flex-center">
                 <div className="relative w-full h-full z-30">
-                <div className="text-white ml-10 md:mt-40 mt-20 ">
-                    <p className="font md:text-2xl">
-                    👋 Hey, I&apos;m Here
-                    </p>
-                    <h1 className="font-bold md:text-9xl text-5xl">MINSUNG LEE</h1>
-                    <h1 className="font-bold md:text-9xl text-5xl">FRONT AND UI/UX</h1>
-                </div>
-                <div className="absolute w-full z-30 bottom-34 right-0 text-white ">
-                    <div className="flex justify-between items-end mx-10">
-                        <div className="flex flex-col items-center md:gap-5 gap-1">
-                            <p className="md:text-white text-xs">살펴보기</p>
-                            <img
-                            src="/assets/images/arrowdown.svg"
-                            alt="arrowdown"
-                            className="size-7 animate-bounce"
-                            />
-                        </div>
-                        <div className="flex flex-col items-end">
-                            <img src="/assets/images/shape.svg" alt="shape" />
-                            <h1 className="font-bold md:text-9xl text-5xl">DEVELOPER</h1>
+                    <div className="text-white ml-10 md:mt-40 mt-20 ">
+                        <p className="font md:text-2xl">
+                        👋 Hey, I&apos;m Here
+                        </p>
+                        <h1 className="font-bold md:text-9xl text-5xl">MINSUNG LEE</h1>
+                        <h1 className="font-bold md:text-9xl text-5xl">FRONT AND UI/UX</h1>
+                    </div>
+
+                    <div className="absolute w-full z-30 bottom-34 right-0 text-white ">
+                        <div className="flex justify-between items-end mx-10">
+                            <div className="flex flex-col items-center md:gap-5 gap-1">
+                                <p className="md:text-white text-xs">살펴보기</p>
+                                <img
+                                src="/assets/images/arrowdown.svg"
+                                alt="arrowdown"
+                                className="size-7 animate-bounce"
+                                />
+                            </div>
+                            <div className="flex flex-col items-end">
+                                <img src="/assets/images/shape.svg" alt="shape" />
+                                <h1 className="font-bold md:text-9xl text-5xl">DEVELOPER</h1>
+                            </div>
                         </div>
                     </div>
                 </div>
-                </div>
-            </div>
+            </div> */}
             
             <div className="w-full h-full absolute top-0 left-0">
                 <HeroExperience />
