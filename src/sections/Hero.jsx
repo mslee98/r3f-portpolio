@@ -9,11 +9,11 @@ const Hero = () => {
             className="w-screen h-dvh overflow-hidden relative text-white-50 bg-black md:p-0 px-5"
         >
 
-            <div className="gradient-box w-full h-96 absolute bottom-0 left-0 z-20"></div>
+            {/* <div className="gradient-box w-full h-96 absolute bottom-0 left-0 z-20"></div>
             <GradientSpheres
                 sphere1Class="gradient-sphere sphere-1"
                 sphere2Class="gradient-sphere sphere-2"
-            />
+            /> */}
 
             {/* <div className="w-full h-full flex-center">
                 <div className="relative w-full h-full z-30">
