@@ -1,12 +1,15 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { PerspectiveCamera, RenderTexture, Text, useGLTF, MeshReflectorMaterial, Outlines } from '@react-three/drei'
 import { EffectComposer, Bloom, DepthOfField, Outline, Vignette } from '@react-three/postprocessing'
-import { useState, useRef, useEffect, useMemo } from 'react';
-
-import { LayerMaterial, Color, Fresnel, Depth } from 'lamina/vanilla'
-import { easing } from 'maath'
+import { useState, useRef, useEffect, useMemo, Suspense } from 'react';
+// import { LayerMaterial, Color, Fresnel, Depth } from 'lamina/vanilla'
+// import { easing } from 'maath'
 
 import * as THREE from 'three';
+
+import Loader from './Loader';
+
+import { gsap } from "gsap";
 
 const HeroExperience = () => {
     const buildingRef = useRef();
@@ -34,8 +37,6 @@ const HeroExperience = () => {
         const buildingMesh = buildingScene.getObjectByName('buildings');
         
         buildingScene.traverse((child) => {
-
-          console.log(child)
 
           if(child.name.indexOf('screen') > 0) return;
 
@@ -65,12 +66,69 @@ const HeroExperience = () => {
 
     }, [buildingScene]);
 
+   const handleLoaderFinish = () => {
+      if (!cameraRef.current) return;
+
+      const cam = cameraRef.current;
+
+      // 회전 목표값 (도착 후 적용)
+      const endRot = {
+        x: -0.4636476090008061,
+        y: 0.21998797739545942,
+        z: 0.10867903971378187,
+      };
+
+      // 곡선 정의 (현위치 → 곡선 경유점 → 목표 위치)
+      const curve = new THREE.CatmullRomCurve3([
+        cam.position.clone(),
+        new THREE.Vector3(12, 20, 20), // 곡선 감기용 중간 포인트
+        new THREE.Vector3(3, 6, 12),   // 도착 지점
+      ]);
+
+      const temp = { t: 0 };
+
+      // 이동 애니메이션
+      gsap.to(temp, {
+        t: 1,
+        duration: 3,
+        ease: "power2.inOut",
+        onUpdate: () => {
+          const pos = curve.getPoint(temp.t);
+          cam.position.set(pos.x, pos.y, pos.z);
+        },
+        onComplete: () => {
+          // 이동 후, 회전 애니메이션
+          const currentRot = {
+            x: cam.rotation.x,
+            y: cam.rotation.y,
+            z: cam.rotation.z,
+          };
+
+          gsap.to(currentRot, {
+            ...endRot,
+            duration: 1.5,
+            ease: "power2.inOut",
+            onUpdate: () => {
+              cam.rotation.set(currentRot.x, currentRot.y, currentRot.z);
+            },
+          });
+        },
+      });
+    };
+
+
 
     return (
+      <>
+        <Loader onFinish={handleLoaderFinish} />
         <Canvas>
+          <Suspense fallback={null}>
             <PerspectiveCamera 
               makeDefault // CameraShake연결을 위해서 초기값 지정을 해야함
-              position={[3, 6, 12]} 
+              // position={[3, 6, 12]} 
+              position={[10, 15, 30]}
+              
+              // rotation={[-0.4636476090008061, 0.21998797739545942, 0.10867903971378187]}
               rotation={[-0.4636476090008061, 0.21998797739545942, 0.10867903971378187]}
               ref={cameraRef} 
             />
@@ -122,9 +180,12 @@ const HeroExperience = () => {
                 metalness={1}
               />
             </mesh>
+          </Suspense>
         </Canvas>
+      </>
     )
 }
+// useGLTF.preload('/assets/models/building.glb');
 
 function useVideoTexture(src) {
   const [texture, setTexture] = useState(null);
@@ -169,6 +230,7 @@ function useVideoTexture(src) {
 
 function ScreenTextMeshes({ screenGroup }) {
   const videoFile = '/assets/videos/water_video.mp4'; // 모든 스크린에 동일 비디오 사용
+
   const meshData = useMemo(() => {
     return screenGroup.children
       .filter(child => child.isMesh)
@@ -180,6 +242,7 @@ function ScreenTextMeshes({ screenGroup }) {
 
   const videoTexture = useVideoTexture(videoFile);
 
+  if (!videoTexture) return null;
   return (
     <>
       {meshData.map(({ uuid, geometry }) => (
