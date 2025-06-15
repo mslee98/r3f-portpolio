@@ -1,14 +1,16 @@
+import { useState } from 'react';
 
 import HeroExperience from '../components/HeroExperience';
 import GradientSpheres from '../components/GradientSpheres';
 
 const Hero = () => {
+
+    const [hue, setHue] = useState(0)
     return (
          <section
             id="home"
             className="w-screen h-dvh overflow-hidden relative text-white-50 bg-black md:p-0 px-5"
         >
-
             {/* <div className="gradient-box w-full h-96 absolute bottom-0 left-0 z-20"></div>
             <GradientSpheres
                 sphere1Class="gradient-sphere sphere-1"
@@ -43,9 +45,132 @@ const Hero = () => {
                     </div>
                 </div>
             </div> */}
+
+            <footer className="absolute bottom-0 z-50 w-full px-6 py-4 bg-bg-black bg-opacity-100 text-white flex flex-wrap justify-between items-center gap-8">
+                {/* 왼쪽: Visualization Types */}
+                <div className="flex flex-col gap-2">
+                    <h3 className="text-sm tracking-widest font-semibold">VISUALIZATION TYPES</h3>
+                    <div className="flex gap-4">
+                    {['TYPE 1', 'TYPE 2', 'TYPE 3'].map((type, idx) => (
+                        <button
+                        key={idx}
+                        className={`w-16 h-16 rounded-full border-2 text-xs ${
+                            idx === 0 ? 'bg-white text-black' : 'text-white'
+                        } flex items-center justify-center font-semibold`}
+                        >
+                        {type}
+                        </button>
+                    ))}
+                    </div>
+                </div>
+
+                {/* 가운데: 슬라이더들 */}
+                <div className="flex-1 gap-6 items-center">
+                    <h4 className="text-xs tracking-widest font-semibold">VISUALIZATION EDITORS</h4>
+                    
+                    {/* HUE */}
+                    <div className='w-full flex gap-2'>
+                        <div className="w-full max-w-2xl flex flex-col items-center">
+                            <label className="text-xs mb-2">HUE</label>
+                            <div className="relative w-full flex items-center" style={{ height: 32 }}>
+                                {/* 실제 input은 숨김 */}
+                                <input
+                                type="range"
+                                min={0}
+                                max={1}
+                                step={0.01}
+                                value={hue}
+                                onChange={(e) => setHue(parseFloat(e.target.value))}
+                                className="absolute w-full opacity-0 h-8 cursor-pointer z-10"
+                                style={{ top: 0, left: 0 }}
+                                />
+                                {/* 라인 */}
+                                <div className="h-1 bg-white w-full rounded pointer-events-none" />
+                                {/* 원 */}
+                                <div className="absolute"
+                                style={{
+                                    left: `calc(${hue * 100}% - 16px)`, // 16px은 원의 반지름
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                }}
+                                >
+                                <div className="w-8 h-8 border-2 border-white rounded-full bg-transparent" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* SPEED */}
+                        <div className="w-full max-w-2xl flex flex-col items-center">
+                            <label className="text-xs mb-2">HUE</label>
+                            <div className="relative w-full flex items-center" style={{ height: 32 }}>
+                                {/* 실제 input은 숨김 */}
+                                <input
+                                type="range"
+                                min={0}
+                                max={1}
+                                step={0.01}
+                                value={hue}
+                                onChange={(e) => setHue(parseFloat(e.target.value))}
+                                className="absolute w-full opacity-0 h-8 cursor-pointer z-10"
+                                style={{ top: 0, left: 0 }}
+                                />
+                                {/* 라인 */}
+                                <div className="h-1 bg-white w-full rounded pointer-events-none" />
+                                {/* 원 */}
+                                <div className="absolute"
+                                style={{
+                                    left: `calc(${hue * 100}% - 16px)`, // 16px은 원의 반지름
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                }}
+                                >
+                                <div className="w-8 h-8 border-2 border-white rounded-full bg-transparent" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* DIMMER */}
+                        <div className="w-full max-w-2xl flex flex-col items-center">
+                            <label className="text-xs mb-2">HUE</label>
+                            <div className="relative w-full flex items-center" style={{ height: 32 }}>
+                                {/* 실제 input은 숨김 */}
+                                <input
+                                type="range"
+                                min={0}
+                                max={1}
+                                step={0.01}
+                                value={hue}
+                                onChange={(e) => setHue(parseFloat(e.target.value))}
+                                className="absolute w-full opacity-0 h-8 cursor-pointer z-10"
+                                style={{ top: 0, left: 0 }}
+                                />
+                                {/* 라인 */}
+                                <div className="h-1 bg-white w-full rounded pointer-events-none" />
+                                {/* 원 */}
+                                <div className="absolute"
+                                style={{
+                                    left: `calc(${hue * 100}% - 16px)`, // 16px은 원의 반지름
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                }}
+                                >
+                                <div className="w-8 h-8 border-2 border-white rounded-full bg-transparent" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 오른쪽: Default Angle 버튼 */}
+                <div className="flex items-center">
+                    {/* <button className="bg-white text-black font-bold rounded-full px-8 py-3">
+                    DEFAULT ANGLE
+                    </button> */}
+                </div>
+                </footer>
             
             <div className="w-full h-full absolute top-0 left-0">
-                <HeroExperience />
+                <HeroExperience hue={hue}/>
             </div>
         </section>
     )
