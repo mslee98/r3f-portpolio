@@ -6,6 +6,8 @@ import GradientSpheres from '../components/GradientSpheres';
 const Hero = () => {
 
     const [hue, setHue] = useState(0)
+    const [speed, setSpeed] = useState(1)
+    const [brightness, setBrightness] = useState(1)
     return (
          <section
             id="home"
@@ -48,15 +50,15 @@ const Hero = () => {
 
             <footer className="absolute bottom-0 z-50 w-full px-6 py-4 bg-bg-black bg-opacity-100 text-white flex flex-wrap justify-between items-center gap-8">
                 {/* 왼쪽: Visualization Types */}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 min-w-[160px]">
                     <h3 className="text-sm tracking-widest font-semibold">VISUALIZATION TYPES</h3>
                     <div className="flex gap-4">
                     {['TYPE 1', 'TYPE 2', 'TYPE 3'].map((type, idx) => (
                         <button
-                        key={idx}
-                        className={`w-16 h-16 rounded-full border-2 text-xs ${
-                            idx === 0 ? 'bg-white text-black' : 'text-white'
-                        } flex items-center justify-center font-semibold`}
+                            key={idx}
+                            className={`w-16 h-16 rounded-full border-2 text-xs ${
+                                idx === 0 ? 'bg-white text-black' : 'text-white'
+                            } flex items-center justify-center font-semibold`}
                         >
                         {type}
                         </button>
@@ -65,12 +67,13 @@ const Hero = () => {
                 </div>
 
                 {/* 가운데: 슬라이더들 */}
-                <div className="flex-1 gap-6 items-center">
+                <div className="flex flex-col flex-1 gap-3 items-center max-w-[960px] w-full mx-auto px-4">
                     <h4 className="text-xs tracking-widest font-semibold">VISUALIZATION EDITORS</h4>
                     
-                    {/* HUE */}
-                    <div className='w-full flex gap-2'>
-                        <div className="w-full max-w-2xl flex flex-col items-center">
+                    
+                    <div className='w-full flex gap-8 md:gap-10'>
+                        {/* HUE */}
+                        <div className="w-full max-w-xl flex flex-col items-center">
                             <label className="text-xs mb-2">HUE</label>
                             <div className="relative w-full flex items-center" style={{ height: 32 }}>
                                 {/* 실제 input은 숨김 */}
@@ -100,17 +103,17 @@ const Hero = () => {
                         </div>
                         
                         {/* SPEED */}
-                        <div className="w-full max-w-2xl flex flex-col items-center">
-                            <label className="text-xs mb-2">HUE</label>
+                        <div className="w-full max-w-xl flex flex-col items-center">
+                            <label className="text-xs mb-2">SPEED</label>
                             <div className="relative w-full flex items-center" style={{ height: 32 }}>
                                 {/* 실제 input은 숨김 */}
                                 <input
                                 type="range"
-                                min={0}
-                                max={1}
+                                min={0.25}
+                                max={4}
                                 step={0.01}
-                                value={hue}
-                                onChange={(e) => setHue(parseFloat(e.target.value))}
+                                value={speed}
+                                onChange={(e) => setSpeed(parseFloat(e.target.value))}
                                 className="absolute w-full opacity-0 h-8 cursor-pointer z-10"
                                 style={{ top: 0, left: 0 }}
                                 />
@@ -119,7 +122,7 @@ const Hero = () => {
                                 {/* 원 */}
                                 <div className="absolute"
                                 style={{
-                                    left: `calc(${hue * 100}% - 16px)`, // 16px은 원의 반지름
+                                    left: `calc(${((speed - 0.25) / (4 - 0.25)) * 100}% - 16px)`, // min = 0.25 max = 4
                                     top: '50%',
                                     transform: 'translateY(-50%)',
                                 }}
@@ -130,17 +133,17 @@ const Hero = () => {
                         </div>
                         
                         {/* DIMMER */}
-                        <div className="w-full max-w-2xl flex flex-col items-center">
-                            <label className="text-xs mb-2">HUE</label>
+                        <div className="w-full max-w-xl flex flex-col items-center">
+                            <label className="text-xs mb-2">DIMMER</label>
                             <div className="relative w-full flex items-center" style={{ height: 32 }}>
                                 {/* 실제 input은 숨김 */}
                                 <input
                                 type="range"
                                 min={0}
-                                max={1}
+                                max={2}
                                 step={0.01}
-                                value={hue}
-                                onChange={(e) => setHue(parseFloat(e.target.value))}
+                                value={brightness}
+                                onChange={(e) => setBrightness(parseFloat(e.target.value))}
                                 className="absolute w-full opacity-0 h-8 cursor-pointer z-10"
                                 style={{ top: 0, left: 0 }}
                                 />
@@ -149,7 +152,7 @@ const Hero = () => {
                                 {/* 원 */}
                                 <div className="absolute"
                                 style={{
-                                    left: `calc(${hue * 100}% - 16px)`, // 16px은 원의 반지름
+                                    left: `calc(${(brightness/2) * 100}% - 16px)`, // 16px은 원의 반지름
                                     top: '50%',
                                     transform: 'translateY(-50%)',
                                 }}
@@ -162,15 +165,21 @@ const Hero = () => {
                 </div>
 
                 {/* 오른쪽: Default Angle 버튼 */}
-                <div className="flex items-center">
+                    <div className="flex flex-col items-center mr-10 md:gap-5 gap-1 min-w-[100px]">
+                        <p className="md:text-white text-xs">살펴보기</p>
+                        <img
+                            src="/assets/images/arrowdown.svg"
+                            alt="arrowdown"
+                            className="size-7 animate-bounce"
+                        />
+                    </div>
                     {/* <button className="bg-white text-black font-bold rounded-full px-8 py-3">
                     DEFAULT ANGLE
                     </button> */}
-                </div>
-                </footer>
+            </footer>
             
             <div className="w-full h-full absolute top-0 left-0">
-                <HeroExperience hue={hue}/>
+                <HeroExperience hue={hue} speed={speed} brightness={brightness}/>
             </div>
         </section>
     )

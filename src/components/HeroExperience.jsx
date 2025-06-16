@@ -1,6 +1,6 @@
-import { Canvas, useFrame, extend } from "@react-three/fiber";
-import { PerspectiveCamera, RenderTexture, useTexture, useGLTF, MeshReflectorMaterial, MapControls } from '@react-three/drei'
-import { EffectComposer, Bloom, DepthOfField, Outline, Vignette } from '@react-three/postprocessing'
+import { Canvas} from "@react-three/fiber";
+import { PerspectiveCamera, useTexture, useGLTF, MeshReflectorMaterial, MapControls } from '@react-three/drei'
+import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
 import { useState, useRef, useEffect, useMemo, Suspense } from 'react';
 // import { LayerMaterial, Color, Fresnel, Depth } from 'lamina/vanilla'
 // import { easing } from 'maath'
@@ -11,7 +11,7 @@ import Loader from './Loader';
 
 import { gsap } from "gsap";
 
-const HeroExperience = ({hue}) => {
+const HeroExperience = ({hue, speed, brightness}) => {
     const buildingRef = useRef();
     const cameraRef = useRef();
 
@@ -80,6 +80,12 @@ const HeroExperience = ({hue}) => {
 
       const cam = cameraRef.current;
 
+      const startRot = {
+        x: cam.rotation.x,
+        y: cam.rotation.y,
+        z: cam.rotation.z,
+      };
+        
       // 회전 목표값 (도착 후 적용)
       const endRot = {
         x: -0.706476090008061,
@@ -104,24 +110,31 @@ const HeroExperience = ({hue}) => {
         onUpdate: () => {
           const pos = curve.getPoint(temp.t);
           cam.position.set(pos.x, pos.y, pos.z);
-        },
-        onComplete: () => {
-          // 이동 후, 회전 애니메이션
-          const currentRot = {
-            x: cam.rotation.x,
-            y: cam.rotation.y,
-            z: cam.rotation.z,
-          };
 
-          gsap.to(currentRot, {
-            ...endRot,
-            duration: 1.5,
-            ease: "power2.inOut",
-            onUpdate: () => {
-              cam.rotation.set(currentRot.x, currentRot.y, currentRot.z);
-            },
-          });
+          const lerp = (a, b, alpha) => a + (b - a) * alpha;
+          const rotX = lerp(startRot.x, endRot.x, temp.t);
+          const rotY = lerp(startRot.y, endRot.y, temp.t);
+          const rotZ = lerp(startRot.z, endRot.z, temp.t);
+
+          cam.rotation.set(rotX, rotY, rotZ);
         },
+        // onComplete: () => {
+        //   // 이동 후, 회전 애니메이션
+        //   const currentRot = {
+        //     x: cam.rotation.x,
+        //     y: cam.rotation.y,
+        //     z: cam.rotation.z,
+        //   };
+
+        //   gsap.to(currentRot, {
+        //     ...endRot,
+        //     duration: 1.5,
+        //     ease: "power2.inOut",
+        //     onUpdate: () => {
+        //       cam.rotation.set(currentRot.x, currentRot.y, currentRot.z);
+        //     },
+        //   });
+        // },
       });
     };
 
@@ -136,7 +149,7 @@ const HeroExperience = ({hue}) => {
               position={[10, 15, 30]}
               fov={60}
               // rotation={[-0.4636476090008061, 0.21998797739545942, 0.10867903971378187]}
-              rotation={[-0.4636476090008061, 0.21998797739545942, 0.10867903971378187]}
+              rotation={[-0.4636476090008061, -0.81998797739545942, 0.10867903971378187]}
               ref={cameraRef} 
             />
             <fog attach="fog" args={["#000000", 10, 25]} />
@@ -157,7 +170,7 @@ const HeroExperience = ({hue}) => {
                     rotation={[0, 0, 0]}
                     scale={[0.1, 0.1, 0.1]}
                 >
-                    <ScreenTextMeshes screenGroup={screenGroup} hue={hue}/>
+                    <ScreenTextMeshes screenGroup={screenGroup} hue={hue} speed={speed} brightness={brightness}/>
                 </group>
             )}
 
@@ -213,7 +226,7 @@ const Floor = () => {
   );
 };
 
-function useVideoTexture(src) {
+function useVideoTexture(src, speed = 1) {
   const [texture, setTexture] = useState(null);
   const videoRef = useRef(null);
 
@@ -238,6 +251,10 @@ function useVideoTexture(src) {
       video.play().catch(err => {
         console.warn('Video play failed:', err);
       });
+
+      // 최소치 제한 playbackRate은 0.25 ~ 4 범위를 초과하면 에러가 발생
+      const clampedSpeed = Math.min(Math.max(speed, 0.25), 4); 
+      video.playbackRate = clampedSpeed; 
       setTexture(videoTexture);
     };
 
@@ -251,10 +268,17 @@ function useVideoTexture(src) {
     };
   }, [src]);
 
+  useEffect(() => {
+    if (videoRef.current) {
+      const clampedSpeed = Math.min(Math.max(speed, 0.25), 4);
+      videoRef.current.playbackRate = clampedSpeed;
+    }
+  }, [speed]);
+
   return texture;
 }
 
-function ScreenTextMeshes({ screenGroup, hue }) {
+function ScreenTextMeshes({ screenGroup, hue, speed, brightness}) {
   const videoFile = '/assets/videos/water_video.mp4'; // 모든 스크린에 동일 비디오 사용
 
   const meshData = useMemo(() => {
@@ -266,7 +290,7 @@ function ScreenTextMeshes({ screenGroup, hue }) {
       }));
   }, [screenGroup]);
 
-  const videoTexture = useVideoTexture(videoFile);
+  const videoTexture = useVideoTexture(videoFile, speed);
 
   if (!videoTexture) return null;
 
@@ -274,7 +298,7 @@ function ScreenTextMeshes({ screenGroup, hue }) {
     <>
       {meshData.map(({ uuid, geometry }) => (
         <mesh key={uuid} geometry={geometry}>
-          <HueMaterial texture={videoTexture} hue={hue} />
+          <HueMaterial texture={videoTexture} hue={hue} brightness={brightness}/>
           {/* <meshBasicMaterial
             toneMapped={false}
             map={videoTexture}
@@ -285,19 +309,21 @@ function ScreenTextMeshes({ screenGroup, hue }) {
   );
 }
 
-function HueMaterial({ texture, hue = 0 }) {
+function HueMaterial({ texture, hue = 0, brightness=5}) {
   const materialRef = useRef();
 
   const uniforms = useMemo(() => ({
     uTexture: { value: texture },
     uHue: { value: hue },
+    uBrightness: { value: brightness },
   }), [texture]); // hue는 포함하지 않음
 
   useEffect(() => {
     if (materialRef.current) {
       materialRef.current.uniforms.uHue.value = hue;
+      materialRef.current.uniforms.uBrightness.value = brightness;
     }
-  }, [hue]);
+  }, [hue, brightness]);
 
   if (!texture) return null;
 
@@ -314,6 +340,7 @@ function HueMaterial({ texture, hue = 0 }) {
       fragmentShader={`
         uniform sampler2D uTexture;
         uniform float uHue;
+        uniform float uBrightness;
         varying vec2 vUv;
 
         vec3 hueShift(vec3 color, float hue) {
@@ -342,7 +369,8 @@ function HueMaterial({ texture, hue = 0 }) {
 
         void main() {
           vec4 tex = texture2D(uTexture, vUv);
-          tex.rgb = hueShift(tex.rgb, uHue);
+          tex.rgb = hueShift(tex.rgb, uHue); //색상 반전
+          tex.rgb *= uBrightness; //밝기
           gl_FragColor = tex;
         }
       `}
