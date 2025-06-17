@@ -7,6 +7,21 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { SpredingPoint } from '../components/SpreadingPoint';
 
+const container = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05, // 글자 간 간격 (초)
+    },
+  },
+};
+
+const child = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
+
 const Hero = () => {
 
     const [hue, setHue] = useState(0)
@@ -15,6 +30,7 @@ const Hero = () => {
 
     const [selectedVideoType, setSelectedVideoType] = useState('TYPE1');
 
+    // 캔버스 맵 컨트롤 이동
     const [isInteracting, setIsInteracting] = useState(false);
 
     return (
@@ -22,33 +38,13 @@ const Hero = () => {
             id="home"
             className="w-screen h-dvh overflow-hidden relative text-white-50 bg-black md:p-0 px-5"
         >
-            <MouseFollower/>
+            {/* <MouseFollower/> */}
 
             {/* {positions.map((pos, i) => (
                 <div key={i} className="absolute" style={{ top: pos.top, left: pos.left }}>
                     <SpredingPoint delay={pos.delay}/>
                 </div>
             ))} */}
-
-            {/* <div className="gradient-box w-full h-96 absolute bottom-0 left-0 z-20"></div>
-            <GradientSpheres
-                sphere1Class="gradient-sphere sphere-1"
-                sphere2Class="gradient-sphere sphere-2"
-            /> */}
-
-            {/* <div className="hidden w-full h-full lg:flex justify-center items-center pointer-events-none">
-                <div className="relative w-full h-full z-30">
-                    <div className="text-white ml-10 md:mt-40 mt-20 ">
-                        <p className="font md:text-2xl">
-                        👋 Hey, I&apos;m Here
-                        </p>
-                        <h1 className="font-bold md:text-9xl text-5xl">MINSUNG LEE</h1>
-                        <h1 className="font-bold md:text-9xl text-5xl">FRONT AND UI/UX</h1>
-                    </div>
-                </div>
-            </div> */}
-
-        
 
             <AnimatePresence mode="wait">
                 {!isInteracting && (
@@ -65,9 +61,10 @@ const Hero = () => {
                     >
                         <div className="relative w-full h-full z-30">
                             <div className="text-white ml-10 md:mt-40 mt-20">
-                            <p className="font md:text-2xl">👋 Hey, I&apos;m Here</p>
-                            <h1 className="font-bold md:text-9xl text-5xl">MINSUNG LEE</h1>
-                            <h1 className="font-bold md:text-9xl text-5xl">FRONT AND UI/UX</h1>
+                                <p className="font md:text-2xl">👋 Hey, I&apos;m Here</p>
+                                <h1 className="font-bold md:text-8xl text-5xl">MINSUNG LEE</h1>
+                                <h1 className="font-bold md:text-8xl text-5xl">FRONT AND UI/UX</h1>
+                                <h1 className="font-bold md:text-8xl text-5xl">ENGINEER</h1>
                             </div>
                         </div>
                     </motion.div>
@@ -193,17 +190,23 @@ const Hero = () => {
                 </div>
 
                 {/* 오른쪽: Default Angle 버튼 */}
-                    <div className="hidden flex-col items-center mr-10 md:gap-5 gap-1 min-w-[100px] md:flex">
-                        <p className="md:text-white text-xs">살펴보기</p>
-                        <img
-                            src="/assets/images/arrowdown.svg"
-                            alt="arrowdown"
-                            className="size-7 animate-bounce"
-                        />
-                    </div>
-                    {/* <button className="bg-white text-black font-bold rounded-full px-8 py-3">
-                    DEFAULT ANGLE
-                    </button> */}
+                <div 
+                    onClick={(e) => {
+                        e.preventDefault();
+                        const section = document.getElementById('about');
+                        if (section) {
+                        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }}
+                    className="hidden flex-col items-center mr-10 md:gap-5 gap-1 min-w-[100px] md:flex cursor-pointer"
+                >
+                    <p className="md:text-white text-xs">살펴보기</p>
+                    <img
+                        src="/assets/images/arrowdown.svg"
+                        alt="arrowdown"
+                        className="size-7 animate-bounce"
+                    />
+                </div>
             </footer>
             
             <div className="w-full h-full absolute top-0 left-0">
@@ -214,50 +217,3 @@ const Hero = () => {
 }
 
 export default Hero;
-
-const MouseFollower = () => {
-  const followerRef = useRef();
-  const posRef = useRef({ x: 0, y: 0 });
-  const requestRef = useRef();
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      posRef.current = { x: e.clientX, y: e.clientY };
-    };
-
-    const animate = () => {
-      if (followerRef.current) {
-        followerRef.current.style.transform = `translate3d(${posRef.current.x}px, ${posRef.current.y}px, 0) translate(-50%, -50%)`;
-      }
-      requestRef.current = requestAnimationFrame(animate);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    requestRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(requestRef.current);
-    };
-  }, []);
-
-  return (
-    <div
-      ref={followerRef}
-      className="relative pointer-events-none z-50 flex items-center justify-center rounded-full bg-transparent border border-white text-white select-none"
-      style={{
-        width: 100,
-        height: 100,
-        top: 0,
-        left: 0,
-        transform: 'translate3d(0,0,0) translate(-50%, -50%)',
-      }}
-    >
-      <div className="relative flex flex-col items-center">
-        <div style={{ width: 0, height: 0 }}></div>
-        <div className="opacity-100 text-xs select-none">DRAG</div>
-            
-        </div>
-    </div>
-  );
-};

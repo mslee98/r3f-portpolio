@@ -1,6 +1,17 @@
 import { navItems } from "../constants";
 
 const NavBar = () => {
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    const href = e.currentTarget.getAttribute('href'); // e.g. "#home"
+    const id = href.replace('#', '');
+    const section = document.getElementById(id);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <div className="w-full flex-center fixed z-50 top-0 left-0 md:p-0 px-5">
       <div className="mx-5 md:my-10 my-5 flex items-center justify-between">
@@ -11,6 +22,7 @@ const NavBar = () => {
                 <a
                     className="gradient-title text-lg inline-block pb-1"
                     href={item.href}
+                    onClick={handleClick}
                 >
                     {item.name}
                 </a>

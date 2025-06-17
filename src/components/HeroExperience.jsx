@@ -1,5 +1,5 @@
 import { Canvas, useThree, useFrame} from "@react-three/fiber";
-import { PerspectiveCamera, useTexture, useGLTF, MeshReflectorMaterial, MapControls, OrbitControls } from '@react-three/drei'
+import { PerspectiveCamera, useTexture, useGLTF, MeshReflectorMaterial, MapControls, OrbitControls, Html } from '@react-three/drei'
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
 import { useState, useRef, useEffect, useMemo, Suspense } from 'react';
 // import { LayerMaterial, Color, Fresnel, Depth } from 'lamina/vanilla'
@@ -10,6 +10,8 @@ import * as THREE from 'three';
 import Loader from './Loader';
 
 import { gsap } from "gsap";
+
+import {SpredingPoint} from '../components/SpreadingPoint';
 
 const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInteracting}) => {
     const buildingRef = useRef();
@@ -189,6 +191,26 @@ const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInterac
 
 
             <Floor/>
+
+            <Html position={[3, 1.5, 3]} center distanceFactor={10} style={{ pointerEvents: 'auto' }}>
+              <SpredingPoint />
+            </Html>
+
+            <Html position={[-3.5, 5, 0]} center distanceFactor={10} style={{ pointerEvents: 'auto' }}>
+              <SpredingPoint />
+            </Html>
+
+            <Html position={[8, 2.5, -2.5]} center distanceFactor={10} style={{ pointerEvents: 'auto' }}>
+              <SpredingPoint />
+            </Html>
+
+            <Html position={[-4, 5, 5]} center distanceFactor={10} style={{ pointerEvents: 'auto' }}>
+              <SpredingPoint />
+            </Html>
+
+            <Html position={[-12, -3, 3]} center distanceFactor={10} style={{ pointerEvents: 'auto' }}>
+              <SpredingPoint />
+            </Html>
             
             {loadingYn && <LimitedControls setIsInteracting={setIsInteracting}/>}
 
