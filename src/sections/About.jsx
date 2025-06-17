@@ -18,10 +18,12 @@ const About = () => {
             className="absolute scale-[1.75] -right-[5rem] -top-[1rem] md:scale-[3] md:left-50 md:inset-y-10 lg:scale-[2.5]"
             />
           <div className="z-10">
-            <p className="headtext">Hi, I'm Minsung LEE</p>
-            <p className="subtext">
-              Over the last 4 years, I developed my frontend and backend dev
-              skills to deliver dynamic and software and web applications.
+            <p className="headtext font-moneygraphy">아이디어가 현실이 되는 공간</p>
+            <p className="subtext font-moneygraphy">
+              사용자 경험을 최우선으로 생각하며, 기능과 디자인이 조화를 이루는 혁신적인 웹 솔루션을 만듭니다.  
+              최신 기술과 깊은 경험을 바탕으로 빠르게 변화하는 디지털 세상 속에서 안정적이고 확장 가능한 소프트웨어를 개발하며,  
+              아이디어가 현실이 되는 공간에서 상상을 구체화하고 사용자의 삶을 바꾸는 경험을 디자인합니다.  
+              미래를 열어가는 기술력으로 더 나은 디지털 세상을 만들어 갑니다.
             </p>
           </div>
           <div className="absolute inset-x-0 pointer-evets-none -bottom-4 h-1/2 sm:h-1/3 bg-gradient-to-t from-[#1f1e39]" />
@@ -58,17 +60,17 @@ const About = () => {
             />
             <Card
               style={{ rotate: "30deg", top: "70%", left: "70%" }}
-              image="/assets/images/csharp-pink.png"
+              image="/assets/images/logos/nestjs.svg"
               containerRef={grid2Container}
             />
             <Card
               style={{ rotate: "-45deg", top: "70%", left: "25%" }}
-              image="/assets/images/dotnet-pink.png"
+              image="/assets/images/logos/nextjs2.svg"
               containerRef={grid2Container}
             />
             <Card
               style={{ rotate: "-45deg", top: "5%", left: "10%" }}
-              image="/assets/images/blazor-pink.png"
+              image="/assets/images/logos/typescript.svg"
               containerRef={grid2Container}
             />
           </div>

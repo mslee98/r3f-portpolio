@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        moneygraphy: ['MoneygraphyRounded', 'sans-serif'],
+      },
       keyframes: {
         orbit: {
           "0%": {

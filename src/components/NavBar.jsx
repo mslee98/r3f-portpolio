@@ -20,7 +20,7 @@ const NavBar = () => {
             {navItems.map((item, index) => (
                 <div key={index} className="group relative">
                 <a
-                    className="gradient-title text-lg inline-block pb-1"
+                    className="gradient-title text-lg inline-block pb-1 font-moneygraphy"
                     href={item.href}
                     onClick={handleClick}
                 >
