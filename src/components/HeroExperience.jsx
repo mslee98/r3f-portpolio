@@ -1,5 +1,5 @@
-import { Canvas} from "@react-three/fiber";
-import { PerspectiveCamera, useTexture, useGLTF, MeshReflectorMaterial, MapControls } from '@react-three/drei'
+import { Canvas, useThree, useFrame} from "@react-three/fiber";
+import { PerspectiveCamera, useTexture, useGLTF, MeshReflectorMaterial, MapControls, OrbitControls } from '@react-three/drei'
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
 import { useState, useRef, useEffect, useMemo, Suspense } from 'react';
 // import { LayerMaterial, Color, Fresnel, Depth } from 'lamina/vanilla'
@@ -11,9 +11,11 @@ import Loader from './Loader';
 
 import { gsap } from "gsap";
 
-const HeroExperience = ({hue, speed, brightness}) => {
+const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInteracting}) => {
     const buildingRef = useRef();
     const cameraRef = useRef();
+
+    const [loadingYn, setLoadingYn] = useState(false);
 
     const { scene: buildingScene } = useGLTF('/assets/models/building.glb');
     // const texture = useTexture('/assets/images/norm_asphalt.webp');
@@ -75,6 +77,7 @@ const HeroExperience = ({hue, speed, brightness}) => {
 
     }, [buildingScene]);
 
+    //로딩 종료 후 작업
    const handleLoaderFinish = () => {
       if (!cameraRef.current) return;
 
@@ -88,9 +91,9 @@ const HeroExperience = ({hue, speed, brightness}) => {
         
       // 회전 목표값 (도착 후 적용)
       const endRot = {
-        x: -0.706476090008061,
-        y: 0.12998797739545942,
-        z: 0.10867903971378187,
+        x: -0.5404195002705842,
+        y: 0.12792157459084388,
+        z: 0.07639482055211705,
       };
 
       // 곡선 정의 (현위치 → 곡선 경유점 → 목표 위치)
@@ -118,7 +121,8 @@ const HeroExperience = ({hue, speed, brightness}) => {
 
           cam.rotation.set(rotX, rotY, rotZ);
         },
-        // onComplete: () => {
+        onComplete: () => {
+          setLoadingYn(true)
         //   // 이동 후, 회전 애니메이션
         //   const currentRot = {
         //     x: cam.rotation.x,
@@ -134,7 +138,7 @@ const HeroExperience = ({hue, speed, brightness}) => {
         //       cam.rotation.set(currentRot.x, currentRot.y, currentRot.z);
         //     },
         //   });
-        // },
+        },
       });
     };
 
@@ -148,14 +152,13 @@ const HeroExperience = ({hue, speed, brightness}) => {
               // position={[3, 6, 12]} 
               position={[10, 15, 30]}
               fov={60}
-              // rotation={[-0.4636476090008061, 0.21998797739545942, 0.10867903971378187]}
               rotation={[-0.4636476090008061, -0.81998797739545942, 0.10867903971378187]}
               ref={cameraRef} 
             />
             <fog attach="fog" args={["#000000", 10, 25]} />
             
             <ambientLight intensity={0.01} />
-            <directionalLight intensity={1} castShadow />
+            <directionalLight intensity={0.5} castShadow />
 
             <primitive
               ref={buildingRef}
@@ -170,7 +173,7 @@ const HeroExperience = ({hue, speed, brightness}) => {
                     rotation={[0, 0, 0]}
                     scale={[0.1, 0.1, 0.1]}
                 >
-                    <ScreenTextMeshes screenGroup={screenGroup} hue={hue} speed={speed} brightness={brightness}/>
+                    <ScreenTextMeshes screenGroup={screenGroup} hue={hue} speed={speed} brightness={brightness} selectedVideoType={selectedVideoType}/>
                 </group>
             )}
 
@@ -186,20 +189,68 @@ const HeroExperience = ({hue, speed, brightness}) => {
 
 
             <Floor/>
-
-            {/* <MapControls 
-              enableRotate={false}   // 회전 비활성화
-              enableZoom={true}      // 줌 가능
-              enablePan={true}       // 패닝(이동) 가능
-              minDistance={5}
-              maxDistance={15}
-            /> */}
+            
+            {loadingYn && <LimitedControls setIsInteracting={setIsInteracting}/>}
 
           </Suspense>
         </Canvas>
       </>
     )
 }
+
+/**
+ * 카메라 바운더리 제한
+ * @param {*} param0 
+ * @returns 
+ */
+const LimitedControls = ({ bounds = 20, setIsInteracting }) => {
+  const { camera, gl } = useThree();
+  const controls = useRef();
+
+  useEffect(() => {
+    if (!controls.current) return;
+
+    const handleStart = () => {
+      setIsInteracting(true);
+    };
+
+    controls.current.addEventListener('start', handleStart);
+
+    return () => {
+      controls.current?.removeEventListener('start', handleStart);
+    };
+  }, [setIsInteracting]);
+
+  useFrame(() => {
+    if (!controls.current) return;
+
+    controls.current.update();
+
+    // clamp camera position
+    camera.position.x = THREE.MathUtils.clamp(camera.position.x, -bounds, bounds);
+    // camera.position.y = THREE.MathUtils.clamp(camera.position.y, 2, 10);
+    camera.position.z = THREE.MathUtils.clamp(camera.position.z, -bounds, bounds);
+
+    // clamp target as well
+    const t = controls.current.target;
+    t.x = THREE.MathUtils.clamp(t.x, -bounds, bounds);
+    // t.y = THREE.MathUtils.clamp(t.y, 0, 5);
+    t.z = THREE.MathUtils.clamp(t.z, -bounds, bounds);
+
+    controls.current.update();
+  });
+
+  return (
+    <MapControls
+      ref={controls}
+      enableRotate={false}
+      enableZoom={false}
+      enablePan={true}
+      args={[camera, gl.domElement]}
+    />
+  )
+}
+
 
 const Floor = () => {
   const texture = useTexture('/assets/images/norm_asphalt.webp');
@@ -243,9 +294,9 @@ function useVideoTexture(src, speed = 1) {
     videoRef.current = video;
 
     const videoTexture = new THREE.VideoTexture(video);
-    videoTexture.minFilter = THREE.LinearFilter;
-    videoTexture.magFilter = THREE.LinearFilter;
-    videoTexture.format = THREE.RGBFormat;
+    // videoTexture.minFilter = THREE.LinearFilter;
+    // videoTexture.magFilter = THREE.LinearFilter;
+    // videoTexture.format = THREE.RGBFormat;
 
     const handleLoaded = () => {
       video.play().catch(err => {
@@ -264,7 +315,9 @@ function useVideoTexture(src, speed = 1) {
       video.pause();
       video.removeEventListener('loadeddata', handleLoaded);
       video.src = '';
+      video.load();  // 메모리 해제 도움
       videoTexture.dispose();
+      setTexture(null);
     };
   }, [src]);
 
@@ -278,8 +331,19 @@ function useVideoTexture(src, speed = 1) {
   return texture;
 }
 
-function ScreenTextMeshes({ screenGroup, hue, speed, brightness}) {
-  const videoFile = '/assets/videos/water_video.mp4'; // 모든 스크린에 동일 비디오 사용
+
+
+function ScreenTextMeshes({ screenGroup, hue, speed, brightness, selectedVideoType}) {
+
+  const videoSources = {
+    'TYPE1': '/assets/videos/water_video.mp4',
+    'TYPE2': '/assets/videos/square.mp4',
+    'TYPE3': '/assets/videos/circle-particle.mp4',
+  };
+
+  const videoFile = videoSources[selectedVideoType] || '/assets/videos/water_video.mp4';
+
+  const videoTexture = useVideoTexture(videoFile, speed);
 
   const meshData = useMemo(() => {
     return screenGroup.children
@@ -290,8 +354,6 @@ function ScreenTextMeshes({ screenGroup, hue, speed, brightness}) {
       }));
   }, [screenGroup]);
 
-  const videoTexture = useVideoTexture(videoFile, speed);
-
   if (!videoTexture) return null;
 
   return (
@@ -299,17 +361,13 @@ function ScreenTextMeshes({ screenGroup, hue, speed, brightness}) {
       {meshData.map(({ uuid, geometry }) => (
         <mesh key={uuid} geometry={geometry}>
           <HueMaterial texture={videoTexture} hue={hue} brightness={brightness}/>
-          {/* <meshBasicMaterial
-            toneMapped={false}
-            map={videoTexture}
-          /> */}
         </mesh>
       ))}
     </>
   );
 }
 
-function HueMaterial({ texture, hue = 0, brightness=5}) {
+function HueMaterial({ texture, hue = 0, brightness=1}) {
   const materialRef = useRef();
 
   const uniforms = useMemo(() => ({
@@ -320,10 +378,11 @@ function HueMaterial({ texture, hue = 0, brightness=5}) {
 
   useEffect(() => {
     if (materialRef.current) {
+      materialRef.current.uniforms.uTexture.value = texture;
       materialRef.current.uniforms.uHue.value = hue;
       materialRef.current.uniforms.uBrightness.value = brightness;
     }
-  }, [hue, brightness]);
+  }, [texture, hue, brightness]);
 
   if (!texture) return null;
 
