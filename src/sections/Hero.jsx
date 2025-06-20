@@ -33,6 +33,28 @@ const Hero = () => {
     // 캔버스 맵 컨트롤 이동
     const [isInteracting, setIsInteracting] = useState(false);
 
+    
+    const [loadingYn, setLoadingYn] = useState(false);
+
+    const [step, setStep] = useState(-1);
+
+    useEffect(() => {
+        if (loadingYn) {
+          // 로딩 완료 시 타이핑 순차 시작
+          setStep(0);
+    
+          const timers = [
+            setTimeout(() => setStep(1), 1000), // 타이핑 끝나는 시간 맞춰서
+            setTimeout(() => setStep(2), 3000),
+          ];
+    
+          return () => timers.forEach(clearTimeout); // cleanup
+        } else {
+          // 로딩 중이면 다시 초기화 (선택사항)
+          setStep(-1);
+        }
+      }, [loadingYn]);
+
     return (
          <section
             id="home"
@@ -60,11 +82,28 @@ const Hero = () => {
                         className="absolute w-full h-full flex justify-center items-center pointer-events-none z-50"
                     >
                         <div className="relative w-full h-full z-30">
-                            <div className="text-white ml-10 md:mt-40 mt-20">
+                            <div className=" text-white ml-10 md:mt-40 mt-20">
                                 <p className="font md:text-2xl">👋 Hey, I&apos;m Here</p>
-                                <h1 className="font-bold md:text-8xl text-5xl">MINSUNG LEE</h1>
-                                <h1 className="font-bold md:text-8xl text-5xl">FRONT AND UI/UX</h1>
-                                <h1 className="font-bold md:text-8xl text-5xl">ENGINEER</h1>
+                                {step >= 0 && (
+                                    <h1 className="animate-typing after:animate-blink font-bold md:text-8xl text-5xl overflow-hidden whitespace-nowrap border-r-4 border-r-white text-white">
+                                        MINSUNG LEE
+                                    </h1>
+                                )}
+
+                                {/* Step 1: FRONT AND UI/UX */}
+                                {step >= 1 && (
+                                    <h1 className="animate-typing after:animate-blink font-bold md:text-8xl text-5xl overflow-hidden whitespace-nowrap border-r-4 border-r-white text-white">
+                                        FRONT AND UI/UX
+                                    </h1>
+                                )}
+
+                                {/* Step 2: ENGINEER */}
+                                {step >= 2 && (
+                                <h1 className="animate-typing after:animate-blink font-bold md:text-8xl text-5xl overflow-hidden whitespace-nowrap border-r-4 border-r-white text-white">
+                                    ENGINEER
+                                </h1>
+                                )}
+
                             </div>
                         </div>
                     </motion.div>
@@ -75,13 +114,13 @@ const Hero = () => {
             <footer className="absolute bottom-0 z-50 w-full px-6 py-4 bg-bg-black bg-opacity-100 text-white flex flex-wrap justify-between items-center gap-8">
                 {/* 왼쪽: Visualization Types */}
                 <div className="flex flex-col gap-2 min-w-[160px]">
-                    <h3 className="text-sm tracking-widest font-semibold">VISUALIZATION TYPES</h3>
+                    <h3 className="text-sm tracking-widest text-center font-semibold mb-2">VISUALIZATION TYPES</h3>
                     <div className="flex gap-4">
                     {['TYPE1', 'TYPE2', 'TYPE3'].map((type, idx) => (
                         <button
                             key={idx}
                             onClick={() => setSelectedVideoType(type)}
-                            className={`w-16 h-16 rounded-full border-2 text-xs ${
+                            className={`w-20 h-20 rounded-full border-2 text-xs ${
                                 selectedVideoType === type ? 'bg-white text-black' : 'text-white'
                             } flex items-center justify-center font-semibold`}
                         >
@@ -93,7 +132,7 @@ const Hero = () => {
 
                 {/* 가운데: 슬라이더들 */}
                 <div className="flex flex-col flex-1 gap-3 items-center w-full mx-auto px-4">
-                    <h4 className="text-xs tracking-widest font-semibold">VISUALIZATION EDITORS</h4>
+                    <h4 className="text-xs text-center tracking-widest font-semibold">VISUALIZATION EDITORS</h4>
                     
                     
                     <div className='w-full flex gap-8 md:gap-10'>
@@ -195,7 +234,8 @@ const Hero = () => {
                         e.preventDefault();
                         const section = document.getElementById('about');
                         if (section) {
-                        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            setIsInteracting(true)
+                            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }
                     }}
                     className="hidden flex-col items-center mr-10 md:gap-5 gap-1 min-w-[100px] md:flex cursor-pointer"
@@ -210,7 +250,7 @@ const Hero = () => {
             </footer>
             
             <div className="w-full h-full absolute top-0 left-0">
-                <HeroExperience hue={hue} speed={speed} brightness={brightness} selectedVideoType={selectedVideoType} setIsInteracting={setIsInteracting}/>
+                <HeroExperience hue={hue} speed={speed} brightness={brightness} selectedVideoType={selectedVideoType} setIsInteracting={setIsInteracting} loadingYn={loadingYn} setLoadingYn={setLoadingYn}/>
             </div>
         </section>
     )

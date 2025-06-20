@@ -1,0 +1,1098 @@
+{
+  "websiteLink": "https://www.keychron.com/collections/75-layout-keyboards/products/keychron-q1-he-qmk-wireless-custom-keyboard",
+  "colorSets": {
+    "CarbonBlack": {
+      "name": "Carbon Black",
+      "colorSet": {
+        "highlightColor": {
+          "keycapColor": "#fc4c4c",
+          "fontColor": "#ffffff"
+        },
+        "primaryColor": {
+          "keycapColor": "#ffffff",
+          "fontColor": "#000000"
+        },
+        "secondaryColor": {
+          "keycapColor": "#46484b",
+          "fontColor": "#ffffff"
+        },
+        "caseColor": "#555",
+        "miscTextColor": "#ffffff",
+        "UIColor": ["#e25e74", "#eeeeee", "#000000"]
+      }
+    },
+    "shellWhite": {
+      "name": "Shell White",
+      "colorSet": {
+        "highlightColor": {
+          "keycapColor": "#88ffc4",
+          "fontColor": "#000"
+        },
+        "primaryColor": {
+          "keycapColor": "#fff",
+          "fontColor": "#000"
+        },
+        "secondaryColor": {
+          "keycapColor": "#00382b",
+          "fontColor": "#fff"
+        },
+        "caseColor": "#fff",
+        "miscTextColor": "#000000",
+        "UIColor": ["#7dd6c1", "#eee", "#446c6a"]
+      }
+    }
+  },
+  "switchOption": ["Gateron Double-Rail Magnetic Nebula Switch"],
+  "keycapOption": ["KSA"],
+  "centerKey": "KeyJ",
+  "keycapUVOffsetScale": [0.5, 0.5, 32.7, 14.72],
+  "switchOrientation": "south",
+  "keyboardOffset": [0, 1.6, 0],
+  "unfoldText": {
+    "topCaseQ": {
+      "title": "Top Case",
+      "detailText": "All-aluminum body"
+    },
+    "topCaseK": {
+      "title": "Top Case",
+      "detailText": "All-aluminum body"
+    },
+    "switches": {
+      "title": "Magnetic Switches",
+      "detailText": "3x4, 3.5mm, Hot-swappable"
+    },
+    "keyCaps": {
+      "title": "PBT Keycaps",
+      "detailText": "OSA Profile Double-shot PBT Keycaps, rounded shape -> comfortable"
+    },
+    "pcb": {
+      "title": "PCB",
+      "detailText": "Battery that last for 1 month usage"
+    },
+    "stablizer": {
+      "title": "Stablizer",
+      "detailText": "Battery that last for 1 month usage"
+    },
+    "plate": {
+      "title": "Plate and Gaskets",
+      "detailText": "Battery that last for 1 month usage"
+    },
+    "plateFoam": {
+      "title": "Plate Foam",
+      "detailText": "Battery that last for 1 month usage"
+    },
+    "acousticPad": {
+      "title": "Acoustic Pad",
+      "detailText": "Battery that last for 1 month usage"
+    },
+    "knobCap": {
+      "title": "Knob",
+      "detailText": "Designed to enhance your creative workflow, the premium rotary encoder allows you to customize your favorite keys and macros through the innovative VIA software with ease."
+    },
+    "battery": {
+      "title": "Battery",
+      "detailText": "Battery that last for 1 month usage"
+    },
+    "gasket": {
+      "title": "Double-Gasket",
+      "detailText": "Silicone pads between the top and bottom cases reduce acoustic resonance, maintaining gasket flexibility and enhancing typing sound."
+    },
+    "bottomCase": {
+      "title": "Bottom Case",
+      "detailText": ""
+    }
+  },
+  "keyPosition": {
+    "AltLeft": {
+      "key": "AltLeft",
+      "position": { "x": -9.509319305419922, "y": 0, "z": 5.129315376281738 },
+      "capModel": "r6_meta",
+      "row": 6,
+      "isBump": false,
+      "random": 0.1921238506245313
+    },
+    "AltRight": {
+      "key": "AltRight",
+      "position": { "x": 4.501204967498779, "y": 0, "z": 5.129315376281738 },
+      "capModel": "r6",
+      "row": 6,
+      "isBump": false,
+      "random": 0.2683257589871795
+    },
+    "ArrowDown": {
+      "key": "ArrowDown",
+      "position": { "x": 12.597599983215332, "y": 0, "z": 5.612579822540283 },
+      "capModel": "r6",
+      "row": 6,
+      "isBump": false,
+      "random": 0.6594790508808426
+    },
+    "ArrowLeft": {
+      "key": "ArrowLeft",
+      "position": { "x": 10.693865776062012, "y": 0, "z": 5.612579345703125 },
+      "capModel": "r6",
+      "row": 6,
+      "isBump": false,
+      "random": 0.14752257512487355
+    },
+    "ArrowRight": {
+      "key": "ArrowRight",
+      "position": { "x": 14.502245903015137, "y": 0, "z": 5.612579822540283 },
+      "capModel": "r6",
+      "row": 6,
+      "isBump": false,
+      "random": 0.27478933699710395
+    },
+    "ArrowUp": {
+      "key": "ArrowUp",
+      "position": { "x": 12.597599983215332, "y": 0, "z": 3.6889736652374268 },
+      "capModel": "r5",
+      "row": 5,
+      "isBump": true,
+      "random": 0.2354761519287415
+    },
+    "Backquote": {
+      "key": "Backquote",
+      "position": { "x": -14.492199897766113, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.18484805590460518
+    },
+    "Backslash": {
+      "key": "Backslash",
+      "position": { "x": 11.58146858215332, "y": 0, "z": -0.6363022923469543 },
+      "capModel": "r3_tab",
+      "row": 3,
+      "isBump": false,
+      "random": 0.8126312095486138
+    },
+    "Backspace": {
+      "key": "Backspace",
+      "position": { "x": 11.112870216369629, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2_backspace",
+      "row": 2,
+      "isBump": false,
+      "random": 0.8992393151609505
+    },
+    "BracketLeft": {
+      "key": "BracketLeft",
+      "position": { "x": 7.319347381591797, "y": 0, "z": -0.6363022923469543 },
+      "capModel": "r3",
+      "row": 3,
+      "isBump": false,
+      "random": 0.6355997648767437
+    },
+    "BracketRight": {
+      "key": "BracketRight",
+      "position": { "x": 9.21336841583252, "y": 0, "z": -0.6363022923469543 },
+      "capModel": "r3",
+      "row": 3,
+      "isBump": false,
+      "random": 0.319956114046017
+    },
+    "CapsLock": {
+      "key": "CapsLock",
+      "position": { "x": -13.781058311462402, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4_capslock",
+      "row": 4,
+      "isBump": false,
+      "random": 0.1006142664791303
+    },
+    "Comma": {
+      "key": "Comma",
+      "position": { "x": 3.051647901535034, "y": 0, "z": 3.1962692737579346 },
+      "capModel": "r5",
+      "row": 5,
+      "isBump": false,
+      "random": 0.6556083274174888
+    },
+    "ControlLeft": {
+      "key": "ControlLeft",
+      "position": { "x": -14.267048835754395, "y": 0, "z": 5.129315376281738 },
+      "capModel": "r6_meta",
+      "row": 6,
+      "isBump": false,
+      "random": 0.9580900373562657
+    },
+    "ControlRight": {
+      "key": "ControlRight",
+      "position": { "x": 8.312187194824219, "y": 0, "z": 5.129315376281738 },
+      "capModel": "r6",
+      "row": 6,
+      "isBump": false,
+      "random": 0.9873227066255676
+    },
+    "Delete": {
+      "key": "Delete",
+      "position": { "x": 12.058483123779297, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.5386303812376949
+    },
+    "Digit0": {
+      "key": "Digit0",
+      "position": { "x": 4.461466312408447, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.040588820475804255
+    },
+    "Digit1": {
+      "key": "Digit1",
+      "position": { "x": -12.601112365722656, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.17495786075464248
+    },
+    "Digit2": {
+      "key": "Digit2",
+      "position": { "x": -10.700145721435547, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.5635091300288418
+    },
+    "Digit3": {
+      "key": "Digit3",
+      "position": { "x": -8.795854568481445, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.9060099199189787
+    },
+    "Digit4": {
+      "key": "Digit4",
+      "position": { "x": -6.916086196899414, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.5695834245047381
+    },
+    "Digit5": {
+      "key": "Digit5",
+      "position": { "x": -5.010978698730469, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.9896967190266361
+    },
+    "Digit6": {
+      "key": "Digit6",
+      "position": { "x": -3.1138885021209717, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.42084055714591706
+    },
+    "Digit7": {
+      "key": "Digit7",
+      "position": { "x": -1.2210439443588257, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.6061134264224631
+    },
+    "Digit8": {
+      "key": "Digit8",
+      "position": { "x": 0.6748021245002747, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.06541438717036707
+    },
+    "Digit9": {
+      "key": "Digit9",
+      "position": { "x": 2.5734407901763916, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.26633315803387225
+    },
+    "Enter": {
+      "key": "Enter",
+      "position": { "x": 10.868958473205566, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4_enter",
+      "row": 4,
+      "isBump": false,
+      "random": 0.39747670048573014
+    },
+    "Equal": {
+      "key": "Equal",
+      "position": { "x": 8.273640632629395, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.17175571391250144
+    },
+    "Escape": {
+      "key": "Escape",
+      "position": { "x": -14.492199897766113, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.04020277912596537
+    },
+    "F1": {
+      "key": "F1",
+      "position": { "x": -12.124039649963379, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.25554104138199496
+    },
+    "F2": {
+      "key": "F2",
+      "position": { "x": -10.231978416442871, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.4969682074478945
+    },
+    "F3": {
+      "key": "F3",
+      "position": { "x": -8.35390853881836, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.2591063470883217
+    },
+    "F4": {
+      "key": "F4",
+      "position": { "x": -6.420712947845459, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.07891183134959023
+    },
+    "F5": {
+      "key": "F5",
+      "position": { "x": -4.091141700744629, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.12562312116702357
+    },
+    "F6": {
+      "key": "F6",
+      "position": { "x": -2.190939426422119, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.023143431697466577
+    },
+    "F7": {
+      "key": "F7",
+      "position": { "x": -0.3000186085700989, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.7552622579691431
+    },
+    "F8": {
+      "key": "F8",
+      "position": { "x": 1.602327823638916, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.26540171253975864
+    },
+    "F9": {
+      "key": "F9",
+      "position": { "x": 3.981663465499878, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.8165999522399991
+    },
+    "F10": {
+      "key": "F10",
+      "position": { "x": 5.899477481842041, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.1443044870942788
+    },
+    "F11": {
+      "key": "F11",
+      "position": { "x": 7.797575950622559, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.061134236609402315
+    },
+    "F12": {
+      "key": "F12",
+      "position": { "x": 9.700301170349121, "y": 0, "z": -4.973810195922852 },
+      "capModel": "r1",
+      "row": 1,
+      "isBump": false,
+      "random": 0.16622187924849596
+    },
+    "Fn": {
+      "key": "Fn",
+      "position": { "x": 6.393158435821533, "y": 0, "z": 5.129315376281738 },
+      "capModel": "r6",
+      "row": 6,
+      "isBump": false,
+      "random": 0.43405850879720687
+    },
+    "Home": {
+      "key": "Home",
+      "position": { "x": 14.506814956665039, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4",
+      "row": 4,
+      "isBump": false,
+      "random": 0.08065881605820335
+    },
+    "KeyA": {
+      "key": "KeyA",
+      "position": { "x": -11.168206214904785, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4",
+      "row": 4,
+      "isBump": false,
+      "random": 0.9652449470918062
+    },
+    "KeyB": {
+      "key": "KeyB",
+      "position": { "x": -2.6383419036865234, "y": 0, "z": 3.1962692737579346 },
+      "capModel": "r5",
+      "row": 5,
+      "isBump": false,
+      "random": 0.1692666425498518
+    },
+    "KeyC": {
+      "key": "KeyC",
+      "position": { "x": -6.42757511138916, "y": 0, "z": 3.1962692737579346 },
+      "capModel": "r5",
+      "row": 5,
+      "isBump": false,
+      "random": 0.5727302768575278
+    },
+    "KeyD": {
+      "key": "KeyD",
+      "position": { "x": -7.365796089172363, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4",
+      "row": 4,
+      "isBump": false,
+      "random": 0.4889959581807434
+    },
+    "KeyE": {
+      "key": "KeyE",
+      "position": { "x": -7.855106830596924, "y": 0, "z": -0.6363022923469543 },
+      "capModel": "r3",
+      "row": 3,
+      "isBump": false,
+      "random": 0.3985890946498586
+    },
+    "KeyF": {
+      "key": "KeyF",
+      "position": { "x": -5.479071140289307, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4",
+      "row": 4,
+      "isBump": true,
+      "random": 0.15993686670918073
+    },
+    "KeyG": {
+      "key": "KeyG",
+      "position": { "x": -3.5711371898651123, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4",
+      "row": 4,
+      "isBump": false,
+      "random": 0.8410751477994706
+    },
+    "KeyH": {
+      "key": "KeyH",
+      "position": { "x": -1.6817660331726074, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4",
+      "row": 4,
+      "isBump": false,
+      "random": 0.6791114029398809
+    },
+    "KeyI": {
+      "key": "KeyI",
+      "position": { "x": 1.6337532997131348, "y": 0, "z": -0.6363022923469543 },
+      "capModel": "r3",
+      "row": 3,
+      "isBump": false,
+      "random": 0.45622837914277015
+    },
+    "KeyJ": {
+      "key": "KeyJ",
+      "position": { "x": 0.21026194095611572, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4",
+      "row": 4,
+      "isBump": true,
+      "random": 0.5242586033839928
+    },
+    "KeyK": {
+      "key": "KeyK",
+      "position": { "x": 2.1075949668884277, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4",
+      "row": 4,
+      "isBump": false,
+      "random": 0.30111420088442153
+    },
+    "KeyL": {
+      "key": "KeyL",
+      "position": { "x": 4.004930019378662, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4",
+      "row": 4,
+      "isBump": false,
+      "random": 0.5922379717802991
+    },
+    "KeyM": {
+      "key": "KeyM",
+      "position": { "x": 1.1553813219070435, "y": 0, "z": 3.1962692737579346 },
+      "capModel": "r5",
+      "row": 5,
+      "isBump": false,
+      "random": 0.4160332862245324
+    },
+    "KeyN": {
+      "key": "KeyN",
+      "position": { "x": -0.7315235137939453, "y": 0, "z": 3.1962692737579346 },
+      "capModel": "r5",
+      "row": 5,
+      "isBump": false,
+      "random": 0.7413716604860604
+    },
+    "KeyO": {
+      "key": "KeyO",
+      "position": { "x": 3.521590232849121, "y": 0, "z": -0.6363022923469543 },
+      "capModel": "r3",
+      "row": 3,
+      "isBump": false,
+      "random": 0.9934922328855688
+    },
+    "KeyP": {
+      "key": "KeyP",
+      "position": { "x": 5.415611743927002, "y": 0, "z": -0.6363022923469543 },
+      "capModel": "r3",
+      "row": 3,
+      "isBump": false,
+      "random": 0.182192748304159
+    },
+    "KeyQ": {
+      "key": "KeyQ",
+      "position": {
+        "x": -11.639960289001465,
+        "y": 0,
+        "z": -0.6363022923469543
+      },
+      "capModel": "r3",
+      "row": 3,
+      "isBump": false,
+      "random": 0.8844658489677317
+    },
+    "KeyR": {
+      "key": "KeyR",
+      "position": { "x": -5.954534530639648, "y": 0, "z": -0.6363022923469543 },
+      "capModel": "r3",
+      "row": 3,
+      "isBump": false,
+      "random": 0.5117277646193895
+    },
+    "KeyS": {
+      "key": "KeyS",
+      "position": { "x": -9.26700210571289, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4",
+      "row": 4,
+      "isBump": false,
+      "random": 0.18220739157916077
+    },
+    "KeyT": {
+      "key": "KeyT",
+      "position": { "x": -4.05750036239624, "y": 0, "z": -0.6363022923469543 },
+      "capModel": "r3",
+      "row": 3,
+      "isBump": false,
+      "random": 0.37625943025480724
+    },
+    "KeyU": {
+      "key": "KeyU",
+      "position": { "x": -0.268217533826828, "y": 0, "z": -0.6363022923469543 },
+      "capModel": "r3",
+      "row": 3,
+      "isBump": false,
+      "random": 0.3091534867917425
+    },
+    "KeyV": {
+      "key": "KeyV",
+      "position": { "x": -4.5375237464904785, "y": 0, "z": 3.1962692737579346 },
+      "capModel": "r5",
+      "row": 5,
+      "isBump": false,
+      "random": 0.833521505097247
+    },
+    "KeyW": {
+      "key": "KeyW",
+      "position": { "x": -9.74325942993164, "y": 0, "z": -0.6363022923469543 },
+      "capModel": "r3",
+      "row": 3,
+      "isBump": false,
+      "random": 0.39404106792506854
+    },
+    "KeyX": {
+      "key": "KeyX",
+      "position": { "x": -8.323553085327148, "y": 0, "z": 3.1962692737579346 },
+      "capModel": "r5",
+      "row": 5,
+      "isBump": false,
+      "random": 0.6065279888722046
+    },
+    "KeyY": {
+      "key": "KeyY",
+      "position": { "x": -2.163121461868286, "y": 0, "z": -0.6363022923469543 },
+      "capModel": "r3",
+      "row": 3,
+      "isBump": false,
+      "random": 0.37343704490391716
+    },
+    "KeyZ": {
+      "key": "KeyZ",
+      "position": { "x": -10.233741760253906, "y": 0, "z": 3.1962692737579346 },
+      "capModel": "r5",
+      "row": 5,
+      "isBump": false,
+      "random": 0.10261345088012175
+    },
+    "MetaLeft": {
+      "key": "MetaLeft",
+      "position": { "x": -11.88553237915039, "y": 0, "z": 5.129315376281738 },
+      "capModel": "r6_meta",
+      "row": 6,
+      "isBump": false,
+      "random": 0.9224801099086208
+    },
+    "Minus": {
+      "key": "Minus",
+      "position": { "x": 6.369868278503418, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.9969003308996438
+    },
+    "PageDown": {
+      "key": "PageDown",
+      "position": { "x": 14.506814956665039, "y": 0, "z": -0.6363022923469543 },
+      "capModel": "r3",
+      "row": 3,
+      "isBump": false,
+      "random": 0.15966915381147118
+    },
+    "PageUp": {
+      "key": "PageUp",
+      "position": { "x": 14.506814956665039, "y": 0, "z": -2.553647518157959 },
+      "capModel": "r2",
+      "row": 2,
+      "isBump": false,
+      "random": 0.6708318984195457
+    },
+    "Period": {
+      "key": "Period",
+      "position": { "x": 4.9539008140563965, "y": 0, "z": 3.1962692737579346 },
+      "capModel": "r5",
+      "row": 5,
+      "isBump": false,
+      "random": 0.38778811785983125
+    },
+    "Quote": {
+      "key": "Quote",
+      "position": { "x": 7.795467376708984, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4",
+      "row": 4,
+      "isBump": false,
+      "random": 0.4836415127008098
+    },
+    "Semicolon": {
+      "key": "Semicolon",
+      "position": { "x": 5.896669387817383, "y": 0, "z": 1.280137062072754 },
+      "capModel": "r4",
+      "row": 4,
+      "isBump": false,
+      "random": 0.3604939885963425
+    },
+    "ShiftLeft": {
+      "key": "ShiftLeft",
+      "position": { "x": -13.296869277954102, "y": 0, "z": 3.1962692737579346 },
+      "capModel": "r5_lshift",
+      "row": 5,
+      "isBump": false,
+      "random": 0.15172751456360545
+    },
+    "ShiftRight": {
+      "key": "ShiftRight",
+      "position": { "x": 9.459330558776855, "y": 0, "z": 3.1962692737579346 },
+      "capModel": "r5_rshift",
+      "row": 5,
+      "isBump": false,
+      "random": 0.38599612391003457
+    },
+    "Slash": {
+      "key": "Slash",
+      "position": { "x": 6.8467302322387695, "y": 0, "z": 3.1962692737579346 },
+      "capModel": "r5",
+      "row": 5,
+      "isBump": false,
+      "random": 0.7885994735924111
+    },
+    "Space": {
+      "key": "Space",
+      "position": { "x": -2.3982880115509033, "y": 0, "z": 5.129315376281738 },
+      "capModel": "r6_space",
+      "row": 6,
+      "isBump": false,
+      "random": 0.13214952322027784
+    },
+    "Tab": {
+      "key": "Tab",
+      "position": {
+        "x": -14.011175155639648,
+        "y": 0,
+        "z": -0.6363022923469543
+      },
+      "capModel": "r3_tab",
+      "row": 3,
+      "isBump": false,
+      "random": 0.5082610924522325
+    }
+  },
+  "knob": {
+    "position": [14.506814956665039, 0.0, -4.973805904388428]
+  },
+  "screwSPosition": [
+    {
+      "px": -13.00426959991455,
+      "py": 0.5,
+      "pz": 5.53824520111084,
+      "rx": 0.0
+    },
+    {
+      "px": -14.546862602233887,
+      "py": 0.5,
+      "pz": 2.5915536880493164,
+      "rx": 0.0
+    },
+    {
+      "px": -12.122308731079102,
+      "py": 0.5,
+      "pz": 2.5915536880493164,
+      "rx": 0.0
+    },
+    {
+      "px": -7.337652206420898,
+      "py": 0.5,
+      "pz": 5.915801048278809,
+      "rx": 0.0
+    },
+    {
+      "px": 2.638455390930176,
+      "py": 0.5,
+      "pz": 5.915801048278809,
+      "rx": 0.0
+    },
+    {
+      "px": 9.473258972167969,
+      "py": 0.5,
+      "pz": 4.487875938415527,
+      "rx": 0.0
+    },
+    {
+      "px": 13.588064193725586,
+      "py": 0.5,
+      "pz": 4.187451362609863,
+      "rx": 0.0
+    },
+    {
+      "px": 12.116341590881348,
+      "py": 0.5,
+      "pz": 1.994067668914795,
+      "rx": 0.0
+    },
+    {
+      "px": 13.306556701660156,
+      "py": 0.5,
+      "pz": -0.6054015159606934,
+      "rx": 0.0
+    },
+    {
+      "px": 13.198599815368652,
+      "py": 0.5,
+      "pz": -3.0557003021240234,
+      "rx": 0.0
+    },
+    {
+      "px": 12.319290161132812,
+      "py": 0.5,
+      "pz": -3.2948474884033203,
+      "rx": 0.0
+    },
+    {
+      "px": 9.93687915802002,
+      "py": 0.5,
+      "pz": -3.2948474884033203,
+      "rx": 0.0
+    },
+    {
+      "px": -1.2081855535507202,
+      "py": 0.5,
+      "pz": -3.7274985313415527,
+      "rx": 0.0
+    },
+    {
+      "px": -7.348133563995361,
+      "py": 0.5,
+      "pz": -3.7684903144836426,
+      "rx": 0.0
+    },
+    {
+      "px": -13.303394317626953,
+      "py": 0.5,
+      "pz": -4.917367458343506,
+      "rx": 0.0
+    },
+    {
+      "px": -12.81717300415039,
+      "py": 0.5,
+      "pz": -1.0691561698913574,
+      "rx": 0.0
+    },
+    {
+      "px": 3.4156339168548584,
+      "py": 0.5,
+      "pz": 4.490961074829102,
+      "rx": 0.0
+    }
+  ],
+  "screwLPosition": [
+    {
+      "px": 14.67409610748291,
+      "py": 0.25,
+      "pz": 6.96869421005249,
+      "rx": 0.0
+    },
+    {
+      "px": 4.788464546203613,
+      "py": 0.25,
+      "pz": -6.856993675231934,
+      "rx": 0.0
+    },
+    {
+      "px": 4.788464546203613,
+      "py": 0.25,
+      "pz": 6.96869421005249,
+      "rx": 0.0
+    },
+    {
+      "px": -4.836195468902588,
+      "py": 0.25,
+      "pz": -6.856993675231934,
+      "rx": 0.0
+    },
+    {
+      "px": -4.836195468902588,
+      "py": 0.25,
+      "pz": 6.96869421005249,
+      "rx": 0.0
+    },
+    {
+      "px": -14.649985313415527,
+      "py": 0.25,
+      "pz": -6.856993675231934,
+      "rx": 0.0
+    },
+    {
+      "px": -14.649985313415527,
+      "py": 0.25,
+      "pz": 6.96869421005249,
+      "rx": 0.0
+    },
+    {
+      "px": 14.67409610748291,
+      "py": 0.25,
+      "pz": -6.856993675231934,
+      "rx": 0.0
+    }
+  ],
+  "unfoldIntervalDistance": 3,
+  "unfoldPosition": {
+    "knobCap": {
+      "from": {
+        "x": 14.514,
+        "y": 2.359,
+        "z": -4.971
+      },
+      "target": {
+        "x": 14.514,
+        "y": 34.859,
+        "z": -4.971
+      }
+    },
+    "keyCaps": {
+      "from": {
+        "x": 0,
+        "y": 1.22,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 30.2,
+        "z": 0
+      }
+    },
+    "switches": {
+      "from": {
+        "x": 0,
+        "y": 1.22,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 26.75,
+        "z": 0
+      }
+    },
+    "topCaseQ": {
+      "from": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 22.5,
+        "z": 0
+      }
+    },
+    "gasketTop": {
+      "target": {
+        "x": 0,
+        "y": 0.75,
+        "z": 0
+      }
+    },
+    "gasketBottom": {
+      "from": {
+        "x": 0,
+        "y": -0.5,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": -1.25,
+        "z": 0
+      }
+    },
+    "plate": {
+      "from": {
+        "x": 0,
+        "y": 1.22,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 19.5,
+        "z": 0
+      }
+    },
+    "plateFoam": {
+      "from": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 16.5,
+        "z": 0
+      }
+    },
+    "stablizer": {
+      "from": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 13.5,
+        "z": 0
+      }
+    },
+    "pcb": {
+      "from": {
+        "x": 0,
+        "y": 0.75,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 12,
+        "z": 0
+      }
+    },
+    "screwInternal": {
+      "from": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 9.6,
+        "z": 0
+      }
+    },
+    "acousticPad": {
+      "from": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 8.5,
+        "z": 0
+      }
+    },
+    "battery": {
+      "from": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 6,
+        "z": 0
+      }
+    },
+    "bottomCase": {
+      "from": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 3,
+        "z": 0
+      }
+    },
+    "screwExternal": {
+      "from": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 0.1,
+        "z": 0
+      }
+    }
+  }
+}

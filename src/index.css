@@ -14,6 +14,14 @@ section {
   min-height: 100dvh;
 }
 
+@font-face {
+  font-family: 'MoneygraphyRounded';
+  src: url('/public/assets/fonts/Moneygraphy-Rounded.ttf') format('truetype');
+  font-weight: 400; /* 필요에 따라 조정 */
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer components {
   .gradient-title {
     background: linear-gradient(

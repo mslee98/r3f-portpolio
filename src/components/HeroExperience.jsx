@@ -13,11 +13,11 @@ import { gsap } from "gsap";
 
 import {SpredingPoint} from '../components/SpreadingPoint';
 
-const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInteracting}) => {
+const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInteracting, loadingYn, setLoadingYn}) => {
     const buildingRef = useRef();
     const cameraRef = useRef();
 
-    const [loadingYn, setLoadingYn] = useState(false);
+    // const [loadingYn, setLoadingYn] = useState(false);
 
     const { scene: buildingScene } = useGLTF('/assets/models/building.glb');
     // const texture = useTexture('/assets/images/norm_asphalt.webp');
@@ -42,8 +42,6 @@ const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInterac
         // const buildingMesh = buildingScene.getObjectByName('buildings');
         
         buildingScene.traverse((child) => {
-
-
 
           if(child.name.indexOf('screen') > 0) return;
 
@@ -106,6 +104,8 @@ const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInterac
       ]);
 
       const temp = { t: 0 };
+
+      setLoadingYn(true)
 
       // 이동 애니메이션
       gsap.to(temp, {
