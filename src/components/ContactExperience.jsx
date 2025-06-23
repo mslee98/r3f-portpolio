@@ -2,16 +2,18 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { 
   useTexture,
   OrbitControls,
-  SpotLight
+  SpotLight,
+  Html
 } from '@react-three/drei';
 import { 
   EffectComposer, 
-  ChromaticAberration 
+  ChromaticAberration,
+  Vignette
 } from '@react-three/postprocessing';
 import { useRef } from 'react';
 import * as THREE from 'three';
 
-const ContactExperience = ({btnClicked}) => {
+const ContactExperience = ({btnClicked, handleClick}) => {
   return (
     <Canvas 
       camera={{ position: [0, 0.6, 1], fov: 75, near: 0.01, far: 40 }}
@@ -42,10 +44,13 @@ const ContactExperience = ({btnClicked}) => {
         target-position={[0.25, 0.25, 0.25]}
       />
 
+      <HtmlText btnClicked={btnClicked} handleClick={handleClick}/>
+
       <Ground btnClicked={btnClicked}/>
       
       <CameraRig />
 
+  
       <EffectComposer >
         <ChromaticAberration 
           offset={btnClicked ? [0.3, 0.3] : [0.01, 0.01]} 
@@ -53,14 +58,80 @@ const ContactExperience = ({btnClicked}) => {
           modulationOffset={0.5}
           modulationScale={0.5}
         />
+        <Vignette eskil={false} offset={0.1} darkness={1.1} />
       </EffectComposer>
 
     </Canvas>
   );
 };
 
+const HtmlText = ({btnClicked, handleClick}) => {
+  const htmlRef = useRef();
+  const speedRef = useRef(0);
+
+  useFrame((state) => {
+    if (htmlRef.current) {
+      if (btnClicked) {
+        // 버튼 클릭 시 커지면서 사라지는 효과
+        speedRef.current += 0.1;
+        const progress = Math.min(1, speedRef.current); // 0~1 사이의 진행도
+        
+        // scale 효과 (1에서 2까지 커짐)
+        const scale = 1 + progress;
+        htmlRef.current.style.transform = `scale(${scale})`;
+        
+        // 페이드 아웃 효과
+        const opacity = Math.max(0, 1 - progress);
+        htmlRef.current.style.opacity = opacity;
+      } else {
+        // 버튼 해제 시 원래 크기로 복원
+        speedRef.current *= 0.95;
+        const progress = Math.max(0, speedRef.current);
+        
+        // scale 복원
+        const scale = 1 + progress;
+        htmlRef.current.style.transform = `scale(${scale})`;
+        
+        // 페이드 인 효과
+        const opacity = Math.min(1, 1 - progress);
+        htmlRef.current.style.opacity = opacity;
+        
+        if (progress < 0.01) {
+          speedRef.current = 0;
+        }
+      }
+    }
+  });
+
+  return (
+    <Html position={[0, 0, 0]} center>
+      <div ref={htmlRef} className="text-center w-full max-w-4xl whitespace-nowrap">
+        <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 whitespace-nowrap">
+            Contact Me
+        </h1>
+        <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            사용자 경험을 최우선으로 하는 UI/UX 엔지니어링으로<br/>
+            더 나은 디지털 경험을 만들어가고 싶습니다
+        </p>
+
+        <div className="flex justify-center mt-6">
+            <button 
+                onClick={handleClick}
+                className="group relative overflow-hidden bg-gradient-to-r from-[#b5404a] to-[#d95949] text-white px-8 py-4 rounded-xl flex items-center gap-3 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-red-500/25 border border-red-400/20"
+            >
+                <div className="absolute inset-0 bg-gradient-to-r from-[#d95949] to-[#b5404a] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <img src="/assets/images/send.png" alt="email" className="w-6 h-6 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+                <span className="text-lg font-semibold relative z-10 tracking-wide">Contact</span>
+                <div className="absolute inset-0 bg-white/10 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+            </button>
+        </div>
+        
+    </div>
+    </Html>
+  )
+}
+
 const CameraRig = () => {
-  const groupRef = useRef();
   const { camera } = useThree();
   
   // 현재 카메라 위치를 추적하기 위한 ref
@@ -105,12 +176,12 @@ const CameraRig = () => {
   return null;
 };
 
-const Ground = ({btnClicked}) => {
+const Ground = ({ btnClicked }) => {
   const plane1Ref = useRef();
   const plane2Ref = useRef();
-  const speedRef = useRef(0.15); // 기본 속도
-  const targetSpeedRef = useRef(0.15); // 목표 속도
-  const isAcceleratingRef = useRef(false); // 가속 중인지 확인
+  const speedRef = useRef(0.15);
+
+  const { camera } = useThree();
 
   const gridTexture = useTexture('/assets/images/grid-6.png');
   const displacementTexture = useTexture('/assets/images/displacement-7.png');
@@ -118,38 +189,38 @@ const Ground = ({btnClicked}) => {
 
   useFrame((state) => {
     const elapsedTime = state.clock.getElapsedTime();
-    
-    // 버튼이 클릭되면 목표 속도를 높게 설정
-    if (btnClicked && !isAcceleratingRef.current) {
-      targetSpeedRef.current = 0.8; // 목표 속도를 더 낮게 설정
-      isAcceleratingRef.current = true;
-    } else if (!btnClicked && isAcceleratingRef.current) {
-      targetSpeedRef.current = 0.15; // 기본 속도로 복원
-      isAcceleratingRef.current = false;
+
+    // 지수 가속/감속
+    if (btnClicked) {
+      speedRef.current *= 1.05;
+      if (speedRef.current > 5) speedRef.current = 5;
+    } else {
+      speedRef.current *= 0.95;
+      if (speedRef.current < 0.15) speedRef.current = 0.15;
     }
-    
-    // 부드러운 가속도/감속도 효과
-    const accelerationFactor = 0.008; // 가속도 계수를 더 낮게 설정 (더 부드러움)
-    speedRef.current += (targetSpeedRef.current - speedRef.current) * accelerationFactor;
-    
-    // 첫 번째 그라운드: z=0에서 시작해서 z=2까지 이동
-    plane1Ref.current.position.z = (elapsedTime * speedRef.current) % 2;
-    
-    // 두 번째 그라운드: z=-2에서 시작해서 z=0까지 이동
-    plane2Ref.current.position.z = ((elapsedTime * speedRef.current) % 2) - 2;
+
+    // 빨려드는 효과: 카메라 앞으로 이동
+    camera.position.z -= speedRef.current * 0.1;
+    camera.updateProjectionMatrix();
+
+    // 바닥의 위치 이동 (loop 효과)
+    const zMove = (elapsedTime * speedRef.current) % 2;
+    plane1Ref.current.position.z = zMove;
+    plane2Ref.current.position.z = zMove - 2;
+
+    // 바닥 점점 커지는 효과 (왜곡 느낌)
+    const scale = 1 + elapsedTime * 0.15;
+    plane1Ref.current.scale.setScalar(scale);
+    plane2Ref.current.scale.setScalar(scale);
   });
 
   return (
     <>
-      {/* 첫 번째 그라운드 */}
-      <mesh 
-        ref={plane1Ref}
-        position={[0, 0, 0]} 
-        rotation-x={-Math.PI * 0.5} 
-      >
+      {/* 바닥 1 */}
+      <mesh ref={plane1Ref} position={[0, 0, 0]} rotation-x={-Math.PI * 0.5}>
         <planeGeometry args={[1, 2, 24, 24]} />
         <meshStandardMaterial 
-          color="white" 
+          color="white"
           map={gridTexture}
           displacementMap={displacementTexture}
           displacementScale={0.4}
@@ -159,15 +230,11 @@ const Ground = ({btnClicked}) => {
         />
       </mesh>
 
-      {/* 두 번째 그라운드 */}
-      <mesh 
-        ref={plane2Ref}
-        position={[0, 0, -2]} 
-        rotation-x={-Math.PI * 0.5} 
-      >
+      {/* 바닥 2 */}
+      <mesh ref={plane2Ref} position={[0, 0, -2]} rotation-x={-Math.PI * 0.5}>
         <planeGeometry args={[1, 2, 24, 24]} />
         <meshStandardMaterial 
-          color="white" 
+          color="white"
           map={gridTexture}
           displacementMap={displacementTexture}
           displacementScale={0.4}
