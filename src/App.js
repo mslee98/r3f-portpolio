@@ -10,11 +10,12 @@ function App() {
   return (
     <div className="bg-black">
       {/* <Loader/> */}
-      {/* <NavBar/> */}
-      {/* <Contact/> */}
+      <NavBar/>
+      
       <Hero />
       <About />
       <Projects/>
+      <Contact/>
     </div>
   );
 }

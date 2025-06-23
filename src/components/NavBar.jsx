@@ -15,12 +15,12 @@ const NavBar = () => {
   return (
     <div className="w-full flex-center fixed z-50 top-0 left-0 md:p-0 px-5">
       <div className="mx-5 md:my-10 my-5 flex items-center justify-between">
-        <span>Mslee PortFilio</span>
+        <span>Mslee PortFolio</span>
         <div className="md:flex items-center gap-7 hidden">
             {navItems.map((item, index) => (
                 <div key={index} className="group relative">
                 <a
-                    className="gradient-title text-lg inline-block pb-1 font-moneygraphy"
+                    className="gradient-title text-lg inline-block pb-1"
                     href={item.href}
                     onClick={handleClick}
                 >

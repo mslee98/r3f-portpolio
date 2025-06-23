@@ -215,24 +215,158 @@ section {
     top: 400px;
     left: 150px;
   }
-  /* carousel */
-  .carousel-gradient-left-box {
-    background: rgb(11, 6, 32);
-    background: linear-gradient(
-      90deg,
-      rgba(11, 6, 32, 1) 0%,
-      rgba(11, 6, 32, 0) 100%,
-      rgba(11, 6, 32, 0) 100%
-    );
-  }
 
-  .carousel-gradient-right-box {
-    background: rgb(11, 6, 32);
-    background: linear-gradient(
-      -90deg,
-      rgba(11, 6, 32, 1) 0%,
-      rgba(11, 6, 32, 0) 100%,
-      rgba(11, 6, 32, 0) 100%
-    );
+/* Swiper 커스텀 스타일 */
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 네비게이션 버튼 */
+.swiper-button-next,
+.swiper-button-prev {
+  color: white !important;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+  border-radius: 50% !important;
+  width: 48px !important;
+  height: 48px !important;
+  margin-top: -24px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4) !important;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 18px !important;
+  font-weight: bold !important;
+}
+
+/* 페이지네이션 */
+.swiper-pagination {
+  position: absolute !important;
+  bottom: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+.swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.3) !important;
+  opacity: 1 !important;
+  transition: all 0.3s ease !important;
+  width: 8px !important;
+  height: 8px !important;
+  margin: 0 4px !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+  transform: scale(1.3) !important;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5) !important;
+}
+
+/* 커버플로우 효과 강화 */
+.swiper-slide-active {
+  transform: scale(1.05) !important;
+  z-index: 10 !important;
+}
+
+.swiper-slide-prev,
+.swiper-slide-next {
+  transform: scale(0.9) !important;
+  opacity: 0.7 !important;
+}
+
+/* 터치 제스처 최적화 */
+.swiper-wrapper {
+  touch-action: pan-y !important;
+}
+
+/* 반응형 조정 */
+@media (max-width: 768px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    display: none !important;
   }
+  
+  .swiper-pagination {
+    bottom: 10px !important;
+  }
+  
+  .swiper-pagination-bullet {
+    width: 6px !important;
+    height: 6px !important;
+    margin: 0 3px !important;
+  }
+}
+
+/* 애니메이션 최적화 */
+.swiper-slide {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* 모달 슬라이드 업 애니메이션 */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Swiper 슬라이드 호버 상태 개선 */
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* active되지 않은 슬라이드 호버 시 효과 */
+.swiper-slide-prev:hover,
+.swiper-slide-next:hover {
+  transform: scale(0.95) !important;
+  opacity: 0.8 !important;
+  transition: all 0.3s ease;
+}
+
+/* active 슬라이드 호버 시 효과 */
+.swiper-slide-active:hover {
+  transform: scale(1.08) !important;
+  transition: all 0.3s ease;
+}
 

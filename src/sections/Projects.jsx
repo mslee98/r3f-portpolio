@@ -4,21 +4,18 @@ import GradientSpheres from "../components/GradientSpheres";
 
 const Projects = () => {
   return (
-    <section className="w-full h-full flex-center relative" id="projects">
-      <GradientSpheres
-        sphere1Class="projects-gradient-sphere projects-sphere-1"
-        sphere2Class="projects-gradient-sphere projects-sphere-2"
-      />
-
-      <div className="w-full md:my-40 my-20 relative z-10">
-        <div className="container mx-auto md:p-0 px-5">
-          <TitleHeader
-            title="My PROJECTS"
-            number="03"
-            text="Check my recent project below for your Goal"
+    <section className="c-space section-spacing relative flex flex-col" id="projects">
+      <h2 className="text-heading mb-4">Projects</h2>
+      
+      <div className="gradient-box w-full h-1/2 absolute bottom-0 left-0 z-5">
+          <GradientSpheres
+              sphere1Class="gradient-sphere sphere-1"
+              sphere2Class="gradient-sphere sphere-2"
           />
-        </div>
-        <div className="md:mt-20 mt-10">
+      </div>
+
+      <div className="w-full relative z-10 flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col justify-center">
           <Carousel />
         </div>
       </div>

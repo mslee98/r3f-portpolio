@@ -60,13 +60,6 @@ const Hero = () => {
             id="home"
             className="w-screen h-dvh overflow-hidden relative text-white-50 bg-black md:p-0 px-5"
         >
-            {/* <MouseFollower/> */}
-
-            {/* {positions.map((pos, i) => (
-                <div key={i} className="absolute" style={{ top: pos.top, left: pos.left }}>
-                    <SpredingPoint delay={pos.delay}/>
-                </div>
-            ))} */}
 
             <AnimatePresence mode="wait">
                 {!isInteracting && (
@@ -82,24 +75,24 @@ const Hero = () => {
                         className="absolute w-full h-full flex justify-center items-center pointer-events-none z-50"
                     >
                         <div className="relative w-full h-full z-30">
-                            <div className=" text-white ml-10 md:mt-40 mt-20">
+                            <div className=" text-white ml-2 md:ml-10 md:mt-40 mt-20">
                                 <p className="font md:text-2xl">👋 Hey, I&apos;m Here</p>
                                 {step >= 0 && (
-                                    <h1 className="animate-typing after:animate-blink font-bold md:text-8xl text-5xl overflow-hidden whitespace-nowrap border-r-4 border-r-white text-white">
+                                    <h1 className="animate-typing after:animate-blink font-bold text-4xl md:text-8xl overflow-hidden whitespace-nowrap border-r-4 border-r-white text-white">
                                         MINSUNG LEE
                                     </h1>
                                 )}
 
                                 {/* Step 1: FRONT AND UI/UX */}
                                 {step >= 1 && (
-                                    <h1 className="animate-typing after:animate-blink font-bold md:text-8xl text-5xl overflow-hidden whitespace-nowrap border-r-4 border-r-white text-white">
+                                    <h1 className="animate-typing after:animate-blink font-bold text-4xl md:text-8xl overflow-hidden whitespace-nowrap border-r-4 border-r-white text-white">
                                         FRONT AND UI/UX
                                     </h1>
                                 )}
 
                                 {/* Step 2: ENGINEER */}
                                 {step >= 2 && (
-                                <h1 className="animate-typing after:animate-blink font-bold md:text-8xl text-5xl overflow-hidden whitespace-nowrap border-r-4 border-r-white text-white">
+                                <h1 className="animate-typing after:animate-blink font-bold text-4xl md:text-8xl overflow-hidden whitespace-nowrap border-r-4 border-r-white text-white">
                                     ENGINEER
                                 </h1>
                                 )}
