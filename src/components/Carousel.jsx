@@ -28,7 +28,7 @@ const Carousel = () => {
 
   return (
     <div className="relative w-full h-full flex flex-col">
-      <div className="w-full relative flex-1 lg:h-[45vh] md:h-[35vh] h-[25vh]">
+      <div className="w-full relative flex-1 lg:h-[55vh] md:h-[45vh] h-[30vh] xl:h-[60vh] 2xl:h-[65vh]">
         {/* 그라데이션 오버레이 제거 */}
         {/* <div className="absolute inset-0 z-20 pointer-events-none">
           <div className="absolute left-0 top-0 w-32 h-full bg-gradient-to-r from-black/50 to-transparent"></div>
@@ -129,13 +129,37 @@ const Carousel = () => {
                 modifier: 1.8,
                 slideShadows: true,
               }
+            },
+            1920: {
+              slidesPerView: 3.5,
+              spaceBetween: 60,
+              centeredSlides: true,
+              coverflowEffect: {
+                rotate: 0,
+                stretch: 0,
+                depth: 250,
+                modifier: 2,
+                slideShadows: true,
+              }
+            },
+            2560: {
+              slidesPerView: 4,
+              spaceBetween: 80,
+              centeredSlides: true,
+              coverflowEffect: {
+                rotate: 0,
+                stretch: 0,
+                depth: 300,
+                modifier: 2.2,
+                slideShadows: true,
+              }
             }
           }}
         >
           {slides.map((slide, index) => (
             <SwiperSlide 
               key={index}
-              className="w-full max-w-[400px] h-full"
+              className="w-full max-w-[500px] xl:max-w-[600px] 2xl:max-w-[700px] h-full"
             >
               <div className="w-full h-full relative group cursor-pointer transform transition-all duration-500">
                 <div className="w-full h-full relative overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-gray-900 to-gray-800">
@@ -147,13 +171,13 @@ const Carousel = () => {
                   />
                   
                   {/* 슬라이드 정보 */}
-                  <div className="absolute w-full h-20 bottom-0 left-0 bg-black/80 backdrop-blur-sm px-4 rounded-b-2xl border-t border-white/10">
+                  <div className="absolute w-full h-20 xl:h-24 2xl:h-28 bottom-0 left-0 bg-black/80 backdrop-blur-sm px-4 rounded-b-2xl border-t border-white/10">
                     <div className="w-full h-full flex justify-between items-center">
                       <div className="flex items-center gap-2">
-                        <span className="text-lg md:text-xl text-blue-400 font-bold">
+                        <span className="text-lg md:text-xl xl:text-2xl 2xl:text-3xl text-blue-400 font-bold">
                           {String(index + 1).padStart(2, '0')}
                         </span>
-                        <span className="text-sm md:text-base text-white/90 font-medium truncate">
+                        <span className="text-sm md:text-base xl:text-lg 2xl:text-xl text-white/90 font-medium truncate">
                           {slide.title}
                         </span>
                       </div>
@@ -162,7 +186,7 @@ const Carousel = () => {
 
                   {/* 활성 슬라이드 표시 */}
                   {index === activeIndex && (
-                    <div className="absolute top-3 right-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-2 py-1 rounded-full text-xs font-medium shadow-lg animate-pulse">
+                    <div className="absolute top-3 right-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-2 py-1 xl:px-3 xl:py-2 2xl:px-4 2xl:py-2 rounded-full text-xs xl:text-sm 2xl:text-base font-medium shadow-lg animate-pulse">
                       Active
                     </div>
                   )}
@@ -174,52 +198,52 @@ const Carousel = () => {
         </Swiper>
 
         {/* 커스텀 네비게이션 버튼 */}
-        <div className="swiper-button-prev !hidden md:!flex !w-12 !h-12 !bg-gradient-to-r !from-blue-500 !to-purple-600 !rounded-full !text-white !shadow-lg hover:!shadow-xl transition-all duration-300 after:!text-lg after:!font-bold" />
-        <div className="swiper-button-next !hidden md:!flex !w-12 !h-12 !bg-gradient-to-r !from-blue-500 !to-purple-600 !rounded-full !text-white !shadow-lg hover:!shadow-xl transition-all duration-300 after:!text-lg after:!font-bold" />
+        <div className="swiper-button-prev !hidden md:!flex !w-12 !h-12 xl:!w-16 xl:!h-16 2xl:!w-20 2xl:!h-20 !bg-gradient-to-r !from-blue-500 !to-purple-600 !rounded-full !text-white !shadow-lg hover:!shadow-xl transition-all duration-300 after:!text-lg xl:after:!text-xl 2xl:after:!text-2xl after:!font-bold" />
+        <div className="swiper-button-next !hidden md:!flex !w-12 !h-12 xl:!w-16 xl:!h-16 2xl:!w-20 2xl:!h-20 !bg-gradient-to-r !from-blue-500 !to-purple-600 !rounded-full !text-white !shadow-lg hover:!shadow-xl transition-all duration-300 after:!text-lg xl:after:!text-xl 2xl:after:!text-2xl after:!font-bold" />
         
         {/* 커스텀 페이지네이션 */}
-        <div className="swiper-pagination !bottom-2 md:!bottom-4" />
+        <div className="swiper-pagination !bottom-2 md:!bottom-4 xl:!bottom-6 2xl:!bottom-8" />
       </div>
 
       {/* 프로젝트 설명 섹션 - 높이 조정 */}
-      <div className="mt-4 md:mt-6 px-4 md:px-0 flex-shrink-0">
-        <div className="max-w-4xl mx-auto">
+      <div className="mt-4 md:mt-6 xl:mt-8 2xl:mt-10 px-4 md:px-0 flex-shrink-0">
+        <div className="max-w-4xl xl:max-w-6xl 2xl:max-w-7xl mx-auto">
           {/* 현재 프로젝트 정보 */}
-          <div className="text-center mb-3 md:mb-4">
-            <div className="flex items-center justify-center gap-3 mb-2 md:mb-3">
-              <span className="text-xl md:text-2xl text-blue-400 font-bold">
+          <div className="text-center mb-3 md:mb-4 xl:mb-6 2xl:mb-8">
+            <div className="flex items-center justify-center gap-3 mb-2 md:mb-3 xl:mb-4 2xl:mb-5">
+              <span className="text-xl md:text-2xl xl:text-3xl 2xl:text-4xl text-blue-400 font-bold">
                 {String(activeIndex + 1).padStart(2, '0')}
               </span>
-              <h3 className="text-lg md:text-xl text-white font-semibold">
+              <h3 className="text-lg md:text-xl xl:text-2xl 2xl:text-3xl text-white font-semibold">
                 {currentProject?.title}
               </h3>
             </div>
             
             {/* 프로젝트 설명 */}
-            <p className="text-white/80 text-xs md:text-sm leading-relaxed max-w-2xl mx-auto">
+            <p className="text-white/80 text-xs md:text-sm xl:text-base 2xl:text-lg leading-relaxed max-w-2xl xl:max-w-3xl 2xl:max-w-4xl mx-auto">
               {currentProject?.description}
             </p>
           </div>
 
           {/* 기술 스택 및 특징 - 높이 축소 */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 md:mt-6">
-            <div className="bg-gradient-to-br from-blue-500/10 to-purple-600/10 rounded-xl p-3 border border-white/10">
-              <h4 className="text-blue-400 font-semibold mb-1 text-sm">기술 스택</h4>
-              <p className="text-white/70 text-xs">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 xl:gap-4 2xl:gap-6 mt-4 md:mt-6 xl:mt-8 2xl:mt-10">
+            <div className="bg-gradient-to-br from-blue-500/10 to-purple-600/10 rounded-xl p-3 xl:p-4 2xl:p-6 border border-white/10">
+              <h4 className="text-blue-400 font-semibold mb-1 text-sm xl:text-base 2xl:text-lg">기술 스택</h4>
+              <p className="text-white/70 text-xs xl:text-sm 2xl:text-base">
                 {currentProject?.techStack}
               </p>
             </div>
             
-            <div className="bg-gradient-to-br from-green-500/10 to-blue-600/10 rounded-xl p-3 border border-white/10">
-              <h4 className="text-green-400 font-semibold mb-1 text-sm">주요 기능</h4>
-              <p className="text-white/70 text-xs">
+            <div className="bg-gradient-to-br from-green-500/10 to-blue-600/10 rounded-xl p-3 xl:p-4 2xl:p-6 border border-white/10">
+              <h4 className="text-green-400 font-semibold mb-1 text-sm xl:text-base 2xl:text-lg">주요 기능</h4>
+              <p className="text-white/70 text-xs xl:text-sm 2xl:text-base">
                 {currentProject?.features}
               </p>
             </div>
             
-            <div className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 rounded-xl p-3 border border-white/10">
-              <h4 className="text-purple-400 font-semibold mb-1 text-sm">개발 기간</h4>
-              <p className="text-white/70 text-xs">
+            <div className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 rounded-xl p-3 xl:p-4 2xl:p-6 border border-white/10">
+              <h4 className="text-purple-400 font-semibold mb-1 text-sm xl:text-base 2xl:text-lg">개발 기간</h4>
+              <p className="text-white/70 text-xs xl:text-sm 2xl:text-base">
                 {currentProject?.duration}
               </p>
             </div>

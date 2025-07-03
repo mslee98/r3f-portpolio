@@ -53,7 +53,7 @@ const ContactExperience = ({btnClicked, handleClick}) => {
   
       <EffectComposer >
         <ChromaticAberration 
-          offset={btnClicked ? [0.3, 0.3] : [0.01, 0.01]} 
+          offset={btnClicked ? [0.2, 0.2] : [0.01, 0.01]} 
           radialModulation={true}
           modulationOffset={0.5}
           modulationScale={0.5}
