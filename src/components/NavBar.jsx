@@ -1,16 +1,16 @@
+import { memo, useCallback } from "react";
 import { navItems } from "../constants";
 
-const NavBar = () => {
-
-  const handleClick = (e) => {
+const NavBar = memo(() => {
+  const handleClick = useCallback((e) => {
     e.preventDefault();
-    const href = e.currentTarget.getAttribute('href'); // e.g. "#home"
+    const href = e.currentTarget.getAttribute('href');
     const id = href.replace('#', '');
     const section = document.getElementById(id);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  };
+  }, []);
 
   return (
     <div className="w-full flex-center fixed z-50 top-0 left-0 md:p-0 px-5">
@@ -37,6 +37,8 @@ const NavBar = () => {
       </div>
     </div>
   );
-};
+});
+
+NavBar.displayName = 'NavBar';
 
 export default NavBar;

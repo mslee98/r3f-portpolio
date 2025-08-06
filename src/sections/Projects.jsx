@@ -1,8 +1,9 @@
+import { memo } from "react";
 import TitleHeader from "../components/TitleHeader";
 import Carousel from "../components/Carousel";
 import GradientSpheres from "../components/GradientSpheres";
 
-const Projects = () => {
+const Projects = memo(() => {
   return (
     <section className="c-space section-spacing relative flex flex-col" id="projects">
       <h2 className="text-heading mb-4">Projects</h2>
@@ -21,6 +22,8 @@ const Projects = () => {
       </div>
     </section>
   );
-};
+});
+
+Projects.displayName = 'Projects';
 
 export default Projects;

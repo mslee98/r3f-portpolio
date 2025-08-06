@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useMemo, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
 import Card from "../components/Card";
 import { Globe } from "../components/Globe";
@@ -15,11 +15,49 @@ const About = () => {
   const grid4Ref = useRef();
   const grid5Ref = useRef();
 
-  const grid1InView = useInView(grid1Ref, { once: true, threshold: 0.3 });
-  const grid2InView = useInView(grid2Ref, { once: true, threshold: 0.3 });
-  const grid3InView = useInView(grid3Ref, { once: true, threshold: 0.3 });
-  const grid4InView = useInView(grid4Ref, { once: true, threshold: 0.3 });
-  const grid5InView = useInView(grid5Ref, { once: true, threshold: 0.3 });
+  // 성능 최적화: threshold를 높여서 불필요한 재렌더링 방지
+  const grid1InView = useInView(grid1Ref, { once: true, threshold: 0.5 });
+  const grid2InView = useInView(grid2Ref, { once: true, threshold: 0.5 });
+  const grid3InView = useInView(grid3Ref, { once: true, threshold: 0.5 });
+  const grid4InView = useInView(grid4Ref, { once: true, threshold: 0.5 });
+  const grid5InView = useInView(grid5Ref, { once: true, threshold: 0.5 });
+
+  // 메모이제이션으로 불필요한 재렌더링 방지
+  const grid1Animation = useMemo(() => ({
+    initial: { opacity: 0, x: -100 },
+    animate: grid1InView ? { opacity: 1, x: 0 } : { opacity: 0, x: -100 },
+    transition: { duration: 0.6, ease: "easeOut" }
+  }), [grid1InView]);
+
+  const grid2Animation = useMemo(() => ({
+    initial: { opacity: 0, y: 100, scale: 0.8 },
+    animate: grid2InView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 100, scale: 0.8 },
+    transition: { duration: 0.6, ease: "easeOut", delay: 0.1 }
+  }), [grid2InView]);
+
+  const grid3Animation = useMemo(() => ({
+    initial: { opacity: 0, x: 100 },
+    animate: grid3InView ? { opacity: 1, x: 0 } : { opacity: 0, x: 100 },
+    transition: { duration: 0.6, ease: "easeOut", delay: 0.2 }
+  }), [grid3InView]);
+
+  const grid4Animation = useMemo(() => ({
+    initial: { opacity: 0, scale: 0.5 },
+    animate: grid4InView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 },
+    transition: { duration: 0.6, ease: "easeOut", delay: 0.3 }
+  }), [grid4InView]);
+
+  const grid5Animation = useMemo(() => ({
+    initial: { opacity: 0, y: -100 },
+    animate: grid5InView ? { opacity: 1, y: 0 } : { opacity: 0, y: -100 },
+    transition: { duration: 0.6, ease: "easeOut", delay: 0.4 }
+  }), [grid5InView]);
+
+  // hover 애니메이션 최적화
+  const hoverAnimation = useMemo(() => ({
+    whileHover: { y: -4 },
+    whileTap: { y: -2 }
+  }), []);
 
   return (
     <section className="c-space section-spacing font-moneygraphy" id="about">
@@ -29,20 +67,14 @@ const About = () => {
         <motion.div 
           ref={grid1Ref}
           className="flex items-end grid-default-color grid-1 cursor-pointer"
-          initial={{ opacity: 0, x: -100 }}
-          animate={grid1InView ? { opacity: 1, x: 0 } : { opacity: 0, x: -100 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          whileHover={{ y: -8 }}
-          whileTap={{ y: -4 }}
+          {...grid1Animation}
+          {...hoverAnimation}
         >
           <div className="absolute inset-0">
-            <GridExperience />
+            {/* 성능 최적화: 조건부 렌더링 */}
+            {grid1InView && <GridExperience />}
           </div>
 
-          {/* <img 
-            src={'/assets/images/coding-pov.png'}
-            className="absolute scale-[1.75] -right-[5rem] -top-[1rem] md:scale-[3] md:left-50 md:inset-y-10 lg:scale-[2.5]"
-            /> */}
           <div className="z-10 pointer-events-none select-none">
             <p className="headtext font-moneygraphy pointer-events-none select-none">아이디어가 현실이 되는 공간</p>
             <p className="subtext font-moneygraphy pointer-events-none select-none">
@@ -58,15 +90,11 @@ const About = () => {
         </motion.div>
 
         {/* Grid 2-1: 포트폴리오 */}
-        {/* Grid 2 - 3개 카드로 분할 */}
         <motion.div 
           ref={grid2Ref}
           className="grid-2 font-moneygraphy cursor-pointer" 
-          initial={{ opacity: 0, y: 100, scale: 0.8 }}
-          animate={grid2InView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 100, scale: 0.8 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-          whileHover={{ y: -8 }}
-          whileTap={{ y: -4 }}
+          {...grid2Animation}
+          {...hoverAnimation}
         >
           <div className="grid grid-cols-3 gap-2 w-full h-[95%]">
             <motion.a
@@ -77,7 +105,7 @@ const About = () => {
             >
                 <motion.img 
                   src={'/assets/images/github-logo.png'} alt="portfolio" className="w-24 h-24 md:w-32 md:h-32 lg:w-48 lg:h-48"
-                  whileHover={{ scale: 1.2, y: -5 }}
+                  whileHover={{ scale: 1.1, y: -3 }}
                   whileTap={{ scale: 0.95 }}
                 />
               
@@ -93,7 +121,7 @@ const About = () => {
             >         
                 <motion.img 
                   src={'/assets/images/link.png'} alt="portfolio" className="w-24 h-24 md:w-32 md:h-32 lg:w-48 lg:h-48"
-                  whileHover={{ scale: 1.2, y: -5 }}
+                  whileHover={{ scale: 1.1, y: -3 }}
                   whileTap={{ scale: 0.95 }}
                 />
               <h3 className="text-sm font-semibold text-white mb-1">포트폴리오</h3>
@@ -108,7 +136,7 @@ const About = () => {
             > 
                 <motion.img 
                   src={'/assets/images/storybook.png'} alt="portfolio" className="w-24 h-24 md:w-32 md:h-32 lg:w-48 lg:h-48"
-                  whileHover={{ scale: 1.2, y: -5 }}
+                  whileHover={{ scale: 1.1, y: -3 }}
                   whileTap={{ scale: 0.95 }}
                 />
               <h3 className="text-sm font-semibold text-white mb-1">스토리북</h3>
@@ -121,29 +149,25 @@ const About = () => {
         <motion.div 
           ref={grid3Ref}
           className="grid-black-color grid-3 cursor-pointer"
-          initial={{ opacity: 0, x: 100 }}
-          animate={grid3InView ? { opacity: 1, x: 0 } : { opacity: 0, x: 100 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-          whileHover={{ y: -8 }}
-          whileTap={{ y: -4 }}
+          {...grid3Animation}
+          {...hoverAnimation}
         >
           <div className="z-10 w-50%">
             <p className="headtext">Time Zone</p>
             <p className="subtext">대한민국 대전을 중심으로 활동하며, 전 세계 원격 협업이 가능합니다</p>
           </div>
           <figure className="absolute left-[30%] top-[10%]">
-            <Globe/>
+            {/* 성능 최적화: 조건부 렌더링 */}
+            {grid3InView && <Globe />}
           </figure>
         </motion.div>
+        
         {/* Grid 4 */}
         <motion.div 
           ref={grid4Ref}
           className="grid-special-color grid-4 cursor-pointer"
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={grid4InView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.6 }}
-          whileHover={{ y: -8 }}
-          whileTap={{ y: -4 }}
+          {...grid4Animation}
+          {...hoverAnimation}
         >
           <div className="flex flex-col items-center justify-center gap-4 size-full">
             <p className="text-center headtext">
@@ -152,15 +176,13 @@ const About = () => {
             <CopyEmailButton />
           </div>
         </motion.div>
+        
         {/* Grid 5 */}
         <motion.div 
           ref={grid5Ref}
           className="grid-default-color grid-5 cursor-pointer"
-          initial={{ opacity: 0, y: -100 }}
-          animate={grid5InView ? { opacity: 1, y: 0 } : { opacity: 0, y: -100 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.8 }}
-          whileHover={{ y: -8 }}
-          whileTap={{ y: -4 }}
+          {...grid5Animation}
+          {...hoverAnimation}
         >
           <div className="z-10 w-[50%]">
             <p className="headText">기술 스택</p>
@@ -169,7 +191,8 @@ const About = () => {
             </p>
           </div>
           <div className="absolute inset-y-0 md:inset-y-9 w-full h-full start-[50%] md:scale-125">
-            <Frameworks />
+            {/* 성능 최적화: 조건부 렌더링 */}
+            {grid5InView && <Frameworks />}
           </div>
         </motion.div>
 

@@ -16,6 +16,7 @@ import {SpredingPoint} from '../components/SpreadingPoint';
 const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInteracting, loadingYn, setLoadingYn}) => {
     const buildingRef = useRef();
     const cameraRef = useRef();
+    // const [isAnimating, setIsAnimating] = useState(false);
 
     // const [loadingYn, setLoadingYn] = useState(false);
 
@@ -83,65 +84,29 @@ const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInterac
 
       const cam = cameraRef.current;
 
-      const startRot = {
-        x: cam.rotation.x,
-        y: cam.rotation.y,
-        z: cam.rotation.z,
-      };
-        
-      // 회전 목표값 (도착 후 적용)
-      const endRot = {
-        x: -0.5404195002705842,
-        y: 0.12792157459084388,
-        z: 0.07639482055211705,
-      };
+      setLoadingYn(true);
+      // setIsAnimating(true); // 애니메이션 시작
 
-      // 곡선 정의 (현위치 → 곡선 경유점 → 목표 위치)
-      const curve = new THREE.CatmullRomCurve3([
-        cam.position.clone(),
-        new THREE.Vector3(12, 20, 20), // 곡선 감기용 중간 포인트
-        new THREE.Vector3(1.5, 6, 10),   // 도착 지점
-      ]);
-
-      const temp = { t: 0 };
-
-      setLoadingYn(true)
-
-      // 이동 애니메이션
-      gsap.to(temp, {
-        t: 1,
-        duration: 3,
-        ease: "power2.inOut",
-        onUpdate: () => {
-          const pos = curve.getPoint(temp.t);
-          cam.position.set(pos.x, pos.y, pos.z);
-
-          const lerp = (a, b, alpha) => a + (b - a) * alpha;
-          const rotX = lerp(startRot.x, endRot.x, temp.t);
-          const rotY = lerp(startRot.y, endRot.y, temp.t);
-          const rotZ = lerp(startRot.z, endRot.z, temp.t);
-
-          cam.rotation.set(rotX, rotY, rotZ);
-        },
-        onComplete: () => {
-          setLoadingYn(true)
-        //   // 이동 후, 회전 애니메이션
-        //   const currentRot = {
-        //     x: cam.rotation.x,
-        //     y: cam.rotation.y,
-        //     z: cam.rotation.z,
-        //   };
-
-        //   gsap.to(currentRot, {
-        //     ...endRot,
-        //     duration: 1.5,
-        //     ease: "power2.inOut",
-        //     onUpdate: () => {
-        //       cam.rotation.set(currentRot.x, currentRot.y, currentRot.z);
-        //     },
-        //   });
-        },
-      });
+      // GSAP를 사용한 애니메이션
+      gsap.timeline()
+        .to(cam.position, {
+          x: 1.5,
+          y: 6,
+          z: 10,
+          duration: 3,
+          ease: "power2.inOut",
+        })
+        .to(cam.rotation, {
+          x: -0.5404195002705842,
+          y: 0.12792157459084388,
+          z: 0.07639482055211705,
+          duration: 3,
+          ease: "power2.inOut",
+        }, "<") // 같은 시간에 시작
+        .call(() => {
+          // setLoadingYn(false);
+          // setIsAnimating(false); // 애니메이션 완료
+        });
     };
 
     return (
@@ -150,8 +115,7 @@ const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInterac
         <Canvas>
           <Suspense fallback={null}>
             <PerspectiveCamera 
-              makeDefault // CameraShake연결을 위해서 초기값 지정을 해야함
-              // position={[3, 6, 12]} 
+              makeDefault
               position={[10, 15, 30]}
               fov={60}
               rotation={[-0.4636476090008061, -0.81998797739545942, 0.10867903971378187]}
@@ -211,8 +175,11 @@ const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInterac
             <Html position={[-12, -3, 3]} center distanceFactor={10} style={{ pointerEvents: 'auto' }}>
               <SpredingPoint />
             </Html>
+          
             
+            {/* 조건부 렌더링 제거하고 항상 렌더링 */}
             {loadingYn && <LimitedControls setIsInteracting={setIsInteracting}/>}
+
 
           </Suspense>
         </Canvas>
@@ -286,7 +253,7 @@ const Floor = () => {
         resolution={2048}           // 고해상도 반사
         mixBlur={100}               // 반사 블러와 표면 간의 혼합 비율
         mixStrength={100}             // 반사 강도 높임
-        roughness={1}            // 거의 매끄럽게 (거울처럼)
+        roughness={1}            // 거울처럼
         depthScale={10}            // 반사 깊이 영향 조절
         minDepthThreshold={0.01}
         maxDepthThreshold={1.0}
@@ -382,7 +349,7 @@ function ScreenTextMeshes({ screenGroup, hue, speed, brightness, selectedVideoTy
     <>
       {meshData.map(({ uuid, geometry }) => (
         <mesh key={uuid} geometry={geometry}>
-          <HueMaterial texture={videoTexture} hue={hue} brightness={brightness}/>
+          <HueMaterial texture={videoTexture} hue={hue} speed={speed} brightness={brightness}/>
         </mesh>
       ))}
     </>
@@ -396,7 +363,7 @@ function HueMaterial({ texture, hue = 0, brightness=1}) {
     uTexture: { value: texture },
     uHue: { value: hue },
     uBrightness: { value: brightness },
-  }), [texture]); // hue는 포함하지 않음
+  }), [texture]);
 
   useEffect(() => {
     if (materialRef.current) {
@@ -407,6 +374,16 @@ function HueMaterial({ texture, hue = 0, brightness=1}) {
   }, [texture, hue, brightness]);
 
   if (!texture) return null;
+
+  // hue가 0이면 기본 material 사용
+  if (hue === 0) {
+    return (
+      <meshBasicMaterial 
+        map={texture}
+        toneMapped={false}
+      />
+    );
+  }
 
   return (
     <shaderMaterial
@@ -450,8 +427,8 @@ function HueMaterial({ texture, hue = 0, brightness=1}) {
 
         void main() {
           vec4 tex = texture2D(uTexture, vUv);
-          tex.rgb = hueShift(tex.rgb, uHue); //색상 반전
-          tex.rgb *= uBrightness; //밝기
+          tex.rgb = hueShift(tex.rgb, uHue);
+          tex.rgb *= uBrightness;
           gl_FragColor = tex;
         }
       `}

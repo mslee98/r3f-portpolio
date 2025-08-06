@@ -25,7 +25,19 @@ const GridExperience = () => {
     const connectors = useMemo(() => shuffle(accent), [accent])
 
     return (
-        <Canvas onClick={click} shadows dpr={[1, 1.5]} gl={{ antialias: false }} camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}>
+        <Canvas 
+  onClick={click} 
+  shadows 
+  dpr={[1, 1]} // dpr 낮춤
+  gl={{ 
+    antialias: false,
+    powerPreference: "high-performance",
+    stencil: false,
+    depth: false
+  }} 
+  camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}
+  frameloop="demand" // 필요할 때만 렌더링
+>
             <color attach="background" args={['#141622']} />
             <ambientLight intensity={0.4} />
             <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />

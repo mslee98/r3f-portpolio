@@ -12,6 +12,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "@tweenjs/tween.js": "^25.0.0",
     "cobe": "^0.6.4",
     "framer-motion": "^12.18.1",
     "globe": "^0.2.0",

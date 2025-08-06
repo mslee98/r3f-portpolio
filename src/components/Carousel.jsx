@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo, useCallback, memo } from "react";
 import { slides } from "../constants";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { 
@@ -16,185 +16,188 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-const Carousel = () => {
+const Carousel = memo(() => {
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef(null);
 
-  const handleSlideChange = (swiper) => {
+  const handleSlideChange = useCallback((swiper) => {
     setActiveIndex(swiper.realIndex);
-  };
+  }, []);
 
-  const currentProject = slides[activeIndex];
+  const currentProject = useMemo(() => slides[activeIndex], [activeIndex]);
+
+  // Swiper 설정을 메모이제이션
+  const swiperConfig = useMemo(() => ({
+    effect: "coverflow",
+    grabCursor: true,
+    centeredSlides: true,
+    slidesPerView: "auto",
+    initialSlide: 0,
+    loop: true,
+    speed: 800,
+    coverflowEffect: {
+      rotate: 0,
+      stretch: 0,
+      depth: 100,
+      modifier: 1.5,
+      slideShadows: true,
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+      dynamicBullets: true,
+      renderBullet: function (index, className) {
+        return `<span class="${className} custom-bullet"></span>`;
+      },
+    },
+    keyboard: {
+      enabled: true,
+      onlyInViewport: true,
+    },
+    mousewheel: {
+      forceToAxis: true,
+      sensitivity: 1,
+    },
+    modules: [
+      EffectCoverflow, 
+      Navigation, 
+      Pagination, 
+      Keyboard, 
+      Mousewheel,
+      Parallax
+    ],
+    onSlideChange: handleSlideChange,
+    breakpoints: {
+      320: {
+        slidesPerView: 1.2,
+        spaceBetween: 20,
+        centeredSlides: true,
+        coverflowEffect: {
+          rotate: 0,
+          stretch: 0,
+          depth: 50,
+          modifier: 1,
+          slideShadows: true,
+        }
+      },
+      768: {
+        slidesPerView: 1.5,
+        spaceBetween: 30,
+        centeredSlides: true,
+        coverflowEffect: {
+          rotate: 0,
+          stretch: 0,
+          depth: 100,
+          modifier: 1.2,
+          slideShadows: true,
+        }
+      },
+      1024: {
+        slidesPerView: 2.5,
+        spaceBetween: 40,
+        centeredSlides: true,
+        coverflowEffect: {
+          rotate: 0,
+          stretch: 0,
+          depth: 150,
+          modifier: 1.5,
+          slideShadows: true,
+        }
+      },
+      1440: {
+        slidesPerView: 3,
+        spaceBetween: 50,
+        centeredSlides: true,
+        coverflowEffect: {
+          rotate: 0,
+          stretch: 0,
+          depth: 200,
+          modifier: 1.8,
+          slideShadows: true,
+        }
+      },
+      1920: {
+        slidesPerView: 3.5,
+        spaceBetween: 60,
+        centeredSlides: true,
+        coverflowEffect: {
+          rotate: 0,
+          stretch: 0,
+          depth: 250,
+          modifier: 2,
+          slideShadows: true,
+        }
+      },
+      2560: {
+        slidesPerView: 4,
+        spaceBetween: 80,
+        centeredSlides: true,
+        coverflowEffect: {
+          rotate: 0,
+          stretch: 0,
+          depth: 300,
+          modifier: 2.2,
+          slideShadows: true,
+        }
+      }
+    }
+  }), [handleSlideChange]);
+
+  // 슬라이드 렌더링을 메모이제이션
+  const renderedSlides = useMemo(() => 
+    slides.map((slide, index) => (
+      <SwiperSlide 
+        key={slide.id || index}
+        className="w-full max-w-[500px] xl:max-w-[600px] 2xl:max-w-[700px] h-full"
+      >
+        <div className="w-full h-full relative group cursor-pointer transform transition-all duration-500">
+          <div className="w-full h-full relative overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-gray-900 to-gray-800">
+            <img
+              src={slide.img}
+              alt={slide.title}
+              className="w-full h-full object-cover object-center transition-all duration-700 group-hover:scale-110"
+              loading="lazy"
+              decoding="async"
+            />
+            
+            {/* 슬라이드 정보 */}
+            <div className="absolute w-full h-20 xl:h-24 2xl:h-28 bottom-0 left-0 bg-black/80 backdrop-blur-sm px-4 rounded-b-2xl border-t border-white/10">
+              <div className="w-full h-full flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg md:text-xl xl:text-2xl 2xl:text-3xl text-blue-400 font-bold">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <span className="text-sm md:text-base xl:text-lg 2xl:text-xl text-white/90 font-medium truncate">
+                    {slide.title}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 활성 슬라이드 표시 */}
+            {index === activeIndex && (
+              <div className="absolute top-3 right-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-2 py-1 xl:px-3 xl:py-2 2xl:px-4 2xl:py-2 rounded-full text-xs xl:text-sm 2xl:text-base font-medium shadow-lg animate-pulse">
+                Active
+              </div>
+            )}
+          </div>
+        </div>
+      </SwiperSlide>
+    )), [activeIndex]);
 
   return (
     <div className="relative w-full h-full flex flex-col">
       <div className="w-full relative flex-1 lg:h-[55vh] md:h-[45vh] h-[30vh] xl:h-[60vh] 2xl:h-[65vh]">
-        {/* 그라데이션 오버레이 제거 */}
-        {/* <div className="absolute inset-0 z-20 pointer-events-none">
-          <div className="absolute left-0 top-0 w-32 h-full bg-gradient-to-r from-black/50 to-transparent"></div>
-          <div className="absolute right-0 top-0 w-32 h-full bg-gradient-to-l from-black/50 to-transparent"></div>
-        </div> */}
-        
         <Swiper
           ref={swiperRef}
-          effect="coverflow"
-          grabCursor={true}
-          centeredSlides={true}
-          slidesPerView="auto"
-          initialSlide={0}
-          loop={true}
-          speed={800}
-          coverflowEffect={{
-            rotate: 0,
-            stretch: 0,
-            depth: 100,
-            modifier: 1.5,
-            slideShadows: true,
-          }}
-          navigation={{
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          }}
-          pagination={{
-            el: ".swiper-pagination",
-            clickable: true,
-            dynamicBullets: true,
-            renderBullet: function (index, className) {
-              return `<span class="${className} custom-bullet"></span>`;
-            },
-          }}
-          keyboard={{
-            enabled: true,
-            onlyInViewport: true,
-          }}
-          mousewheel={{
-            forceToAxis: true,
-            sensitivity: 1,
-          }}
-          modules={[
-            EffectCoverflow, 
-            Navigation, 
-            Pagination, 
-            Keyboard, 
-            Mousewheel,
-            Parallax
-          ]}
+          {...swiperConfig}
           className="w-full h-full"
-          onSlideChange={handleSlideChange}
-          breakpoints={{
-            320: {
-              slidesPerView: 1.2,
-              spaceBetween: 20,
-              centeredSlides: true,
-              coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 50,
-                modifier: 1,
-                slideShadows: true,
-              }
-            },
-            768: {
-              slidesPerView: 1.5,
-              spaceBetween: 30,
-              centeredSlides: true,
-              coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 100,
-                modifier: 1.2,
-                slideShadows: true,
-              }
-            },
-            1024: {
-              slidesPerView: 2.5,
-              spaceBetween: 40,
-              centeredSlides: true,
-              coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 150,
-                modifier: 1.5,
-                slideShadows: true,
-              }
-            },
-            1440: {
-              slidesPerView: 3,
-              spaceBetween: 50,
-              centeredSlides: true,
-              coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 200,
-                modifier: 1.8,
-                slideShadows: true,
-              }
-            },
-            1920: {
-              slidesPerView: 3.5,
-              spaceBetween: 60,
-              centeredSlides: true,
-              coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 250,
-                modifier: 2,
-                slideShadows: true,
-              }
-            },
-            2560: {
-              slidesPerView: 4,
-              spaceBetween: 80,
-              centeredSlides: true,
-              coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 300,
-                modifier: 2.2,
-                slideShadows: true,
-              }
-            }
-          }}
         >
-          {slides.map((slide, index) => (
-            <SwiperSlide 
-              key={index}
-              className="w-full max-w-[500px] xl:max-w-[600px] 2xl:max-w-[700px] h-full"
-            >
-              <div className="w-full h-full relative group cursor-pointer transform transition-all duration-500">
-                <div className="w-full h-full relative overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-gray-900 to-gray-800">
-                  <img
-                    src={slide.img}
-                    alt={slide.title}
-                    className="w-full h-full object-cover object-center transition-all duration-700 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                  
-                  {/* 슬라이드 정보 */}
-                  <div className="absolute w-full h-20 xl:h-24 2xl:h-28 bottom-0 left-0 bg-black/80 backdrop-blur-sm px-4 rounded-b-2xl border-t border-white/10">
-                    <div className="w-full h-full flex justify-between items-center">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg md:text-xl xl:text-2xl 2xl:text-3xl text-blue-400 font-bold">
-                          {String(index + 1).padStart(2, '0')}
-                        </span>
-                        <span className="text-sm md:text-base xl:text-lg 2xl:text-xl text-white/90 font-medium truncate">
-                          {slide.title}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 활성 슬라이드 표시 */}
-                  {index === activeIndex && (
-                    <div className="absolute top-3 right-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-2 py-1 xl:px-3 xl:py-2 2xl:px-4 2xl:py-2 rounded-full text-xs xl:text-sm 2xl:text-base font-medium shadow-lg animate-pulse">
-                      Active
-                    </div>
-                  )}
-
-                </div>
-              </div>
-            </SwiperSlide>
-          ))}
+          {renderedSlides}
         </Swiper>
 
         {/* 커스텀 네비게이션 버튼 */}
@@ -205,7 +208,7 @@ const Carousel = () => {
         <div className="swiper-pagination !bottom-2 md:!bottom-4 xl:!bottom-6 2xl:!bottom-8" />
       </div>
 
-      {/* 프로젝트 설명 섹션 - 높이 조정 */}
+      {/* 프로젝트 설명 섹션 */}
       <div className="mt-4 md:mt-6 xl:mt-8 2xl:mt-10 px-4 md:px-0 flex-shrink-0">
         <div className="max-w-4xl xl:max-w-6xl 2xl:max-w-7xl mx-auto">
           {/* 현재 프로젝트 정보 */}
@@ -225,7 +228,7 @@ const Carousel = () => {
             </p>
           </div>
 
-          {/* 기술 스택 및 특징 - 높이 축소 */}
+          {/* 기술 스택 및 특징 */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 xl:gap-4 2xl:gap-6 mt-4 md:mt-6 xl:mt-8 2xl:mt-10">
             <div className="bg-gradient-to-br from-blue-500/10 to-purple-600/10 rounded-xl p-3 xl:p-4 2xl:p-6 border border-white/10">
               <h4 className="text-blue-400 font-semibold mb-1 text-sm xl:text-base 2xl:text-lg">기술 스택</h4>
@@ -251,7 +254,7 @@ const Carousel = () => {
         </div>
       </div>
 
-      {/* 모바일 스와이프 힌트 - 높이 축소 */}
+      {/* 모바일 스와이프 힌트 */}
       <div className="md:hidden flex items-center justify-center gap-2 text-white/60 text-xs mt-3">
         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
@@ -263,6 +266,8 @@ const Carousel = () => {
       </div>
     </div>
   );
-};
+});
+
+Carousel.displayName = 'Carousel';
 
 export default Carousel;
