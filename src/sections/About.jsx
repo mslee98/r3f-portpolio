@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState, useEffect } from "react";
+import { useRef, useMemo } from "react";
 import { motion, useInView } from "framer-motion";
 import { Globe } from "../components/Globe";
 import CopyEmailButton from '../components/CopyEmailButton';
@@ -7,7 +7,6 @@ import GridExperience from "../components/GridExperience";
 
 const About = () => {
   const aboutSectionRef = useRef();
-  const [shouldRenderHeavyComponents, setShouldRenderHeavyComponents] = useState(false);
 
   // 하나의 useInView로 통합 - threshold를 낮춰서 더 일찍 트리거
   const isAboutSectionInView = useInView(aboutSectionRef, { 
@@ -15,17 +14,6 @@ const About = () => {
     threshold: 0.1,
     margin: "0px 0px -100px 0px"
   });
-
-  // 무거운 컴포넌트들을 지연 렌더링
-  useEffect(() => {
-    if (isAboutSectionInView) {
-      const timer = setTimeout(() => {
-        setShouldRenderHeavyComponents(true);
-      }, 300); // 애니메이션 시작 후 300ms 후에 렌더링
-      
-      return () => clearTimeout(timer);
-    }
-  }, [isAboutSectionInView]);
 
   // 애니메이션 설정을 한 번에 정의하여 재렌더링 최소화
   const animations = useMemo(() => ({
@@ -66,14 +54,14 @@ const About = () => {
     <section className="c-space section-spacing font-moneygraphy" id="about" ref={aboutSectionRef}>
       <h2 className="text-heading">About Me</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-[18rem] mt-12">
-        {/* Grid 1 */}
+        {/* Grid 1 - GridExperience는 항상 렌더링 */}
         <motion.div 
           className="flex items-end grid-default-color grid-1 cursor-pointer"
           {...animations.grid1}
           {...hoverAnimation}
         >
           <div className="absolute inset-0">
-            {shouldRenderHeavyComponents && <GridExperience />}
+            <GridExperience />
           </div>
 
           <div className="z-10 pointer-events-none select-none">
@@ -144,18 +132,18 @@ const About = () => {
           </div>
         </motion.div>
         
-        {/* Grid 3 */}
+        {/* Grid 3 - Globe은 useInView로 관리 */}
         <motion.div 
           className="grid-black-color grid-3 cursor-pointer relative"
           {...animations.grid3}
           {...hoverAnimation}
         >
-          <div className="z-10 w-1/2 p-6">
-            <p className="headtext">Time Zone</p>
+          <div className="z-10 w-1/2">
+            <p className="headtext">서울/경인/대전/세종</p>
             <p className="subtext">대한민국 대전을 중심으로 활동하며, 전 세계 원격 협업이 가능합니다</p>
           </div>
           <figure className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 h-full flex items-center justify-center">
-            {shouldRenderHeavyComponents && <Globe />}
+            <Globe />
           </figure>
         </motion.div>
         
@@ -173,7 +161,7 @@ const About = () => {
           </div>
         </motion.div>
         
-        {/* Grid 5 */}
+        {/* Grid 5 - Frameworks은 useInView로 관리 */}
         <motion.div 
           className="grid-default-color grid-5 cursor-pointer"
           {...animations.grid5}
@@ -186,7 +174,7 @@ const About = () => {
             </p>
           </div>
           <div className="absolute inset-y-0 md:inset-y-9 w-full h-full start-[50%] md:scale-125">
-            {shouldRenderHeavyComponents && <Frameworks />}
+            <Frameworks />
           </div>
         </motion.div>
 

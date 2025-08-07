@@ -3,21 +3,21 @@
 import createGlobe from "cobe";
 import { useMotionValue, useSpring } from "motion/react";
 import { useEffect, useRef } from "react";
-
+import { useInView } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 
 const MOVEMENT_DAMPING = 1400;
 
 const GLOBE_CONFIG = {
-  width: 800, // 크기 줄임
+  width: 800,
   height: 800,
   onRender: () => {},
-  devicePixelRatio: 1, // dpr 낮춤
+  devicePixelRatio: 1,
   phi: 0,
   theta: 0.3,
   dark: 1,
   diffuse: 0.4,
-  mapSamples: 8000, // 샘플 수 줄임
+  mapSamples: 8000,
   mapBrightness: 1.2,
   baseColor: [1, 1, 1],
   markerColor: [1, 1, 1],
@@ -40,8 +40,10 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
   let phi = 0;
   let width = 0;
   const canvasRef = useRef(null);
+  const containerRef = useRef(null);
   const pointerInteracting = useRef(null);
   const pointerInteractionMovement = useRef(0);
+  const isInView = useInView(containerRef, { once: false, threshold: 0.1 });
 
   const r = useMotionValue(0);
   const rs = useSpring(r, {
@@ -66,6 +68,8 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
   };
 
   useEffect(() => {
+    if (!isInView || !canvasRef.current) return;
+
     const onResize = () => {
       if (canvasRef.current) {
         width = canvasRef.current.offsetWidth;
@@ -92,31 +96,34 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
       globe.destroy();
       window.removeEventListener("resize", onResize);
     };
-  }, [rs, config]);
+  }, [rs, config, isInView]);
 
   return (
     <div
+      ref={containerRef}
       className={twMerge(
         "mx-auto aspect-[1/1] w-full max-w-[600px]",
         className
       )}
     >
-      <canvas
-        className={twMerge(
-          "size-[30rem] opacity-0 transition-opacity duration-500 [contain:layout_paint_size]"
-        )}
-        ref={canvasRef}
-        onPointerDown={(e) => {
-          pointerInteracting.current = e.clientX;
-          updatePointerInteraction(e.clientX);
-        }}
-        onPointerUp={() => updatePointerInteraction(null)}
-        onPointerOut={() => updatePointerInteraction(null)}
-        onMouseMove={(e) => updateMovement(e.clientX)}
-        onTouchMove={(e) =>
-          e.touches[0] && updateMovement(e.touches[0].clientX)
-        }
-      />
+      {isInView && (
+        <canvas
+          className={twMerge(
+            "size-[30rem] opacity-0 transition-opacity duration-500 [contain:layout_paint_size]"
+          )}
+          ref={canvasRef}
+          onPointerDown={(e) => {
+            pointerInteracting.current = e.clientX;
+            updatePointerInteraction(e.clientX);
+          }}
+          onPointerUp={() => updatePointerInteraction(null)}
+          onPointerOut={() => updatePointerInteraction(null)}
+          onMouseMove={(e) => updateMovement(e.clientX)}
+          onTouchMove={(e) =>
+            e.touches[0] && updateMovement(e.touches[0].clientX)
+          }
+        />
+      )}
     </div>
   );
 }
