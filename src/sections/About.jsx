@@ -1,4 +1,4 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { Globe } from "../components/Globe";
 import CopyEmailButton from '../components/CopyEmailButton';
@@ -7,6 +7,7 @@ import GridExperience from "../components/GridExperience";
 
 const About = () => {
   const aboutSectionRef = useRef();
+  const [hasAnimated, setHasAnimated] = useState(false);
 
   // 하나의 useInView로 통합 - threshold를 낮춰서 더 일찍 트리거
   const isAboutSectionInView = useInView(aboutSectionRef, { 
@@ -15,53 +16,70 @@ const About = () => {
     margin: "0px 0px -100px 0px"
   });
 
-  // 애니메이션 설정을 한 번에 정의하여 재렌더링 최소화
+  // 애니메이션이 한 번만 실행되도록 상태 관리
+  useEffect(() => {
+    if (isAboutSectionInView && !hasAnimated) {
+      setHasAnimated(true);
+    }
+  }, [isAboutSectionInView, hasAnimated]);
+
+  // GridExperience를 useMemo로 감싸서 불필요한 재렌더링 방지
+  const memoizedGridExperience = useMemo(() => <GridExperience />, []);
+
+  // 애니메이션 설정을 단순화하여 성능 향상
   const animations = useMemo(() => ({
     grid1: {
-      initial: { opacity: 0, x: -30 },
-      animate: isAboutSectionInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 },
-      transition: { duration: 0.4, ease: "easeOut" }
+      initial: { opacity: 0, x: -20 },
+      animate: hasAnimated ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 },
+      transition: { duration: 0.3, ease: "easeOut" }
     },
     grid2: {
-      initial: { opacity: 0, y: 30, scale: 0.95 },
-      animate: isAboutSectionInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 },
-      transition: { duration: 0.4, ease: "easeOut", delay: 0.1 }
+      initial: { opacity: 0, y: 20 },
+      animate: hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 },
+      transition: { duration: 0.3, ease: "easeOut", delay: 0.05 }
     },
     grid3: {
-      initial: { opacity: 0, x: 30 },
-      animate: isAboutSectionInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 },
-      transition: { duration: 0.4, ease: "easeOut", delay: 0.2 }
+      initial: { opacity: 0, x: 20 },
+      animate: hasAnimated ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 },
+      transition: { duration: 0.3, ease: "easeOut", delay: 0.1 }
     },
     grid4: {
-      initial: { opacity: 0, scale: 0.9 },
-      animate: isAboutSectionInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 },
-      transition: { duration: 0.4, ease: "easeOut", delay: 0.3 }
+      initial: { opacity: 0, scale: 0.95 },
+      animate: hasAnimated ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 },
+      transition: { duration: 0.3, ease: "easeOut", delay: 0.15 }
     },
     grid5: {
-      initial: { opacity: 0, y: -30 },
-      animate: isAboutSectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -30 },
-      transition: { duration: 0.4, ease: "easeOut", delay: 0.4 }
+      initial: { opacity: 0, y: -20 },
+      animate: hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 },
+      transition: { duration: 0.3, ease: "easeOut", delay: 0.2 }
     }
-  }), [isAboutSectionInView]);
+  }), [hasAnimated]);
 
-  // hover 애니메이션 최적화
+  // hover 애니메이션 최소화
   const hoverAnimation = useMemo(() => ({
     whileHover: { y: -1 },
     whileTap: { y: 0 }
+  }), []);
+
+  // 이미지 hover 애니메이션 최소화
+  const imageHoverAnimation = useMemo(() => ({
+    whileHover: { scale: 1.01 },
+    whileTap: { scale: 0.99 }
   }), []);
 
   return (
     <section className="c-space section-spacing font-moneygraphy" id="about" ref={aboutSectionRef}>
       <h2 className="text-heading">About Me</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-[18rem] mt-12">
-        {/* Grid 1 - GridExperience는 항상 렌더링 */}
+        {/* Grid 1 - GridExperience는 항상 렌더링되어 스크롤과 무관하게 실행 */}
         <motion.div 
           className="flex items-end grid-default-color grid-1 cursor-pointer"
           {...animations.grid1}
           {...hoverAnimation}
         >
           <div className="absolute inset-0">
-            <GridExperience />
+            {/* GridExperience는 스크롤과 무관하게 항상 실행 */}
+            {memoizedGridExperience}
           </div>
 
           <div className="z-10 pointer-events-none select-none">
@@ -92,8 +110,7 @@ const About = () => {
             >
                 <motion.img 
                   src={'/assets/images/github-logo.png'} alt="portfolio" className="w-24 h-24 md:w-32 md:h-32 lg:w-48 lg:h-48"
-                  whileHover={{ scale: 1.02, y: -1 }}
-                  whileTap={{ scale: 0.99 }}
+                  {...imageHoverAnimation}
                 />
               
               <h3 className="text-sm font-semibold text-white mb-1">Github</h3>
@@ -108,8 +125,7 @@ const About = () => {
             >         
                 <motion.img 
                   src={'/assets/images/link.png'} alt="portfolio" className="w-24 h-24 md:w-32 md:h-32 lg:w-48 lg:h-48"
-                  whileHover={{ scale: 1.02, y: -1 }}
-                  whileTap={{ scale: 0.99 }}
+                  {...imageHoverAnimation}
                 />
               <h3 className="text-sm font-semibold text-white mb-1">포트폴리오</h3>
               <p className="text-xs text-gray-300 text-center">포트폴리오 확인하기</p>
@@ -123,8 +139,7 @@ const About = () => {
             > 
                 <motion.img 
                   src={'/assets/images/storybook.png'} alt="portfolio" className="w-24 h-24 md:w-32 md:h-32 lg:w-48 lg:h-48"
-                  whileHover={{ scale: 1.02, y: -1 }}
-                  whileTap={{ scale: 0.99 }}
+                  {...imageHoverAnimation}
                 />
               <h3 className="text-sm font-semibold text-white mb-1">스토리북</h3>
               <p className="text-xs text-gray-300 text-center">스토리북 확인하기</p>
@@ -167,7 +182,7 @@ const About = () => {
           {...animations.grid5}
           {...hoverAnimation}
         >
-          <div className="z-10 w-[50%]">
+          <div className="z-10 w-[50%] md:w-[50%]">
             <p className="headText">기술 스택</p>
             <p className="subtext">
               안정적이고 확장 가능한 애플리케이션을 구축하기 위한 다양한 언어, 프레임워크, 도구들을 활용합니다
