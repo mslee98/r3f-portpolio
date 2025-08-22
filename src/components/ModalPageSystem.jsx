@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import Hero from '../sections/Hero';
 import About2 from '../sections/About2';
-import Projects from '../sections/Projects';
+// import Projects from '../sections/Projects'; // 주석처리
+import ProjectsNew from '../sections/ProjectsNew';
 import Contact from '../sections/Contact';
 
 const ModalPageSystem = ({ currentPage, onPageChange }) => {
@@ -9,6 +10,7 @@ const ModalPageSystem = ({ currentPage, onPageChange }) => {
   const [modalDirection, setModalDirection] = useState('right');
   const [isAnimating, setIsAnimating] = useState(false);
   const [prevPage, setPrevPage] = useState('home'); // 이전 페이지 추적
+  const [isFullPageMode, setIsFullPageMode] = useState(false); // 전체 페이지 모드
 
 
   // 페이지 간 전환 방향 결정 (이전 페이지 → 현재 페이지)
@@ -46,7 +48,8 @@ const ModalPageSystem = ({ currentPage, onPageChange }) => {
   const getPageComponent = (pageName) => {
     const components = {
       'about': About2,
-      'projects': Projects, 
+      'projects': ProjectsNew, // Cards를 Projects로 변경
+      'projects-new': ProjectsNew, // 새로운 카드 스타일 프로젝트
       'contact': Contact
     };
     return components[pageName];
@@ -55,9 +58,18 @@ const ModalPageSystem = ({ currentPage, onPageChange }) => {
   useEffect(() => {
     console.log('Page transition:', prevPage, '→', currentPage);
     
+    // 전체 페이지 모드 페이지들
+    const fullPageModes = ['projects']; // projects-new를 projects로 변경
+    const isCurrentFullPage = fullPageModes.includes(currentPage);
+    const wasPrevFullPage = fullPageModes.includes(prevPage);
+    
     if (currentPage === 'home') {
-      // Home으로 돌아갈 때 모달 닫기
-      if (isModalOpen) {
+      // Home으로 돌아갈 때
+      if (isFullPageMode) {
+        setIsFullPageMode(false);
+        setDisplayPage('home');
+        setPrevPage(currentPage);
+      } else if (isModalOpen) {
         setIsAnimating(false);
         setTimeout(() => {
           setIsModalOpen(false);
@@ -68,20 +80,29 @@ const ModalPageSystem = ({ currentPage, onPageChange }) => {
         setDisplayPage('home');
         setPrevPage(currentPage);
       }
+    } else if (isCurrentFullPage) {
+      // 전체 페이지 모드로 전환
+      setIsFullPageMode(true);
+      setDisplayPage(currentPage);
+      if (isModalOpen) {
+        setIsModalOpen(false);
+        setIsAnimating(false);
+      }
+      setPrevPage(currentPage);
     } else {
-      // 모달 페이지로 전환
+      // 일반 모달 페이지로 전환
+      if (isFullPageMode) {
+        setIsFullPageMode(false);
+      }
+      
       const direction = getModalDirection(prevPage, currentPage);
       console.log('Modal direction:', direction);
       
-      if (isModalOpen && prevPage !== 'home' && prevPage !== currentPage) {
-        // 페이지 간 직접 전환 - 자연스러운 슬라이드 전환
+      if (isModalOpen && prevPage !== 'home' && prevPage !== currentPage && !wasPrevFullPage) {
+        // 페이지 간 직접 전환
         console.log('Direct page transition - smooth slide');
-        
-        // 새 페이지 컨텐츠 즉시 교체하고 방향 변경
         setDisplayPage(currentPage);
         setModalDirection(direction);
-        
-        // 부드러운 크로스페이드 전환
         setIsAnimating(false);
         setTimeout(() => {
           setIsAnimating(true);
@@ -98,7 +119,7 @@ const ModalPageSystem = ({ currentPage, onPageChange }) => {
         }, 50);
       }
     }
-  }, [currentPage, isModalOpen, prevPage]);
+  }, [currentPage, isModalOpen, prevPage, isFullPageMode]);
 
   // 현재 모달에 표시될 컴포넌트 (상태 변경 시에만 업데이트)
   const [displayPage, setDisplayPage] = useState(currentPage);
@@ -194,11 +215,22 @@ const ModalPageSystem = ({ currentPage, onPageChange }) => {
         <Hero />
       </div>
 
+      {/* 전체 페이지 모드 */}
+      {isFullPageMode && displayPage === 'projects' && (
+        <ProjectsNew 
+          isActive={isFullPageMode} 
+          onClose={() => {
+            console.log('ModalPageSystem: Projects onClose called');
+            onPageChange('home');
+          }}
+        />
+      )}
+
       {/* 페이지 연결선 효과 */}
       {getConnectionLine()}
 
-      {/* 모달 페이지들 */}
-      {isModalOpen && CurrentModalComponent && (
+      {/* 일반 모달 페이지들 */}
+      {isModalOpen && CurrentModalComponent && !isFullPageMode && (
         <div className={getModalClasses()}>
           {/* 모달 닫기 버튼 */}
           <button

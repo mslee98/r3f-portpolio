@@ -11,6 +11,60 @@
   }
 }
 
+/* ScrollCards 컴포넌트용 애니메이션 */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes float-1 {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+@keyframes float-2 {
+  0%, 100% {
+    transform: translateX(0px) scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateX(15px) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes float-3 {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-15px) translateX(10px) scale(1.3);
+    opacity: 0.6;
+  }
+}
+
 body {
   background: #030412;
   color: white;
@@ -1200,6 +1254,253 @@ canvas {
     0 25px 50px -12px rgba(0, 0, 0, 0.8),
     0 0 100px rgba(59, 130, 246, 0.1),
     0 0 50px rgba(147, 51, 234, 0.1);
+}
+
+/* ==================== 프로젝트 카드 애니메이션 ==================== */
+
+/* 3D 퍼스펙티브 */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* 스크롤 카드 3D 효과 */
+.scroll-card {
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+}
+
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotateY-180 {
+  transform: rotateY(180deg);
+}
+
+/* 카드 모여지기/펼쳐지기 애니메이션 */
+@keyframes cardGather {
+  0% {
+    transform: translate3d(var(--spread-x), var(--spread-y), 0) rotateZ(var(--spread-rotate)) scale(1.2);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotateZ(0deg) scale(0.8);
+  }
+}
+
+@keyframes cardSpread {
+  0% {
+    transform: translate3d(0, 0, 0) rotateZ(0deg) scale(0.8);
+  }
+  100% {
+    transform: translate3d(var(--spread-x), var(--spread-y), 0) rotateZ(var(--spread-rotate)) scale(1.2);
+  }
+}
+
+/* 카드 스택 그림자 효과 */
+.card-stack-shadow {
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.2),
+    0 12px 24px rgba(0, 0, 0, 0.1),
+    0 16px 32px rgba(0, 0, 0, 0.05);
+}
+
+/* 카드 플립 애니메이션 */
+@keyframes cardFlip {
+  0% {
+    transform: rotateY(0deg) rotateX(0deg);
+  }
+  50% {
+    transform: rotateY(10deg) rotateX(5deg);
+  }
+  100% {
+    transform: rotateY(0deg) rotateX(0deg);
+  }
+}
+
+/* 카드 글로우 효과 */
+@keyframes cardGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+  }
+}
+
+/* 카드 호버 시 배경 애니메이션 */
+@keyframes backgroundShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 스킬 태그 애니메이션 */
+@keyframes skillPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+/* 아이콘 회전 애니메이션 */
+@keyframes iconRotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1);
+  }
+  75% {
+    transform: rotate(270deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+/* 카드 등장 애니메이션 */
+@keyframes cardEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(100px) rotateX(-15deg) scale(0.8);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateY(-10px) rotateX(5deg) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg) scale(1);
+  }
+}
+
+/* 카드 덱 펼쳐지기 애니메이션 */
+@keyframes cardDeckSpread {
+  0% {
+    transform: translate(-50%, -50%) rotateZ(0deg) scale(0.9);
+    opacity: 1;
+  }
+  20% {
+    transform: translate(-50%, -50%) rotateZ(5deg) scale(0.95);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0, 0) rotateZ(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+/* 카드 덱 모이기 애니메이션 */
+@keyframes cardDeckGather {
+  0% {
+    transform: translate(0, 0) rotateZ(0deg) scale(1);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(-50%, -50%) rotateZ(3deg) scale(0.95);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotateZ(0deg) scale(0.9);
+    opacity: 1;
+  }
+}
+
+/* 카드 덱 쌓임 효과 */
+.card-deck-stack {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* 카드 그림자 효과 (덱처럼 보이게) */
+.card-deck-shadow {
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.2),
+    0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* 모달 등장 애니메이션 */
+@keyframes modalEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) rotateX(-20deg);
+    filter: blur(10px);
+  }
+  60% {
+    opacity: 0.9;
+    transform: scale(1.02) rotateX(2deg);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateX(0deg);
+    filter: blur(0);
+  }
+}
+
+/* 패턴 애니메이션 */
+@keyframes patternMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(5px, -5px);
+  }
+  50% {
+    transform: translate(-5px, 5px);
+  }
+  75% {
+    transform: translate(-5px, -5px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* 유틸리티 클래스 */
+.card-hover-glow:hover {
+  animation: cardGlow 2s ease-in-out infinite;
+}
+
+.card-entrance {
+  animation: cardEntrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.modal-entrance {
+  animation: modalEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.pattern-animate {
+  animation: patternMove 4s ease-in-out infinite;
+}
+
+.skill-pulse {
+  animation: skillPulse 2s ease-in-out infinite;
+}
+
+.icon-rotate {
+  animation: iconRotate 3s ease-in-out infinite;
 }
 
 /* 역동적인 파티클 효과 */

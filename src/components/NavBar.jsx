@@ -40,7 +40,7 @@ const NavBar = ({ currentPage, onPageChange }) => {
       }
       
 
-      setRotationOffset(prev => prev + direction * 60); // 60도씩 회전
+                setRotationOffset(prev => prev + direction * 60); // 60도씩 회전 (메뉴 간격과 일치)
     }
     setPrevPage(currentPage); // Update previous page for next change
   }, [currentPage, prevPage]);
@@ -100,12 +100,12 @@ const NavBar = ({ currentPage, onPageChange }) => {
             
 
             
-            // 간단한 반원 배치 - 4개 메뉴를 균등하게
+            // 간단한 반원 배치 - 5개 메뉴를 균등하게 (더 넓은 간격)
             const allMenusWithRotation = navItems.map((item, index) => {
               // 활성 메뉴를 중앙(0도)에 배치
               const relativeIndex = (index - activeIndex + navItems.length) % navItems.length;
-              // -90도에서 90도까지 균등 분배 (180도 범위를 3등분)
-              const angle = (relativeIndex - 1.5) * 60; // -90, -30, 30, 90 degrees
+              // -120도에서 120도까지 균등 분배 (240도 범위를 5등분)
+              const angle = (relativeIndex - 2) * 60; // -120, -60, 0, 60, 120 degrees
               const finalAngle = angle + rotationOffset;
               
               const isActive = index === activeIndex;
@@ -125,7 +125,7 @@ const NavBar = ({ currentPage, onPageChange }) => {
             });
 
             return allMenusWithRotation.map((menu, index) => {
-              const radius = 120; // 화면에 맞는 반지름
+              const radius = 140; // 더 넓은 반지름으로 메뉴 간격 확보
               // 중앙 축을 기준으로 배치
               const x = -Math.cos((menu.angle) * Math.PI / 180) * radius;
               const y = Math.sin((menu.angle) * Math.PI / 180) * radius;
@@ -142,6 +142,7 @@ const NavBar = ({ currentPage, onPageChange }) => {
                     transform: `translateY(-50%) translateX(-50%) translate(${x}px, ${y}px) scale(${shouldShowMenu ? menu.scale : 0.3})`,
                     opacity: shouldShowMenu ? menu.opacity : 0,
                     pointerEvents: shouldShowMenu ? 'auto' : 'none',
+                    zIndex: menu.isActive ? 50 : 40, // 활성 메뉴가 항상 위에 오도록
                   }}
                 >
                   {/* 흰색 연결선 - 메뉴가 보일 때만 표시 */}

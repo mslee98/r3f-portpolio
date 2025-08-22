@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useProgress } from "@react-three/drei";
 import gsap from "gsap";
-import Projects from "../sections/Projects";
+// import Projects from "../sections/Projects"; // 주석처리
 
 const MIN_DISPLAY_TIME = 1.5; // 최소 1.5초 보이게
 

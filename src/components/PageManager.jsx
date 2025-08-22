@@ -1,7 +1,7 @@
 import PageTransition from './PageTransition';
 import Hero from '../sections/Hero';
 import About2 from '../sections/About2';
-import Projects from '../sections/Projects';
+// import Projects from '../sections/Projects'; // 주석처리
 import Contact from '../sections/Contact';
 
 const PageManager = ({ currentPage }) => {
@@ -9,7 +9,7 @@ const PageManager = ({ currentPage }) => {
   const pageComponents = {
     home: Hero,
     about: About2,
-    projects: Projects,
+    // projects: Projects, // 주석처리
     contact: Contact
   };
 
@@ -18,7 +18,7 @@ const PageManager = ({ currentPage }) => {
     const directions = {
       'home': 'down',    // 위에서 아래로
       'about': 'right',  // 왼쪽에서 오른쪽으로
-      'projects': 'up',  // 아래에서 위로
+      // 'projects': 'up',  // 아래에서 위로 - 주석처리
       'contact': 'left'  // 오른쪽에서 왼쪽으로
     };
     return directions[pageName] || 'right';

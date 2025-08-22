@@ -282,6 +282,7 @@ const Floor = () => {
 function useVideoTexture(src, speed = 1) {
   const [texture, setTexture] = useState(null);
   const videoRef = useRef(null);
+  const currentSpeedRef = useRef(speed); // 현재 속도를 추적
 
   useEffect(() => {
     if (!src) return;
@@ -308,8 +309,8 @@ function useVideoTexture(src, speed = 1) {
       const playPromise = video.play();
       if (playPromise !== undefined) {
         playPromise.then(() => {
-          // 재생 성공
-          const clampedSpeed = Math.min(Math.max(speed, 0.25), 4);
+          // 재생 성공 - 현재 설정된 속도 적용
+          const clampedSpeed = Math.min(Math.max(currentSpeedRef.current, 0.25), 4);
           video.playbackRate = clampedSpeed;
           setTexture(videoTexture);
         }).catch(err => {
@@ -317,7 +318,7 @@ function useVideoTexture(src, speed = 1) {
           // 자동 재생 실패 시 사용자 클릭 이벤트 대기
           const handleUserInteraction = () => {
             video.play().then(() => {
-              const clampedSpeed = Math.min(Math.max(speed, 0.25), 4);
+              const clampedSpeed = Math.min(Math.max(currentSpeedRef.current, 0.25), 4);
               video.playbackRate = clampedSpeed;
               setTexture(videoTexture);
             });
@@ -334,22 +335,58 @@ function useVideoTexture(src, speed = 1) {
       handleLoaded();
     };
 
+    // 속도 유지를 위한 추가 이벤트 리스너들
+    const maintainSpeed = () => {
+      const clampedSpeed = Math.min(Math.max(currentSpeedRef.current, 0.25), 4);
+      if (video.playbackRate !== clampedSpeed) {
+        video.playbackRate = clampedSpeed;
+      }
+    };
+
     video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('play', maintainSpeed); // 재생 시작 시 속도 유지
+    video.addEventListener('seeked', maintainSpeed); // 시크 후 속도 유지
+    video.addEventListener('loadeddata', maintainSpeed); // 데이터 로드 후 속도 유지
 
     return () => {
       video.pause();
       video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('play', maintainSpeed);
+      video.removeEventListener('seeked', maintainSpeed);
+      video.removeEventListener('loadeddata', maintainSpeed);
       video.src = '';
       video.load();
       videoTexture.dispose();
       setTexture(null);
     };
-  }, [src, speed]);
+  }, [src]); // speed 의존성 제거
 
   useEffect(() => {
-    if (videoRef.current && videoRef.current.readyState >= 2) {
+    currentSpeedRef.current = speed; // 현재 속도 업데이트
+    
+    if (videoRef.current) {
       const clampedSpeed = Math.min(Math.max(speed, 0.25), 4);
-      videoRef.current.playbackRate = clampedSpeed;
+      
+      // 비디오가 준비되었거나 재생 중일 때 속도 적용
+      if (videoRef.current.readyState >= 2 || !videoRef.current.paused) {
+        videoRef.current.playbackRate = clampedSpeed;
+      }
+      
+      // 비디오가 아직 로딩 중이면 로딩 완료 후 속도 적용
+      const handleLoadedData = () => {
+        if (videoRef.current) {
+          videoRef.current.playbackRate = clampedSpeed;
+        }
+      };
+      
+      if (videoRef.current.readyState < 2) {
+        videoRef.current.addEventListener('loadeddata', handleLoadedData);
+        return () => {
+          if (videoRef.current) {
+            videoRef.current.removeEventListener('loadeddata', handleLoadedData);
+          }
+        };
+      }
     }
   }, [speed]);
 
@@ -401,6 +438,27 @@ function HueMaterial({ texture, hue = 0, brightness=1}) {
     uBrightness: { value: brightness },
   }), [texture]);
 
+  // 값이 변경될 때만 유니폼 업데이트 (성능 최적화)
+  const prevValues = useRef({ hue, brightness, texture });
+  
+  useFrame(() => {
+    if (materialRef.current) {
+      // 값이 실제로 변경된 경우에만 업데이트
+      if (prevValues.current.hue !== hue) {
+        materialRef.current.uniforms.uHue.value = hue;
+        prevValues.current.hue = hue;
+      }
+      if (prevValues.current.brightness !== brightness) {
+        materialRef.current.uniforms.uBrightness.value = brightness;
+        prevValues.current.brightness = brightness;
+      }
+      if (prevValues.current.texture !== texture) {
+        materialRef.current.uniforms.uTexture.value = texture;
+        prevValues.current.texture = texture;
+      }
+    }
+  });
+
   useEffect(() => {
     if (materialRef.current) {
       materialRef.current.uniforms.uTexture.value = texture;
@@ -411,8 +469,8 @@ function HueMaterial({ texture, hue = 0, brightness=1}) {
 
   if (!texture) return null;
 
-  // hue가 0이면 기본 material 사용
-  if (hue === 0) {
+  // hue가 정확히 0이고 brightness가 1이면 원본 material 사용
+  if (Math.abs(hue) < 0.001 && Math.abs(brightness - 1) < 0.001) {
     return (
       <meshBasicMaterial 
         map={texture}
@@ -421,6 +479,7 @@ function HueMaterial({ texture, hue = 0, brightness=1}) {
     );
   }
 
+  // 그 외의 경우 shader material 사용
   return (
     <shaderMaterial
       ref={materialRef}

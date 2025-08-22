@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import HeroExperience from '../components/HeroExperience';
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -17,6 +17,26 @@ const Hero = () => {
     const [loadingYn, setLoadingYn] = useState(false);
 
     const [step, setStep] = useState(-1);
+
+    // 슬라이더 핸들러 최적화
+    const handleHueChange = useCallback((e) => {
+        const value = parseFloat(e.target.value);
+        setHue(value);
+    }, []);
+
+    const handleSpeedChange = useCallback((e) => {
+        const value = parseFloat(e.target.value);
+        setSpeed(value);
+    }, []);
+
+    const handleBrightnessChange = useCallback((e) => {
+        const value = parseFloat(e.target.value);
+        setBrightness(value);
+    }, []);
+
+    const handleVideoTypeChange = useCallback((type) => {
+        setSelectedVideoType(type);
+    }, []);
 
     useEffect(() => {
         if (loadingYn) {
@@ -92,9 +112,9 @@ const Hero = () => {
                     {['TYPE1', 'TYPE2', 'TYPE3'].map((type, idx) => (
                         <button
                             key={idx}
-                            onClick={() => setSelectedVideoType(type)}
-                            className={`w-20 h-20 rounded-full border-2 text-xs ${
-                                selectedVideoType === type ? 'bg-white text-black' : 'text-white'
+                            onClick={() => handleVideoTypeChange(type)}
+                            className={`w-20 h-20 rounded-full border-2 text-xs transition-all duration-300 hover:scale-105 ${
+                                selectedVideoType === type ? 'bg-white text-black border-white' : 'text-white border-white/50 hover:border-white'
                             } flex items-center justify-center font-semibold`}
                         >
                         {type}
@@ -120,7 +140,7 @@ const Hero = () => {
                                 max={1}
                                 step={0.01}
                                 value={hue}
-                                onChange={(e) => setHue(parseFloat(e.target.value))}
+                                onChange={handleHueChange}
                                 className="absolute w-full opacity-0 h-8 cursor-pointer z-10"
                                 style={{ top: 0, left: 0 }}
                                 />
@@ -134,7 +154,7 @@ const Hero = () => {
                                     transform: 'translateY(-50%)',
                                 }}
                                 >
-                                <div className="w-8 h-8 border-2 border-white rounded-full bg-transparent" />
+                                <div className="w-8 h-8 border-2 border-white rounded-full bg-transparent transition-all duration-150 hover:scale-110 hover:bg-white/10" />
                                 </div>
                             </div>
                         </div>
@@ -150,7 +170,7 @@ const Hero = () => {
                                 max={4}
                                 step={0.01}
                                 value={speed}
-                                onChange={(e) => setSpeed(parseFloat(e.target.value))}
+                                onChange={handleSpeedChange}
                                 className="absolute w-full opacity-0 h-8 cursor-pointer z-10"
                                 style={{ top: 0, left: 0 }}
                                 />
@@ -164,7 +184,7 @@ const Hero = () => {
                                     transform: 'translateY(-50%)',
                                 }}
                                 >
-                                <div className="w-8 h-8 border-2 border-white rounded-full bg-transparent" />
+                                <div className="w-8 h-8 border-2 border-white rounded-full bg-transparent transition-all duration-150 hover:scale-110 hover:bg-white/10" />
                                 </div>
                             </div>
                         </div>
@@ -180,7 +200,7 @@ const Hero = () => {
                                 max={2}
                                 step={0.01}
                                 value={brightness}
-                                onChange={(e) => setBrightness(parseFloat(e.target.value))}
+                                onChange={handleBrightnessChange}
                                 className="absolute w-full opacity-0 h-8 cursor-pointer z-10"
                                 style={{ top: 0, left: 0 }}
                                 />
@@ -194,7 +214,7 @@ const Hero = () => {
                                     transform: 'translateY(-50%)',
                                 }}
                                 >
-                                <div className="w-8 h-8 border-2 border-white rounded-full bg-transparent" />
+                                <div className="w-8 h-8 border-2 border-white rounded-full bg-transparent transition-all duration-150 hover:scale-110 hover:bg-white/10" />
                                 </div>
                             </div>
                         </div>
