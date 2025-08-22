@@ -1,30 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-
 import HeroExperience from '../components/HeroExperience';
-import GradientSpheres from '../components/GradientSpheres';
-
 import { motion, AnimatePresence } from "framer-motion";
-
-import { SpredingPoint } from '../components/SpreadingPoint';
-
-const container = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.05, // 글자 간 간격 (초)
-    },
-  },
-};
-
-const child = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
 
 const Hero = () => {
 
-    const [hue, setHue] = useState(0)
+    const [hue, setHue] = useState(0) // 원하는 초기값으로 변경
     const [speed, setSpeed] = useState(1)
     const [brightness, setBrightness] = useState(1);
 
@@ -84,14 +64,14 @@ const Hero = () => {
                                 )}
 
                                 {/* Step 1: FRONT AND UI/UX */}
-                                {step >= 1 && (
+                                {step >= 0.5 && (
                                     <h1 className="animate-typing after:animate-blink font-bold text-4xl md:text-8xl overflow-hidden whitespace-nowrap border-r-4 border-r-white text-white">
                                         FRONT AND UI/UX
                                     </h1>
                                 )}
 
                                 {/* Step 2: ENGINEER */}
-                                {step >= 2 && (
+                                {step >= 1 && (
                                 <h1 className="animate-typing after:animate-blink font-bold text-4xl md:text-8xl overflow-hidden whitespace-nowrap border-r-4 border-r-white text-white">
                                     ENGINEER
                                 </h1>
