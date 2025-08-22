@@ -48,7 +48,8 @@ module.exports = {
         pingOuter: 'pingOuter 2s ease-out infinite',
         pingInner: 'pingInner 2s ease-out infinite',
         typing: 'typing 2s steps(20) forwards',
-        blink: 'blink 0.2s step-end infinite'
+        blink: 'blink 0.2s step-end infinite',
+        'spin-slow': 'spin 20s linear infinite'
       },
     },
   },

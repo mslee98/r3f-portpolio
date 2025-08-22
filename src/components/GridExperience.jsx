@@ -25,28 +25,41 @@ const GridExperience = () => {
     const connectors = useMemo(() => shuffle(accent), [accent])
 
     return (
-        <Canvas onClick={click} shadows dpr={[1, 1.5]} gl={{ antialias: false }} camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}>
+        <Canvas 
+            onClick={click} 
+            shadows={false}
+            dpr={[1, 1.2]} 
+            gl={{ 
+                antialias: false, 
+                powerPreference: "high-performance",
+                stencil: false,
+                depth: false
+            }} 
+            camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}
+            frameloop="demand"
+        >
             <color attach="background" args={['#141622']} />
             <ambientLight intensity={0.4} />
-            <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
-            <Physics /*debug*/ gravity={[0, 0, 0]}>
+            <Physics gravity={[0, 0, 0]}>
                 <Pointer />
                 {connectors.map((props, i) => <Connector key={i} {...props} />) /* prettier-ignore */}
                 <Connector position={[10, 10, 5]}>
                 <Model>
-                    <MeshTransmissionMaterial clearcoat={1} thickness={0.1} anisotropicBlur={0.1} chromaticAberration={0.1} samples={8} resolution={512} />
+                    <MeshTransmissionMaterial 
+                        clearcoat={1} 
+                        thickness={0.1} 
+                        anisotropicBlur={0.05} 
+                        chromaticAberration={0.05} 
+                        samples={4} 
+                        resolution={256} 
+                    />
                 </Model>
                 </Connector>
             </Physics>
-            <EffectComposer disableNormalPass multisampling={8}>
-                <N8AO distanceFalloff={1} aoRadius={1} intensity={4} />
-            </EffectComposer>
-            <Environment resolution={256}>
+            <Environment resolution={128}>
                 <group rotation={[-Math.PI / 3, 0, 1]}>
-                <Lightformer form="circle" intensity={4} rotation-x={Math.PI / 2} position={[0, 5, -9]} scale={2} />
-                <Lightformer form="circle" intensity={2} rotation-y={Math.PI / 2} position={[-5, 1, -1]} scale={2} />
-                <Lightformer form="circle" intensity={2} rotation-y={Math.PI / 2} position={[-5, -1, -1]} scale={2} />
-                <Lightformer form="circle" intensity={2} rotation-y={-Math.PI / 2} position={[10, 1, 0]} scale={8} />
+                <Lightformer form="circle" intensity={2} rotation-x={Math.PI / 2} position={[0, 5, -9]} scale={2} />
+                <Lightformer form="circle" intensity={1} rotation-y={Math.PI / 2} position={[-5, 1, -1]} scale={2} />
                 </group>
             </Environment>
         </Canvas>

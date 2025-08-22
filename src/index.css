@@ -2,16 +2,439 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
 body {
   background: #030412;
   color: white;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   overflow-x: hidden;
+  overscroll-behavior: none;
+  /* 메모리 최적화 */
+  image-rendering: optimizeSpeed;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 section {
   width: 100dvw;
   min-height: 100dvh;
+  contain: layout style paint;
+  will-change: transform;
+}
+
+/* About 섹션 최적화 */
+#about {
+  contain: layout style paint;
+  transform: translateZ(0);
+}
+
+#about .grid {
+  contain: layout;
+}
+
+/* CSS 애니메이션으로 Framer Motion 대체 */
+.grid-item {
+  opacity: 0;
+  transform: translateZ(0);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* 애니메이션이 트리거되지 않은 경우를 위한 fallback */
+.grid-item:not(.animate-in) {
+  animation: fadeInFallback 1s ease-out 2s forwards;
+}
+
+@keyframes fadeInFallback {
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1) translateZ(0);
+  }
+}
+
+.grid-item:hover {
+  transform: translateY(-4px) translateZ(0);
+}
+
+.grid-item:active {
+  transform: translateY(-2px) translateZ(0);
+}
+
+/* 애니메이션 방향별 초기 상태 */
+.grid-slide-left {
+  transform: translateX(-30px) translateZ(0);
+}
+
+.grid-slide-right {
+  transform: translateX(30px) translateZ(0);
+}
+
+.grid-slide-up {
+  transform: translateY(30px) translateZ(0);
+}
+
+.grid-slide-down {
+  transform: translateY(-30px) translateZ(0);
+}
+
+.grid-scale-in {
+  transform: scale(0.9) translateZ(0);
+}
+
+/* 애니메이션 트리거 */
+.grid-item.animate-in {
+  opacity: 1;
+  transform: translateX(0) translateY(0) scale(1) translateZ(0);
+}
+
+/* 순차적 애니메이션을 위한 지연 */
+.grid-1.animate-in {
+  transition-delay: 0s;
+}
+
+.grid-2.animate-in {
+  transition-delay: 0.1s;
+}
+
+.grid-3.animate-in {
+  transition-delay: 0.2s;
+}
+
+.grid-4.animate-in {
+  transition-delay: 0.3s;
+}
+
+.grid-5.animate-in {
+  transition-delay: 0.4s;
+}
+
+/* 카드 호버 효과 */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+}
+
+.card-image {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card-hover:hover .card-image {
+  transform: scale(1.05) translateY(-2px);
+}
+
+/* 도르레 네비게이션 스타일 */
+.pulley-nav {
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  transform-style: preserve-3d;
+}
+
+.pulley-nav-item {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transform-style: preserve-3d;
+}
+
+.pulley-nav-item:hover {
+  box-shadow: 0 12px 40px rgba(59, 130, 246, 0.4);
+  transform: translateZ(10px) scale(1.05);
+}
+
+.pulley-nav-item.active {
+  box-shadow: 0 15px 50px rgba(59, 130, 246, 0.5);
+  transform: translateZ(15px) scale(1.1);
+}
+
+/* 도르레 회전 애니메이션 */
+@keyframes pulley-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulley-chain-swing {
+  0%, 100% {
+    transform: translateX(-50%) rotate(0deg) scaleY(1);
+  }
+  25% {
+    transform: translateX(-50%) rotate(2deg) scaleY(1.02);
+  }
+  75% {
+    transform: translateX(-50%) rotate(-2deg) scaleY(0.98);
+  }
+}
+
+/* 도르레 체인 애니메이션 */
+.pulley-nav:hover .pulley-chain {
+  animation: pulley-chain-swing 2s ease-in-out infinite;
+}
+
+/* 도르레 바퀴 스포크 애니메이션 */
+@keyframes spoke-glow {
+  0%, 100% {
+    opacity: 0.2;
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+}
+
+.pulley-nav:hover .pulley-spoke {
+  animation: spoke-glow 1.5s ease-in-out infinite;
+}
+
+/* 도르레 중앙 축 회전 */
+@keyframes pulley-center-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 메뉴 아이템 등장 애니메이션 */
+@keyframes pulley-item-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-180deg);
+  }
+  60% {
+    opacity: 0.8;
+    transform: scale(1.1) rotate(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.pulley-item-animate {
+  animation: pulley-item-appear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* 도르레 외부 링 회전 */
+@keyframes pulley-outer-ring {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(180deg) scale(1.05);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(1);
+  }
+}
+
+/* 브랜드 로고 펄스 */
+@keyframes brand-pulse {
+  0%, 100% {
+    transform: translateY(-50%) scale(1);
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+  }
+  50% {
+    transform: translateY(-50%) scale(1.02);
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
+  }
+}
+
+.pulley-nav:hover .brand-logo {
+  animation: brand-pulse 2s ease-in-out infinite;
+}
+
+/* 도르레 회전 링 애니메이션 */
+@keyframes pulley-ring-rotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.05);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+/* 스크롤 인디케이터 파티클 */
+@keyframes scroll-particle {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2) rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3) rotate(360deg);
+  }
+}
+
+/* 메뉴 아이템 활성화 애니메이션 */
+@keyframes menu-activate {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.5);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+  }
+}
+
+/* 연결선 펄스 애니메이션 */
+@keyframes connection-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scaleX(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scaleX(1.3);
+  }
+}
+
+.pulley-nav.scrolling .connection-line {
+  animation: connection-pulse 1s ease-in-out infinite;
+}
+
+.pulley-nav.scrolling .menu-item.active {
+  animation: menu-activate 1.5s ease-in-out infinite;
+}
+
+/* 퍼져나가는 파동 효과 개선 */
+@keyframes spreading-wave {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+@keyframes spreading-wave-outer {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes spreading-wave-inner {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* 연결선 파동 효과 */
+@keyframes connection-wave {
+  0% {
+    transform: scaleX(0.8);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scaleX(1.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scaleX(2.2);
+    opacity: 0;
+  }
+}
+
+/* 도르레 중앙 파동 효과 */
+.pulley-center-wave {
+  animation: spreading-wave 2s ease-out infinite;
+}
+
+.pulley-center-wave-outer {
+  animation: spreading-wave-outer 2.5s ease-out infinite;
+}
+
+.pulley-center-wave-inner {
+  animation: spreading-wave-inner 1.5s ease-out infinite;
+}
+
+/* 메뉴 아이템 파동 효과 */
+.menu-wave {
+  animation: spreading-wave 1.8s ease-out infinite;
+}
+
+.menu-wave-outer {
+  animation: spreading-wave-outer 2.2s ease-out infinite;
+}
+
+.menu-wave-inner {
+  animation: spreading-wave-inner 1.4s ease-out infinite;
+}
+
+/* 연결선 파동 */
+.connection-wave {
+  animation: connection-wave 1.6s ease-out infinite;
+}
+
+.connection-wave-outer {
+  animation: connection-wave 2s ease-out infinite;
+}
+
+/* 이미지 최적화 */
+img {
+  image-rendering: optimizeSpeed;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: optimize-contrast;
+  image-rendering: crisp-edges;
+  loading: lazy;
+}
+
+/* 3D 렌더링 최적화 */
+canvas {
+  image-rendering: optimizeSpeed;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 @font-face {
@@ -73,13 +496,17 @@ section {
     background: radial-gradient(circle, #ff28d5, #ff28d5);
     top: -100px;
     left: 300px;
-    animation: wander-left 10s ease-in-out infinite;
+    animation: wander-left 15s linear infinite;
+    transform: translateZ(0);
+    will-change: transform;
   }
   .sphere-2 {
     background: radial-gradient(circle, #1c34ff, #1c34ff);
     top: 100px;
     right: 300px;
-    animation: wander-right 12s ease-in-out infinite;
+    animation: wander-right 18s linear infinite;
+    transform: translateZ(0);
+    will-change: transform;
   }
   .marquee {
     width: 100dvw;
@@ -216,118 +643,686 @@ section {
     left: 150px;
   }
 
-/* Swiper 커스텀 스타일 */
-.swiper {
-  width: 100%;
-  height: 100%;
+/* 프로젝트 그리드 스타일 */
+.project-grid-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
-.swiper-slide {
-  text-align: center;
-  font-size: 18px;
-  background: transparent;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.3s ease;
+/* ==================== Light Bento Grid Styles ==================== */
+
+/* 경량 벤토 그리드 컨테이너 */
+.light-bento-container {
+  contain: layout;
+  transform: translateZ(0);
+}
+
+/* 경량 그리드 아이템 기본 스타일 */
+.grid-item-light {
+  opacity: 0;
+  transform: translateZ(0);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+  overflow: hidden;
   position: relative;
 }
 
-.swiper-slide img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* 애니메이션 fallback */
+.grid-item-light:not(.animate-in) {
+  animation: lightFadeIn 1s ease-out 1.5s forwards;
 }
 
-/* 네비게이션 버튼 */
-.swiper-button-next,
-.swiper-button-prev {
-  color: white !important;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
-  border-radius: 50% !important;
-  width: 48px !important;
-  height: 48px !important;
-  margin-top: -24px !important;
-  transition: all 0.3s ease !important;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
-}
-
-.swiper-button-next:hover,
-.swiper-button-prev:hover {
-  transform: scale(1.1) !important;
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4) !important;
-}
-
-.swiper-button-next::after,
-.swiper-button-prev::after {
-  font-size: 18px !important;
-  font-weight: bold !important;
-}
-
-/* 페이지네이션 */
-.swiper-pagination {
-  position: absolute !important;
-  bottom: 20px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-}
-
-.swiper-pagination-bullet {
-  background: rgba(255, 255, 255, 0.3) !important;
-  opacity: 1 !important;
-  transition: all 0.3s ease !important;
-  width: 8px !important;
-  height: 8px !important;
-  margin: 0 4px !important;
-}
-
-.swiper-pagination-bullet-active {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
-  transform: scale(1.3) !important;
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5) !important;
-}
-
-/* 커버플로우 효과 강화 */
-.swiper-slide-active {
-  transform: scale(1.05) !important;
-  z-index: 10 !important;
-}
-
-.swiper-slide-prev,
-.swiper-slide-next {
-  transform: scale(0.9) !important;
-  opacity: 0.7 !important;
-}
-
-/* 터치 제스처 최적화 */
-.swiper-wrapper {
-  touch-action: pan-y !important;
-}
-
-/* 반응형 조정 */
-@media (max-width: 768px) {
-  .swiper-button-next,
-  .swiper-button-prev {
-    display: none !important;
-  }
-  
-  .swiper-pagination {
-    bottom: 10px !important;
-  }
-  
-  .swiper-pagination-bullet {
-    width: 6px !important;
-    height: 6px !important;
-    margin: 0 3px !important;
+@keyframes lightFadeIn {
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1) translateZ(0);
   }
 }
 
-/* 애니메이션 최적화 */
-.swiper-slide {
+/* 호버 효과 */
+.grid-item-light:hover {
+  transform: translateY(-2px) translateZ(0);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* 애니메이션 방향별 초기 상태 */
+.slide-left {
+  transform: translateX(-20px) translateZ(0);
+}
+
+.slide-right {
+  transform: translateX(20px) translateZ(0);
+}
+
+.slide-up {
+  transform: translateY(20px) translateZ(0);
+}
+
+.slide-down {
+  transform: translateY(-20px) translateZ(0);
+}
+
+.scale-in {
+  transform: scale(0.95) translateZ(0);
+}
+
+/* 애니메이션 트리거 */
+.grid-item-light.animate-in {
+  opacity: 1;
+  transform: translateX(0) translateY(0) scale(1) translateZ(0);
+}
+
+/* 경량 그리드 레이아웃 */
+.light-grid-1 {
+  @apply row-span-1 md:col-span-4 h-[15rem] md:h-full relative;
+}
+
+.light-grid-2 {
+  @apply row-span-1 md:col-span-2 h-[15rem] md:h-full relative;
+}
+
+.light-grid-3 {
+  @apply row-span-1 md:col-span-2 h-[15rem] md:h-full relative;
+}
+
+.light-grid-4 {
+  @apply row-span-1 md:col-span-2 h-[15rem] md:h-full relative;
+}
+
+.light-grid-5 {
+  @apply row-span-1 md:col-span-4 h-[15rem] md:h-full relative;
+}
+
+.light-grid-6 {
+  @apply row-span-1 md:col-span-2 h-[15rem] md:h-full relative;
+}
+
+/* 경량 그리드 색상 테마 */
+.light-grid-purple {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.light-grid-blue {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.light-grid-dark {
+  background: linear-gradient(135deg, #434343 0%, #000000 100%);
+}
+
+.light-grid-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+}
+
+.light-grid-orange {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.light-grid-emerald {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* CSS 전용 애니메이션 */
+@keyframes floating-1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+@keyframes floating-2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(-3deg); }
+}
+
+@keyframes floating-3 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(7deg); }
+}
+
+@keyframes earth-rotation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.floating-1 {
+  animation: floating-1 3s ease-in-out infinite;
+}
+
+.floating-2 {
+  animation: floating-2 2.5s ease-in-out infinite 0.5s;
+}
+
+.floating-3 {
+  animation: floating-3 3.5s ease-in-out infinite 1s;
+}
+
+.earth-rotation {
+  animation: earth-rotation 20s linear infinite;
+}
+
+@keyframes spin-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+@keyframes spin-reverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse 4s linear infinite;
+}
+
+/* About2 전용 애니메이션들 */
+@keyframes gridPulse {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.3; }
+}
+
+/* 기술 스택 오비트 애니메이션 */
+@keyframes techOrbit1 {
+  0% { transform: rotate(0deg) translateX(60px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
+}
+
+@keyframes techOrbit2 {
+  0% { transform: rotate(72deg) translateX(60px) rotate(-72deg); }
+  100% { transform: rotate(432deg) translateX(60px) rotate(-432deg); }
+}
+
+@keyframes techOrbit3 {
+  0% { transform: rotate(144deg) translateX(60px) rotate(-144deg); }
+  100% { transform: rotate(504deg) translateX(60px) rotate(-504deg); }
+}
+
+@keyframes techOrbit4 {
+  0% { transform: rotate(216deg) translateX(60px) rotate(-216deg); }
+  100% { transform: rotate(576deg) translateX(60px) rotate(-576deg); }
+}
+
+@keyframes techOrbit5 {
+  0% { transform: rotate(288deg) translateX(60px) rotate(-288deg); }
+  100% { transform: rotate(648deg) translateX(60px) rotate(-648deg); }
+}
+
+@keyframes techConnection {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+/* 기술 스택 오비트 클래스들 */
+.tech-orbit-1 {
+  animation: techOrbit1 8s linear infinite;
+}
+
+.tech-orbit-2 {
+  animation: techOrbit2 8s linear infinite;
+}
+
+.tech-orbit-3 {
+  animation: techOrbit3 8s linear infinite;
+}
+
+.tech-orbit-4 {
+  animation: techOrbit4 8s linear infinite;
+}
+
+.tech-orbit-5 {
+  animation: techOrbit5 8s linear infinite;
+}
+
+/* 연결선 애니메이션 */
+.tech-connection-1,
+.tech-connection-2,
+.tech-connection-3,
+.tech-connection-4,
+.tech-connection-5 {
+  position: absolute;
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  animation: techConnection 2s ease-in-out infinite;
+}
+
+.tech-connection-1 {
+  transform: rotate(0deg);
+  animation-delay: 0s;
+}
+
+.tech-connection-2 {
+  transform: rotate(72deg);
+  animation-delay: 0.4s;
+}
+
+.tech-connection-3 {
+  transform: rotate(144deg);
+  animation-delay: 0.8s;
+}
+
+.tech-connection-4 {
+  transform: rotate(216deg);
+  animation-delay: 1.2s;
+}
+
+.tech-connection-5 {
+  transform: rotate(288deg);
+  animation-delay: 1.6s;
+}
+
+/* ==================== 페이지 전환 시스템 애니메이션 ==================== */
+
+/* 페이지 전환 기본 설정 */
+.page-transition-container {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: #000;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  contain: layout style paint;
+}
+
+/* 방향별 초기 위치 */
+.slide-from-left {
+  transform: translateX(-100%);
+}
+
+.slide-from-right {
+  transform: translateX(100%);
+}
+
+.slide-from-up {
+  transform: translateY(-100%);
+}
+
+.slide-from-down {
+  transform: translateY(100%);
+}
+
+/* 활성 상태 (화면 중앙) */
+.slide-active {
+  transform: translate(0, 0);
+}
+
+/* 페이지 오버레이 효과 */
+.page-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, 
+    rgba(59, 130, 246, 0.1) 0%, 
+    rgba(147, 51, 234, 0.1) 50%, 
+    rgba(236, 72, 153, 0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.page-transition-container:hover .page-overlay {
+  opacity: 1;
+}
+
+/* 페이지 로딩 인디케이터 */
+.page-loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 60;
+}
+
+.page-loading-spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: pageSpinner 1s linear infinite;
+}
+
+@keyframes pageSpinner {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 페이지 전환 파티클 효과 */
+.transition-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.transition-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: transitionParticle 2s ease-out infinite;
+}
+
+@keyframes transitionParticle {
+  0% {
+    opacity: 0;
+    transform: translateY(100vh) scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(50vh) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(0) scale(0);
+  }
+}
+
+/* 페이지별 특별 효과 */
+.page-home .page-overlay {
+  background: linear-gradient(45deg, 
+    rgba(59, 130, 246, 0.15) 0%, 
+    rgba(16, 185, 129, 0.15) 100%);
+}
+
+.page-about .page-overlay {
+  background: linear-gradient(45deg, 
+    rgba(147, 51, 234, 0.15) 0%, 
+    rgba(236, 72, 153, 0.15) 100%);
+}
+
+.page-projects .page-overlay {
+  background: linear-gradient(45deg, 
+    rgba(245, 101, 101, 0.15) 0%, 
+    rgba(251, 146, 60, 0.15) 100%);
+}
+
+.page-contact .page-overlay {
+  background: linear-gradient(45deg, 
+    rgba(16, 185, 129, 0.15) 0%, 
+    rgba(59, 130, 246, 0.15) 100%);
+}
+
+/* ==================== 모달 페이지 시스템 애니메이션 ==================== */
+
+/* 모달 배경 블러 효과 */
+.modal-backdrop {
+  backdrop-filter: blur(20px);
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* 연결선 애니메이션 */
+@keyframes connectionFlow {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0.8;
+  }
+}
+
+.connection-line {
+  animation: connectionFlow 1s ease-out forwards;
+  transform-origin: left center;
+}
+
+.connection-line-vertical {
+  animation: connectionFlow 1s ease-out forwards;
+  transform-origin: top center;
+}
+
+/* 연결점 펄스 애니메이션 */
+@keyframes connectionPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+}
+
+.connection-point {
+  animation: connectionPulse 2s ease-in-out infinite;
+}
+
+/* 모달 슬라이드 애니메이션 - 자연스러운 전환 */
+.modal-slide-left {
+  animation: modalSlideLeft 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.modal-slide-right {
+  animation: modalSlideRight 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.modal-slide-top {
+  animation: modalSlideTop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.modal-slide-bottom {
+  animation: modalSlideBottom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes modalSlideLeft {
+  from {
+    transform: translateX(-100%) scale(0.9);
+    opacity: 0;
+    filter: blur(5px);
+  }
+  60% {
+    transform: translateX(-10%) scale(1.02);
+    opacity: 0.8;
+    filter: blur(1px);
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes modalSlideRight {
+  from {
+    transform: translateX(100%) scale(0.9);
+    opacity: 0;
+    filter: blur(5px);
+  }
+  60% {
+    transform: translateX(10%) scale(1.02);
+    opacity: 0.8;
+    filter: blur(1px);
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes modalSlideTop {
+  from {
+    transform: translateY(-100%) scale(0.9);
+    opacity: 0;
+    filter: blur(5px);
+  }
+  60% {
+    transform: translateY(-10%) scale(1.02);
+    opacity: 0.8;
+    filter: blur(1px);
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes modalSlideBottom {
+  from {
+    transform: translateY(100%) scale(0.9);
+    opacity: 0;
+    filter: blur(5px);
+  }
+  60% {
+    transform: translateY(10%) scale(1.02);
+    opacity: 0.8;
+    filter: blur(1px);
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* 모달 경계선 그라데이션 */
+.modal-border {
+  border: 2px solid transparent;
+  background: linear-gradient(45deg, 
+    rgba(59, 130, 246, 0.3) 0%, 
+    rgba(147, 51, 234, 0.3) 50%, 
+    rgba(236, 72, 153, 0.3) 100%) border-box;
+  background-clip: padding-box, border-box;
+}
+
+/* 모달 그림자 효과 */
+.modal-shadow {
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.8),
+    0 0 100px rgba(59, 130, 246, 0.1),
+    0 0 50px rgba(147, 51, 234, 0.1);
+}
+
+/* 역동적인 파티클 효과 */
+@keyframes transitionParticle0 {
+  0% {
+    opacity: 0;
+    transform: translateY(100vh) translateX(-20px) scale(0) rotate(0deg);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(80vh) translateX(20px) scale(1) rotate(90deg);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(20vh) translateX(-10px) scale(1.2) rotate(270deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20vh) translateX(30px) scale(0) rotate(360deg);
+  }
+}
+
+@keyframes transitionParticle1 {
+  0% {
+    opacity: 0;
+    transform: translateX(-100vw) translateY(20px) scale(0) rotate(0deg);
+  }
+  25% {
+    opacity: 1;
+    transform: translateX(-20vw) translateY(-20px) scale(1) rotate(120deg);
+  }
+  75% {
+    opacity: 1;
+    transform: translateX(80vw) translateY(10px) scale(0.8) rotate(240deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(120vw) translateY(-30px) scale(0) rotate(360deg);
+  }
+}
+
+@keyframes transitionParticle2 {
+  0% {
+    opacity: 0;
+    transform: translateY(-100vh) translateX(10px) scale(0) rotate(0deg);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-20vh) translateX(-30px) scale(1.1) rotate(180deg);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(70vh) translateX(20px) scale(0.9) rotate(300deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(120vh) translateX(-10px) scale(0) rotate(360deg);
+  }
+}
+
+@keyframes transitionParticle3 {
+  0% {
+    opacity: 0;
+    transform: translateX(100vw) translateY(-10px) scale(0) rotate(0deg);
+  }
+  35% {
+    opacity: 1;
+    transform: translateX(20vw) translateY(30px) scale(1.3) rotate(150deg);
+  }
+  65% {
+    opacity: 1;
+    transform: translateX(-70vw) translateY(-20px) scale(0.7) rotate(280deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-120vw) translateY(40px) scale(0) rotate(360deg);
+  }
+}
+
+.transition-particle-0 {
+  animation: transitionParticle0 infinite ease-in-out;
+}
+
+.transition-particle-1 {
+  animation: transitionParticle1 infinite ease-in-out;
+}
+
+.transition-particle-2 {
+  animation: transitionParticle2 infinite ease-in-out;
+}
+
+.transition-particle-3 {
+  animation: transitionParticle3 infinite ease-in-out;
+}
+
+.modal-particle {
+  animation: modalParticle 3s ease-in-out infinite;
+}
+
+/* 모달별 특별 효과 */
+.modal-about {
+  background: linear-gradient(135deg, 
+    rgba(147, 51, 234, 0.1) 0%, 
+    rgba(0, 0, 0, 0.95) 50%, 
+    rgba(236, 72, 153, 0.1) 100%);
+}
+
+.modal-projects {
+  background: linear-gradient(135deg, 
+    rgba(245, 101, 101, 0.1) 0%, 
+    rgba(0, 0, 0, 0.95) 50%, 
+    rgba(251, 146, 60, 0.1) 100%);
+}
+
+.modal-contact {
+  background: linear-gradient(135deg, 
+    rgba(16, 185, 129, 0.1) 0%, 
+    rgba(0, 0, 0, 0.95) 50%, 
+    rgba(59, 130, 246, 0.1) 100%);
+}
+
+.project-grid-item:hover {
+  transform: translateY(-4px);
 }
 
 /* 모달 슬라이드 업 애니메이션 */
@@ -344,29 +1339,5 @@ section {
   animation: slide-up 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-/* Swiper 슬라이드 호버 상태 개선 */
-.swiper-slide {
-  text-align: center;
-  font-size: 18px;
-  background: transparent;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.3s ease;
-  position: relative;
-}
 
-/* active되지 않은 슬라이드 호버 시 효과 */
-.swiper-slide-prev:hover,
-.swiper-slide-next:hover {
-  transform: scale(0.95) !important;
-  opacity: 0.8 !important;
-  transition: all 0.3s ease;
-}
-
-/* active 슬라이드 호버 시 효과 */
-.swiper-slide-active:hover {
-  transform: scale(1.08) !important;
-  transition: all 0.3s ease;
-}
 

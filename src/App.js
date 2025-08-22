@@ -1,21 +1,32 @@
 import './App.css';
+import { useState } from 'react';
 import NavBar from './components/NavBar';
-import Hero from './sections/Hero';
-import About from './sections/About';
-import Projects from './sections/Projects';
-import Contact from './sections/Contact';
-// import Loader from './components/Loader';
+import ModalPageSystem from './components/ModalPageSystem';
+import PerformanceMonitor from './components/PerformanceMonitor';
 
 function App() {
+  const [currentPage, setCurrentPage] = useState('home');
+
+  const handlePageChange = (newPage) => {
+
+    setCurrentPage(newPage);
+  };
+
   return (
-    <div className="bg-black">
-      {/* <Loader/> */}
-      <NavBar/>
+    <div className="bg-black relative overflow-hidden">
+      <PerformanceMonitor />
       
-      <Hero />
-      <About />
-      <Projects/>
-      <Contact/>
+      {/* 기존 도르레 네비게이션 */}
+      <NavBar 
+        currentPage={currentPage} 
+        onPageChange={handlePageChange} 
+      />
+      
+      {/* 모달 페이지 시스템 */}
+      <ModalPageSystem 
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }

@@ -18,6 +18,13 @@ const ContactExperience = ({btnClicked, handleClick}) => {
     <Canvas 
       camera={{ position: [0, 0.6, 1], fov: 75, near: 0.01, far: 40 }}
       fog={new THREE.Fog('#000000', 1, 2.5)}
+      dpr={[1, 1.5]}
+      gl={{
+        antialias: false,
+        powerPreference: "high-performance",
+        stencil: false,
+        alpha: false
+      }}
     >
 
       <directionalLight position={[1, 10, 1]} intensity={2} color="#ffffff"/>

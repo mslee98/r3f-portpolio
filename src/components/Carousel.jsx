@@ -5,9 +5,7 @@ import {
   EffectCoverflow, 
   Navigation, 
   Pagination,
-  Keyboard,
-  Mousewheel,
-  Parallax
+  Keyboard
 } from "swiper/modules";
 
 // Swiper CSS
@@ -43,13 +41,13 @@ const Carousel = () => {
           slidesPerView="auto"
           initialSlide={0}
           loop={true}
-          speed={800}
+          speed={400}
           coverflowEffect={{
             rotate: 0,
             stretch: 0,
-            depth: 100,
-            modifier: 1.5,
-            slideShadows: true,
+            depth: 80,
+            modifier: 1.2,
+            slideShadows: false,
           }}
           navigation={{
             nextEl: ".swiper-button-next",
@@ -67,17 +65,11 @@ const Carousel = () => {
             enabled: true,
             onlyInViewport: true,
           }}
-          mousewheel={{
-            forceToAxis: true,
-            sensitivity: 1,
-          }}
           modules={[
             EffectCoverflow, 
             Navigation, 
             Pagination, 
-            Keyboard, 
-            Mousewheel,
-            Parallax
+            Keyboard
           ]}
           className="w-full h-full"
           onSlideChange={handleSlideChange}
@@ -85,74 +77,14 @@ const Carousel = () => {
             320: {
               slidesPerView: 1.2,
               spaceBetween: 20,
-              centeredSlides: true,
-              coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 50,
-                modifier: 1,
-                slideShadows: true,
-              }
             },
             768: {
-              slidesPerView: 1.5,
+              slidesPerView: 1.8,
               spaceBetween: 30,
-              centeredSlides: true,
-              coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 100,
-                modifier: 1.2,
-                slideShadows: true,
-              }
             },
             1024: {
               slidesPerView: 2.5,
               spaceBetween: 40,
-              centeredSlides: true,
-              coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 150,
-                modifier: 1.5,
-                slideShadows: true,
-              }
-            },
-            1440: {
-              slidesPerView: 3,
-              spaceBetween: 50,
-              centeredSlides: true,
-              coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 200,
-                modifier: 1.8,
-                slideShadows: true,
-              }
-            },
-            1920: {
-              slidesPerView: 3.5,
-              spaceBetween: 60,
-              centeredSlides: true,
-              coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 250,
-                modifier: 2,
-                slideShadows: true,
-              }
-            },
-            2560: {
-              slidesPerView: 4,
-              spaceBetween: 80,
-              centeredSlides: true,
-              coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 300,
-                modifier: 2.2,
-                slideShadows: true,
-              }
             }
           }}
         >

@@ -16,7 +16,7 @@ const Contact = () => {
     }
 
     return (
-        <section className="c-space section-spacing relative" id="contract">
+        <section className="c-space py-8 relative" id="contact">
 
             {/* <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 text-center">
                 <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
@@ -44,7 +44,7 @@ const Contact = () => {
                 
             </div> */}
             
-            <div className="w-full h-full absolute top-0 left-0 z-20">
+            <div className="w-full h-96 relative z-20">
                 <ContactExperience btnClicked={btnClicked} handleClick={handleClick}/>
             </div>
 

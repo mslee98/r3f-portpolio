@@ -21,6 +21,10 @@ const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInterac
 
     const { scene: buildingScene } = useGLTF('/assets/models/building.glb');
     // const texture = useTexture('/assets/images/norm_asphalt.webp');
+    
+    // 성능 최적화: 프레임 레이트 제한
+    const lastFrameTime = useRef(0);
+    const targetFPS = 30; // 60fps에서 30fps로 제한
 
     const [screenGroup, setScreenGroup] = useState();
 
@@ -147,7 +151,16 @@ const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInterac
     return (
       <>
         <Loader onFinish={handleLoaderFinish} />
-        <Canvas>
+        <Canvas
+          dpr={[1, 1.5]}
+          gl={{
+            antialias: false,
+            powerPreference: "high-performance",
+            stencil: false,
+            depth: true,
+            alpha: false
+          }}
+        >
           <Suspense fallback={null}>
             <PerspectiveCamera 
               makeDefault // CameraShake연결을 위해서 초기값 지정을 해야함
@@ -313,38 +326,61 @@ function useVideoTexture(src, speed = 1) {
     video.muted = true;
     video.playsInline = true;
     video.autoplay = true;
+    // 성능 최적화를 위한 추가 설정
+    video.preload = 'metadata';
     videoRef.current = video;
 
     const videoTexture = new THREE.VideoTexture(video);
-    // videoTexture.minFilter = THREE.LinearFilter;
-    // videoTexture.magFilter = THREE.LinearFilter;
-    // videoTexture.format = THREE.RGBFormat;
+    videoTexture.minFilter = THREE.LinearFilter;
+    videoTexture.magFilter = THREE.LinearFilter;
+    videoTexture.format = THREE.RGBFormat;
+    videoTexture.generateMipmaps = false;
 
     const handleLoaded = () => {
-      video.play().catch(err => {
-        console.warn('Video play failed:', err);
-      });
-
-      // 최소치 제한 playbackRate은 0.25 ~ 4 범위를 초과하면 에러가 발생
-      const clampedSpeed = Math.min(Math.max(speed, 0.25), 4); 
-      video.playbackRate = clampedSpeed; 
-      setTexture(videoTexture);
+      // 사용자 상호작용 후 재생 시도
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          // 재생 성공
+          const clampedSpeed = Math.min(Math.max(speed, 0.25), 4);
+          video.playbackRate = clampedSpeed;
+          setTexture(videoTexture);
+        }).catch(err => {
+          console.warn('Video play failed:', err);
+          // 자동 재생 실패 시 사용자 클릭 이벤트 대기
+          const handleUserInteraction = () => {
+            video.play().then(() => {
+              const clampedSpeed = Math.min(Math.max(speed, 0.25), 4);
+              video.playbackRate = clampedSpeed;
+              setTexture(videoTexture);
+            });
+            document.removeEventListener('click', handleUserInteraction);
+            document.removeEventListener('touchstart', handleUserInteraction);
+          };
+          document.addEventListener('click', handleUserInteraction);
+          document.addEventListener('touchstart', handleUserInteraction);
+        });
+      }
     };
 
-    video.addEventListener('loadeddata', handleLoaded);
+    const handleCanPlay = () => {
+      handleLoaded();
+    };
+
+    video.addEventListener('canplay', handleCanPlay);
 
     return () => {
       video.pause();
-      video.removeEventListener('loadeddata', handleLoaded);
+      video.removeEventListener('canplay', handleCanPlay);
       video.src = '';
-      video.load();  // 메모리 해제 도움
+      video.load();
       videoTexture.dispose();
       setTexture(null);
     };
-  }, [src]);
+  }, [src, speed]);
 
   useEffect(() => {
-    if (videoRef.current) {
+    if (videoRef.current && videoRef.current.readyState >= 2) {
       const clampedSpeed = Math.min(Math.max(speed, 0.25), 4);
       videoRef.current.playbackRate = clampedSpeed;
     }
