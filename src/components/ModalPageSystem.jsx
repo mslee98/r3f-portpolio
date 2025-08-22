@@ -284,20 +284,7 @@ const ModalPageSystem = ({ currentPage, onPageChange }) => {
         </div>
       )}
 
-      {/* 페이지 전환 인디케이터 */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-[90]">
-        <div className="flex items-center space-x-2 px-4 py-2 bg-black/50 backdrop-blur-sm rounded-full border border-white/20">
-          <div className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-            currentPage === 'home' ? 'bg-white' : 'bg-white/30'
-          }`}></div>
-          <span className="text-white/80 text-sm">
-            {currentPage === 'home' ? 'Home - Hero Main Page' : `${currentPage.charAt(0).toUpperCase() + currentPage.slice(1)} Page`}
-          </span>
-          {currentPage !== 'home' && (
-            <span className="text-white/60 text-xs">ESC to close</span>
-          )}
-        </div>
-      </div>
+      {/* 페이지 전환 인디케이터 제거 - 깔끔한 UI를 위해 */}
     </div>
   );
 };

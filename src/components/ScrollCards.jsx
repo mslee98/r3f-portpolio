@@ -132,9 +132,10 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
         }
         
         // 복합적인 사인파로 자연스러운 움직임 생성 (90% 미만에서만)
-        const primaryWave = Math.sin(elapsed * 0.3) * 0.8; // 주 파동 (느림)
-        const secondaryWave = Math.sin(elapsed * 0.7) * 0.3; // 보조 파동 (빠름)
-        const tertiaryWave = Math.sin(elapsed * 1.1) * 0.1; // 미세 파동 (더 빠름)
+        // 스크롤 중일 때는 더 부드럽고 느리게
+        const primaryWave = Math.sin(elapsed * 0.2) * 0.6; // 주 파동 (더 느림)
+        const secondaryWave = Math.sin(elapsed * 0.5) * 0.2; // 보조 파동 (더 느림)
+        const tertiaryWave = Math.sin(elapsed * 0.8) * 0.05; // 미세 파동 (더 느림)
         
         // 0~0.9 범위로 정규화 (90% 이상으로는 자동으로 가지 않음)
         const combinedWave = (primaryWave + secondaryWave + tertiaryWave) / 2;
@@ -144,9 +145,9 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
         return Math.max(0, Math.min(0.9, normalizedValue));
       });
       
-      // 추가적인 몽환적 오프셋 (카드들의 미세한 떨림)
-      const dreamyX = Math.sin(elapsed * 2.1) * 5;
-      const dreamyY = Math.cos(elapsed * 1.7) * 8;
+      // 추가적인 몽환적 오프셋 (카드들의 미세한 떨림) - 스크롤 중일 때는 더 작게
+      const dreamyX = Math.sin(elapsed * 1.5) * 3; // 더 작은 움직임
+      const dreamyY = Math.cos(elapsed * 1.2) * 5; // 더 작은 움직임
       setDreamyOffset({ x: dreamyX, y: dreamyY });
       
       dreamAnimationRef.current = requestAnimationFrame(dreamyAnimation);
@@ -161,15 +162,24 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
     };
   }, [isVisible, isAutoDreaming]);
 
-  // 휠 이벤트 핸들러 (수동 제어 시 자동 애니메이션 일시 정지)
+  // 휠 이벤트 핸들러 (수동 제어 시 자동 애니메이션 완전 차단)
   useEffect(() => {
     if (!isVisible) return;
+
+    let scrollTimeout = null;
+    let isScrolling = false;
 
     const handleWheel = (e) => {
       e.preventDefault(); // 기본 스크롤 방지
       
-      // 수동 조작 시 자동 애니메이션 일시 정지
+      // 스크롤 중임을 표시하고 자동 애니메이션 완전 차단
+      isScrolling = true;
       setIsAutoDreaming(false);
+      
+      // 이전 타이머 클리어
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
       
       const delta = e.deltaY > 0 ? 0.05 : -0.05; // 스크롤 방향에 따른 증감
       
@@ -178,10 +188,11 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
         return newValue;
       });
       
-      // 3초 후 자동 애니메이션 재개
-      setTimeout(() => {
+      // 스크롤 후 5초 동안 자동 애니메이션 비활성화 (더 긴 시간)
+      scrollTimeout = setTimeout(() => {
+        isScrolling = false;
         setIsAutoDreaming(true);
-      }, 3000);
+      }, 5000);
     };
 
     // 키보드 이벤트 핸들러 (화살표 키로도 제어 가능)
@@ -199,12 +210,14 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
         case 'Home':
           setScrollY(0);
           setIsAutoDreaming(false);
-          setTimeout(() => setIsAutoDreaming(true), 2000);
+          // Home/End 후 5초 동안 자동 애니메이션 비활성화
+          setTimeout(() => setIsAutoDreaming(true), 5000);
           return;
         case 'End':
           setScrollY(1);
           setIsAutoDreaming(false);
-          setTimeout(() => setIsAutoDreaming(true), 2000);
+          // Home/End 후 5초 동안 자동 애니메이션 비활성화
+          setTimeout(() => setIsAutoDreaming(true), 5000);
           return;
         case ' ': // 스페이스바로 자동/수동 토글
           setIsAutoDreaming(prev => !prev);
@@ -216,7 +229,8 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       e.preventDefault();
       setIsAutoDreaming(false);
       setScrollY(prev => Math.max(0, Math.min(1, prev + delta)));
-      setTimeout(() => setIsAutoDreaming(true), 3000);
+      // 키보드 입력 후 5초 동안 자동 애니메이션 비활성화
+      setTimeout(() => setIsAutoDreaming(true), 5000);
     };
 
     // 이벤트 리스너 등록
@@ -226,6 +240,10 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
     return () => {
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('keydown', handleKeyDown);
+      // 타이머 정리
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
     };
   }, [isVisible]);
 
