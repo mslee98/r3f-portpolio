@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import Hero from '../sections/Hero';
-import About2 from '../sections/About2';
+import About from '../sections/About';
 // import Projects from '../sections/Projects'; // 주석처리
 import ProjectsNew from '../sections/ProjectsNew';
 import Contact from '../sections/Contact';
@@ -47,7 +47,7 @@ const ModalPageSystem = ({ currentPage, onPageChange, onLoadingComplete }) => {
   // 페이지별 컴포넌트 매핑
   const getPageComponent = (pageName) => {
     const components = {
-      'about': About2,
+      'about': About,
       'projects': ProjectsNew, // Cards를 Projects로 변경
       'projects-new': ProjectsNew, // 새로운 카드 스타일 프로젝트
       'contact': Contact
@@ -232,20 +232,7 @@ const ModalPageSystem = ({ currentPage, onPageChange, onLoadingComplete }) => {
       {/* 일반 모달 페이지들 */}
       {isModalOpen && CurrentModalComponent && !isFullPageMode && (
         <div className={getModalClasses()}>
-          {/* 모달 닫기 버튼 */}
-          <button
-            onClick={handleCloseModal}
-            className="absolute top-8 right-8 z-[90] w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full border border-white/30 flex items-center justify-center transition-all duration-300 group"
-          >
-            <svg 
-              className="w-6 h-6 text-white group-hover:rotate-90 transition-transform duration-300" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+
 
           {/* 모달 배경 오버레이 */}
           <div 
@@ -254,9 +241,9 @@ const ModalPageSystem = ({ currentPage, onPageChange, onLoadingComplete }) => {
           ></div>
 
           {/* 페이지 컨텐츠 - X버튼 공간 제외, 스크롤 방지 */}
-          <div className="relative z-10 w-full h-full overflow-hidden pt-20 pb-8 px-8">
+          <div className="relative z-10 w-full h-full overflow-hidden">
             <div className="w-full h-full overflow-hidden">
-              <CurrentModalComponent />
+              <CurrentModalComponent onClose={handleCloseModal} />
             </div>
           </div>
 

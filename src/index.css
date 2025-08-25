@@ -135,22 +135,9 @@ section {
   opacity: 0;
   transform: translateZ(0);
   transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
 }
 
-/* 애니메이션이 트리거되지 않은 경우를 위한 fallback */
-.grid-item:not(.animate-in) {
-  animation: fadeInFallback 1s ease-out 2s forwards;
-}
 
-@keyframes fadeInFallback {
-  to {
-    opacity: 1;
-    transform: translateX(0) translateY(0) scale(1) translateZ(0);
-  }
-}
 
 .grid-item:hover {
   transform: translateY(-4px) translateZ(0);
@@ -677,15 +664,15 @@ canvas {
 /* About Section */
 
 .c-space {
-  @apply sm:px-10 px-5 lg:px-16;
+  @apply px-4 sm:px-6 lg:px-8;
 }
 
 .section-spacing {
-  @apply min-h-screen mt-20 md:mt-32;
+  @apply h-screen mt-12 md:mt-16;
 }
 
 .text-heading {
-  @apply font-bold text-3xl md:text-4xl;
+  @apply font-bold text-2xl md:text-3xl;
 }
 
 .grid-1 {

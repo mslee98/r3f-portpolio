@@ -22,25 +22,62 @@ const shuffle = (accent = 0) => [
 
 const GridExperience = () => {
     const [accent, click] = useReducer((state) => ++state % accents.length, 0)
+    const [contextLost, setContextLost] = useState(false)
     const connectors = useMemo(() => shuffle(accent), [accent])
+
+    // 에러 처리 추가
+    if (!connectors) {
+        return (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-[#282b4b] to-[#1f1e39]">
+                <p className="text-white/60 text-sm">Failed to load 3D scene</p>
+            </div>
+        );
+    }
+
+    // WebGL 컨텍스트 손실 처리
+    if (contextLost) {
+        return (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-[#282b4b] to-[#1f1e39]">
+                <div className="text-center">
+                    <p className="text-white/60 text-sm mb-4">WebGL Context Lost</p>
+                    <button 
+                        onClick={() => setContextLost(false)}
+                        className="px-4 py-2 bg-white/20 rounded-full text-white text-sm hover:bg-white/30 transition-colors"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <Canvas 
             onClick={click} 
-            shadows={false}
-            dpr={[1, 1.2]} 
+            shadows={true}
+            dpr={1}
             gl={{ 
-                antialias: false, 
-                powerPreference: "high-performance",
-                stencil: false,
-                depth: false
+                antialias: true, 
+                powerPreference: "default",
+                stencil: true,
+                depth: true,
+                preserveDrawingBuffer: false,
+                failIfMajorPerformanceCaveat: false
             }} 
             camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}
-            frameloop="demand"
+            style={{ width: '100%', height: '100%' }}
+            onContextLost={(event) => {
+                console.log('WebGL Context Lost:', event);
+                setContextLost(true);
+            }}
+            onContextRestored={() => {
+                console.log('WebGL Context Restored');
+                setContextLost(false);
+            }}
         >
             <color attach="background" args={['#141622']} />
             <ambientLight intensity={0.4} />
-            <Physics gravity={[0, 0, 0]}>
+            <Physics gravity={[0, 0, 0]} maxStabilizationIterations={1} maxSolverIterations={1}>
                 <Pointer />
                 {connectors.map((props, i) => <Connector key={i} {...props} />) /* prettier-ignore */}
                 <Connector position={[10, 10, 5]}>
@@ -50,13 +87,13 @@ const GridExperience = () => {
                         thickness={0.1} 
                         anisotropicBlur={0.05} 
                         chromaticAberration={0.05} 
-                        samples={4} 
-                        resolution={256} 
+                        samples={2} 
+                        resolution={128} 
                     />
                 </Model>
                 </Connector>
             </Physics>
-            <Environment resolution={128}>
+            <Environment resolution={64}>
                 <group rotation={[-Math.PI / 3, 0, 1]}>
                 <Lightformer form="circle" intensity={2} rotation-x={Math.PI / 2} position={[0, 5, -9]} scale={2} />
                 <Lightformer form="circle" intensity={1} rotation-y={Math.PI / 2} position={[-5, 1, -1]} scale={2} />
@@ -72,8 +109,9 @@ function Connector({ position, children, vec = new THREE.Vector3(), scale, r = T
     const api = useRef()
     const pos = useMemo(() => position || [r(10), r(10), r(10)], [])
     useFrame((state, delta) => {
-      delta = Math.min(0.1, delta)
-      api.current?.applyImpulse(vec.copy(api.current.translation()).negate().multiplyScalar(0.2))
+      if (api.current && state.clock.elapsedTime % 0.1 < delta) {
+        api.current.applyImpulse(vec.copy(api.current.translation()).negate().multiplyScalar(0.2))
+      }
     })
     return (
       <RigidBody linearDamping={4} angularDamping={1} friction={0.1} position={pos} ref={api} colliders={false}>

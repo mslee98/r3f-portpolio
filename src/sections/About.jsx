@@ -9,70 +9,61 @@ const GridExperience = lazy(() => import("../components/GridExperience"));
 
 // 3D 컴포넌트 로딩 플레이스홀더
 const Component3DLoader = () => (
-  <div className="w-full h-full flex items-center justify-center">
-    <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+  <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-[#282b4b] to-[#1f1e39]">
+    <div className="text-center">
+      <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
+      <p className="text-white/60 text-sm">3D Scene Loading...</p>
+    </div>
   </div>
 );
 
-const About = () => {
+const About = ({ onClose }) => {
   const grid1Ref = useRef();
   const grid2Ref = useRef();
   const grid3Ref = useRef();
   const grid4Ref = useRef();
   const grid5Ref = useRef();
 
-  // IntersectionObserver로 애니메이션 트리거만 처리
-  
+  // 애니메이션 클래스 즉시 추가
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const gridId = entry.target.dataset.gridId;
-          if (entry.isIntersecting) {
-            // CSS 클래스 추가로 애니메이션 트리거 (상태 업데이트 제거)
-            entry.target.classList.add('animate-in');
-            // 한 번 관찰되면 더 이상 관찰하지 않음
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { 
-        threshold: 0.15,
-        rootMargin: '50px 0px'
-      }
-    );
-
     const grids = [grid1Ref, grid2Ref, grid3Ref, grid4Ref, grid5Ref];
     grids.forEach((ref, index) => {
       if (ref.current) {
-        ref.current.dataset.gridId = `grid${index + 1}`;
-        observer.observe(ref.current);
+        // 즉시 애니메이션 클래스 추가
+        setTimeout(() => {
+          ref.current.classList.add('animate-in');
+        }, index * 100);
       }
     });
-
-    return () => {
-      grids.forEach((ref) => {
-        if (ref.current) {
-          observer.unobserve(ref.current);
-        }
-      });
-    };
   }, []);
 
 
 
   return (
-    <section className="c-space section-spacing font-moneygraphy" id="about">
-      <h2 className="text-heading">About Me</h2>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-[18rem] mt-12">
+    <div className="w-full h-full relative c-space">
+      {/* 헤더 영역 - Projects 섹션과 동일한 스타일 */}
+      <div className="absolute top-0 left-0 right-0 z-30 px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center py-6">
+          <h2 className="text-heading text-white">About Me</h2>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full border border-white/30 flex items-center justify-center text-white text-sm font-bold transition-all duration-300 hover:scale-110"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-[16rem] pt-32">
         {/* Grid 1 */}
         <div 
           ref={grid1Ref}
           className="flex items-end grid-default-color grid-1 cursor-pointer grid-item grid-slide-left"
         >
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 w-full h-full">
             <Suspense fallback={<Component3DLoader />}>
-              <GridExperience />
+              <div className="w-full h-full">
+                <GridExperience />
+              </div>
             </Suspense>
           </div>
 
@@ -189,7 +180,7 @@ const About = () => {
         </div>
 
       </div>
-    </section>
+    </div>
   );
 };
 

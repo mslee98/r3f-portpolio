@@ -410,7 +410,20 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       )}
 
       {/* 고정된 화면 - 스크롤 없음 */}
-      <div className="w-full h-full relative">
+      <div className="w-full h-full relative c-space">
+        {/* 헤더 영역 - About 섹션과 동일한 스타일 */}
+        <div className="absolute top-0 left-0 right-0 z-30 px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <h2 className="text-heading text-white">Projects</h2>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full border border-white/30 flex items-center justify-center text-white text-sm font-bold transition-all duration-300 hover:scale-110"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+        
         {/* 메인 헤더 - Lusion 스타일 큰 대제목 */}
         <div className="absolute top-0 left-0 right-0 text-center py-32 z-20">
           <h1 className="text-8xl md:text-9xl font-black text-white mb-8 tracking-tighter leading-none">
@@ -1035,7 +1048,13 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-8 pointer-events-none"
+            className="fixed inset-0 z-50 flex items-center justify-center p-8 pointer-events-auto"
+            onClick={(e) => {
+              // 팝업 외부 영역을 클릭했을 때만 닫기
+              if (e.target === e.currentTarget) {
+                setSelectedProject(null);
+              }
+            }}
           >
             <div className="relative w-full max-w-4xl max-h-[90vh] bg-black/95 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl overflow-hidden pointer-events-auto">
               {/* 팝업 헤더 */}
