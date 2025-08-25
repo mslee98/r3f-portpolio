@@ -420,44 +420,58 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
                   display: 'inline-block', 
                   opacity: scrollY >= 0.05 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.05 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>M</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '3rem',
+                  fontWeight: '600'
+                }}>E</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.08 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.08 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>Y</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '3rem',
+                  fontWeight: '600'
+                }}>X</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.11 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.11 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>S</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '3rem',
+                  fontWeight: '600'
+                }}>P</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.14 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.14 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>T</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '3rem',
+                  fontWeight: '600'
+                }}>L</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.17 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.17 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>E</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '3rem',
+                  fontWeight: '600'
+                }}>O</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.20 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.20 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '3rem',
+                  fontWeight: '600'
                 }}>R</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.23 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.23 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>Y</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '3rem',
+                  fontWeight: '600'
+                }}>E</span>
               </span>
             ) : scrollY <= 0.4 ? (
               <span className="flex items-center justify-center space-x-4">
@@ -465,71 +479,181 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
                   display: 'inline-block', 
                   opacity: scrollY >= 0.22 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.22 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>S</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>I</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.25 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.25 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>T</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>N</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.28 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.28 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>A</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>T</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.31 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.31 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>C</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>E</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.34 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.34 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>K</span>
-              </span>
-            ) : scrollY <= 0.6 ? (
-              <span className="flex items-center justify-center space-x-4">
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>R</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
-                  opacity: scrollY >= 0.42 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.42 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
+                  opacity: scrollY >= 0.37 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.37 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>A</span>
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 0.40 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.40 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>C</span>
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 0.43 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.43 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>T</span>
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 0.46 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.46 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>I</span>
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 0.49 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.49 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>V</span>
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 0.52 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.52 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>E</span>
+              </span>
+            ) : scrollY <= 0.6 ? (
+              <span className="flex items-center justify-center space-x-2">
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 0.41 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.41 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>↓</span>
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 0.43 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.43 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
                 }}>S</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.45 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.45 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>P</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>c</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
-                  opacity: scrollY >= 0.48 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.48 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>R</span>
+                  opacity: scrollY >= 0.47 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.47 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>r</span>
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 0.49 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.49 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>o</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.51 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.51 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>E</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>l</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
-                  opacity: scrollY >= 0.54 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.54 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>A</span>
+                  opacity: scrollY >= 0.53 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.53 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>l</span>
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 0.53 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.53 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>D</span>
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 0.55 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.55 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>o</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.57 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.57 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>D</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>w</span>
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 0.59 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.59 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>n</span>
               </span>
             ) : scrollY <= 0.8 ? (
               <span className="flex items-center justify-center space-x-4">
@@ -537,38 +661,66 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
                   display: 'inline-block', 
                   opacity: scrollY >= 0.62 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.62 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>R</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>F</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.65 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.65 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>E</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>r</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.68 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.68 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>V</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>o</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.71 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.71 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>E</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>n</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.74 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.74 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>A</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>t</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.77 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.77 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>L</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>e</span>
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 0.80 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.80 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>n</span>
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 0.83 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 0.83 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>d</span>
               </span>
             ) : (
               <span className="flex items-center justify-center space-x-4">
@@ -576,44 +728,66 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
                   display: 'inline-block', 
                   opacity: scrollY >= 0.82 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.82 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
                 }}>P</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.85 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.85 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>R</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>r</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.88 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.88 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>O</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>o</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.91 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.91 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>J</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>j</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.94 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.94 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>E</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>e</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 0.97 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 0.97 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>C</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>c</span>
                 <span className="char" style={{ 
                   display: 'inline-block', 
                   opacity: scrollY >= 1.00 ? 1 : 0,
                   transform: `translate3d(${scrollY >= 1.00 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out'
-                }}>T</span>
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>t</span>
+                <span className="char" style={{ 
+                  display: 'inline-block', 
+                  opacity: scrollY >= 1.03 ? 1 : 0,
+                  transform: `translate3d(${scrollY >= 1.03 ? 0 : -200}px, 0px, 0px)`,
+                  transition: 'all 0.5s ease-out',
+                  fontSize: '2.5rem',
+                  fontWeight: '600'
+                }}>s</span>
               </span>
             )}
           </h1>
@@ -1057,15 +1231,17 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
                   className="h-full bg-white transition-all duration-300 ease-out relative"
                   style={{ 
                     width: `${scrollY * 100}%`,
-                    boxShadow: '0 0 20px rgba(255, 255, 255, 0.3)'
+                    boxShadow: scrollY <= 0.6 ? '0 0 25px rgba(255, 255, 255, 0.5)' : '0 0 20px rgba(255, 255, 255, 0.3)'
                   }}
                 >
                   {/* 스프레드 효과 - 진행률 끝에 빛나는 점 */}
                   <div 
                     className="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-white rounded-full"
                     style={{
-                      boxShadow: '0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.4)',
-                      animation: 'pulse 2s ease-in-out infinite'
+                      boxShadow: scrollY <= 0.6 ? 
+                        '0 0 20px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.6)' : 
+                        '0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.4)',
+                      animation: scrollY <= 0.6 ? 'pulse 1s ease-in-out infinite' : 'pulse 2s ease-in-out infinite'
                     }}
                   />
                 </div>
@@ -1079,6 +1255,8 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
                     className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${
                       scrollY >= stage 
                         ? 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]' 
+                        : scrollY <= 0.6 && stage === 0.6
+                        ? 'bg-white/40 shadow-[0_0_6px_rgba(255,255,255,0.4)]' // Scroll down 단계 강조
                         : 'bg-white/20'
                     }`}
                   />
@@ -1089,11 +1267,13 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
             {/* 현재 단계 텍스트 - FE 개발자 전문성 반영 */}
             <div className="text-center">
               <div className="text-white/90 text-sm font-light tracking-wide">
-                {scrollY <= 0.2 ? 'EXPLORE' :
-                 scrollY <= 0.4 ? 'DIGITAL TWIN' :
-                 scrollY <= 0.6 ? 'INTERACTIVE' :
-                 scrollY <= 0.8 ? 'ENGAGE' :
-                 'PORTFOLIO'}
+                {scrollY <= 0.2 ? 'step 1' :
+                 scrollY <= 0.4 ? 'step 3' :
+                 scrollY <= 0.6 ? (
+                   <span className="text-white font-medium">↓ Scroll Down</span>
+                 ) :
+                 scrollY <= 0.8 ? 'step 4' :
+                 'end'}
               </div>
             </div>
             
@@ -1106,9 +1286,13 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
               {isAutoDreaming ? '✨ Auto' : '🎮 Manual'}
             </div>
             
-            {/* 조작 가이드 - 간단하게 */}
+            {/* 조작 가이드 - 단계별로 다르게 표시 */}
             <div className="px-3 py-1.5 bg-black/40 backdrop-blur-sm rounded-full text-white/60 text-xs text-center border border-white/10">
-              Scroll | Arrows | Space
+              {scrollY <= 0.6 ? (
+                <span className="text-white/80 font-medium">↓ Keep scrolling</span>
+              ) : (
+                'Scroll | Arrows | Space'
+              )}
             </div>
           </div>
         </div>

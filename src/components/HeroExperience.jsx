@@ -13,7 +13,7 @@ import { gsap } from "gsap";
 
 import {SpredingPoint} from '../components/SpreadingPoint';
 
-const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInteracting, loadingYn, setLoadingYn}) => {
+const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInteracting, loadingYn, setLoadingYn, onLoadingComplete}) => {
     const buildingRef = useRef();
     const cameraRef = useRef();
     // const [isAnimating, setIsAnimating] = useState(false);
@@ -90,6 +90,11 @@ const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInterac
 
       setLoadingYn(true);
       // setIsAnimating(true); // 애니메이션 시작
+
+      // 로딩 완료 콜백 호출
+      if (onLoadingComplete) {
+        onLoadingComplete();
+      }
 
       // GSAP를 사용한 애니메이션
       gsap.timeline()

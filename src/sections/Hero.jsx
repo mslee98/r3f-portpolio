@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import HeroExperience from '../components/HeroExperience';
 import { motion, AnimatePresence } from "framer-motion";
 
-const Hero = () => {
+const Hero = ({ onLoadingComplete }) => {
 
     const [hue, setHue] = useState(0) // 원하는 초기값으로 변경
     const [speed, setSpeed] = useState(1)
@@ -54,6 +54,14 @@ const Hero = () => {
           setStep(-1);
         }
       }, [loadingYn]);
+
+    // 로딩 완료 핸들러
+    const handleLoadingComplete = (loadingState) => {
+        setLoadingYn(loadingState);
+        if (loadingState && onLoadingComplete) {
+            onLoadingComplete();
+        }
+    };
 
     return (
          <section
@@ -243,7 +251,16 @@ const Hero = () => {
             </footer>
             
             <div className="w-full h-full absolute top-0 left-0">
-                <HeroExperience hue={hue} speed={speed} brightness={brightness} selectedVideoType={selectedVideoType} setIsInteracting={setIsInteracting} loadingYn={loadingYn} setLoadingYn={setLoadingYn}/>
+                <HeroExperience 
+                    hue={hue} 
+                    speed={speed} 
+                    brightness={brightness} 
+                    selectedVideoType={selectedVideoType} 
+                    setIsInteracting={setIsInteracting} 
+                    loadingYn={loadingYn} 
+                    setLoadingYn={handleLoadingComplete}
+                    onLoadingComplete={onLoadingComplete}
+                />
             </div>
         </section>
     )

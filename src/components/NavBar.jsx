@@ -1,7 +1,7 @@
 import { navItems } from "../constants";
 import { useState, useEffect } from "react";
 
-const NavBar = ({ currentPage, onPageChange }) => {
+const NavBar = ({ currentPage, onPageChange, isLoading = false }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const [rotationOffset, setRotationOffset] = useState(0);
@@ -45,7 +45,10 @@ const NavBar = ({ currentPage, onPageChange }) => {
     setPrevPage(currentPage); // Update previous page for next change
   }, [currentPage, prevPage]);
 
-
+  // 로딩 중에는 도르레 메뉴 숨김
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <>

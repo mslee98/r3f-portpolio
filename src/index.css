@@ -65,6 +65,43 @@
   }
 }
 
+/* 로딩 애니메이션 전환 효과 */
+.loader-screen {
+  transition: all 0.3s ease-out;
+  will-change: transform, opacity, width, height, border-radius;
+}
+
+.loader-screen.transitioning {
+  pointer-events: none;
+}
+
+/* 도르레 메뉴 전환 애니메이션 */
+@keyframes spreadToMenu {
+  0% {
+    transform: scale(1) translate(0, 0);
+    border-radius: 0;
+  }
+  50% {
+    transform: scale(0.15) translate(calc(100vw - 200px), calc(50vh - 160px));
+    border-radius: 50%;
+  }
+  100% {
+    transform: scale(0) translate(calc(100vw - 200px), calc(50vh - 160px));
+    border-radius: 50%;
+    opacity: 0;
+  }
+}
+
+/* 스프레드 효과 애니메이션 */
+@keyframes spreadEffect {
+  0% {
+    clip-path: circle(0% at center);
+  }
+  100% {
+    clip-path: circle(100% at center);
+  }
+}
+
 body {
   background: #030412;
   color: white;

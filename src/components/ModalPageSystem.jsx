@@ -5,7 +5,7 @@ import About2 from '../sections/About2';
 import ProjectsNew from '../sections/ProjectsNew';
 import Contact from '../sections/Contact';
 
-const ModalPageSystem = ({ currentPage, onPageChange }) => {
+const ModalPageSystem = ({ currentPage, onPageChange, onLoadingComplete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalDirection, setModalDirection] = useState('right');
   const [isAnimating, setIsAnimating] = useState(false);
@@ -212,7 +212,7 @@ const ModalPageSystem = ({ currentPage, onPageChange }) => {
     <div className="relative w-full h-screen overflow-hidden">
       {/* 항상 렌더링되는 Hero 배경 */}
       <div className="absolute inset-0">
-        <Hero />
+        <Hero onLoadingComplete={onLoadingComplete} />
       </div>
 
       {/* 전체 페이지 모드 */}
