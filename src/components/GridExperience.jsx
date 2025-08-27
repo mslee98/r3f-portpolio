@@ -5,6 +5,7 @@ import { useState, useRef, useEffect, useMemo, Suspense, useReducer } from 'reac
 import { Physics, RigidBody, CuboidCollider, BallCollider } from '@react-three/rapier';
 import * as THREE from 'three';
 import { easing } from 'maath';
+import { useInView } from 'framer-motion';
 
 
 const accents = ['#4060ff', '#20ffa0', '#ff4060', '#ffcc00']
@@ -25,15 +26,6 @@ const GridExperience = () => {
     const [contextLost, setContextLost] = useState(false)
     const connectors = useMemo(() => shuffle(accent), [accent])
 
-    // 에러 처리 추가
-    if (!connectors) {
-        return (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-[#282b4b] to-[#1f1e39]">
-                <p className="text-white/60 text-sm">Failed to load 3D scene</p>
-            </div>
-        );
-    }
-
     // WebGL 컨텍스트 손실 처리
     if (contextLost) {
         return (
@@ -52,17 +44,20 @@ const GridExperience = () => {
     }
 
     return (
+        <>
         <Canvas 
             onClick={click} 
-            shadows={true}
-            dpr={1}
+            shadows={false}
+            dpr={[0.5, 1]}
+            frameloop="demand"
             gl={{ 
-                antialias: true, 
-                powerPreference: "default",
-                stencil: true,
+                antialias: false, 
+                powerPreference: "low-power",
+                stencil: false,
                 depth: true,
                 preserveDrawingBuffer: false,
-                failIfMajorPerformanceCaveat: false
+                failIfMajorPerformanceCaveat: false,
+                alpha: false
             }} 
             camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}
             style={{ width: '100%', height: '100%' }}
@@ -77,18 +72,18 @@ const GridExperience = () => {
         >
             <color attach="background" args={['#141622']} />
             <ambientLight intensity={0.4} />
-            <Physics gravity={[0, 0, 0]} maxStabilizationIterations={1} maxSolverIterations={1}>
+            <Physics gravity={[0, 0, 0]} maxStabilizationIterations={1} maxSolverIterations={1} timeStep={1/30}>
                 <Pointer />
                 {connectors.map((props, i) => <Connector key={i} {...props} />) /* prettier-ignore */}
                 <Connector position={[10, 10, 5]}>
                 <Model>
                     <MeshTransmissionMaterial 
-                        clearcoat={1} 
-                        thickness={0.1} 
-                        anisotropicBlur={0.05} 
-                        chromaticAberration={0.05} 
-                        samples={2} 
-                        resolution={128} 
+                        clearcoat={0.5} 
+                        thickness={0.05} 
+                        anisotropicBlur={0.02} 
+                        chromaticAberration={0.02} 
+                        samples={1} 
+                        resolution={64} 
                     />
                 </Model>
                 </Connector>
@@ -100,6 +95,7 @@ const GridExperience = () => {
                 </group>
             </Environment>
         </Canvas>
+        </>
     )
 }
 
@@ -109,8 +105,8 @@ function Connector({ position, children, vec = new THREE.Vector3(), scale, r = T
     const api = useRef()
     const pos = useMemo(() => position || [r(10), r(10), r(10)], [])
     useFrame((state, delta) => {
-      if (api.current && state.clock.elapsedTime % 0.1 < delta) {
-        api.current.applyImpulse(vec.copy(api.current.translation()).negate().multiplyScalar(0.2))
+      if (api.current && state.clock.elapsedTime % 0.5 < delta) {
+        api.current.applyImpulse(vec.copy(api.current.translation()).negate().multiplyScalar(0.05))
       }
     })
     return (

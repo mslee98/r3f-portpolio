@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const Hero = ({ onLoadingComplete }) => {
 
     const [hue, setHue] = useState(0) // 원하는 초기값으로 변경
-    const [speed, setSpeed] = useState(1)
+    const [speed, setSpeed] = useState(0.9) // 원본 영상 속도를 초기값으로 설정
     const [brightness, setBrightness] = useState(1);
 
     const [selectedVideoType, setSelectedVideoType] = useState('TYPE1');

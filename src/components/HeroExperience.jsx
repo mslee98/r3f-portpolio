@@ -13,7 +13,7 @@ import { gsap } from "gsap";
 
 import {SpredingPoint} from '../components/SpreadingPoint';
 
-const HeroExperience = ({hue, speed, brightness, selectedVideoType, setIsInteracting, loadingYn, setLoadingYn, onLoadingComplete}) => {
+const HeroExperience = ({hue, speed, brightness, selectedVideoType = 'TYPE1', setIsInteracting, loadingYn, setLoadingYn, onLoadingComplete}) => {
     const buildingRef = useRef();
     const cameraRef = useRef();
     // const [isAnimating, setIsAnimating] = useState(false);
@@ -304,9 +304,10 @@ function useVideoTexture(src, speed = 1) {
     videoRef.current = video;
 
     const videoTexture = new THREE.VideoTexture(video);
+    // 원본 영상 색감을 그대로 보여주기 위한 설정
     videoTexture.minFilter = THREE.LinearFilter;
     videoTexture.magFilter = THREE.LinearFilter;
-    videoTexture.format = THREE.RGBFormat;
+    // videoTexture.format = THREE.RGBFormat; // 이 설정 제거
     videoTexture.generateMipmaps = false;
 
     const handleLoaded = () => {
@@ -437,32 +438,14 @@ function ScreenTextMeshes({ screenGroup, hue, speed, brightness, selectedVideoTy
 function HueMaterial({ texture, hue = 0, brightness=1}) {
   const materialRef = useRef();
 
+  // 디버깅을 위한 콘솔 로그
+  console.log('HueMaterial props:', { hue, brightness, texture: !!texture });
+
   const uniforms = useMemo(() => ({
     uTexture: { value: texture },
     uHue: { value: hue },
     uBrightness: { value: brightness },
   }), [texture]);
-
-  // 값이 변경될 때만 유니폼 업데이트 (성능 최적화)
-  const prevValues = useRef({ hue, brightness, texture });
-  
-  useFrame(() => {
-    if (materialRef.current) {
-      // 값이 실제로 변경된 경우에만 업데이트
-      if (prevValues.current.hue !== hue) {
-        materialRef.current.uniforms.uHue.value = hue;
-        prevValues.current.hue = hue;
-      }
-      if (prevValues.current.brightness !== brightness) {
-        materialRef.current.uniforms.uBrightness.value = brightness;
-        prevValues.current.brightness = brightness;
-      }
-      if (prevValues.current.texture !== texture) {
-        materialRef.current.uniforms.uTexture.value = texture;
-        prevValues.current.texture = texture;
-      }
-    }
-  });
 
   useEffect(() => {
     if (materialRef.current) {
@@ -474,17 +457,22 @@ function HueMaterial({ texture, hue = 0, brightness=1}) {
 
   if (!texture) return null;
 
-  // hue가 정확히 0이고 brightness가 1이면 원본 material 사용
-  if (Math.abs(hue) < 0.001 && Math.abs(brightness - 1) < 0.001) {
+  // hue가 0이면 기본 material 사용
+  if (hue === 0) {
+    console.log('Using meshBasicMaterial (original video)');
     return (
       <meshBasicMaterial 
         map={texture}
         toneMapped={false}
+        color={0xffffff}
+        transparent={false}
+        opacity={1}
       />
     );
   }
 
-  // 그 외의 경우 shader material 사용
+  console.log('Using shaderMaterial (modified video)');
+
   return (
     <shaderMaterial
       ref={materialRef}
