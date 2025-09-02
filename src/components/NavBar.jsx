@@ -238,7 +238,7 @@ const NavBar = ({ currentPage, onPageChange, isLoading = false }) => {
               );
             });
           })()}
-        </div>
+            </div>
       </div>
     </>
   );

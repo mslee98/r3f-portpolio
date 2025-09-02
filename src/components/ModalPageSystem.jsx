@@ -168,44 +168,8 @@ const ModalPageSystem = ({ currentPage, onPageChange, onLoadingComplete }) => {
 
   // 페이지별 연결선 효과
   const getConnectionLine = () => {
-    if (!isModalOpen || !isAnimating) return null;
-    
-    switch (modalDirection) {
-      case 'left':
-        return (
-          <div className="absolute top-1/2 left-0 w-full h-1 transform -translate-y-1/2 z-[80]">
-            <div className="connection-line bg-gradient-to-r from-blue-500/60 via-purple-500/80 to-pink-500/60 h-full"></div>
-            <div className="absolute left-4 top-1/2 w-3 h-3 bg-blue-500 rounded-full transform -translate-y-1/2 connection-point"></div>
-            <div className="absolute right-4 top-1/2 w-3 h-3 bg-pink-500 rounded-full transform -translate-y-1/2 connection-point"></div>
-          </div>
-        );
-      case 'right':
-        return (
-          <div className="absolute top-1/2 right-0 w-full h-1 transform -translate-y-1/2 z-[80]">
-            <div className="connection-line bg-gradient-to-l from-green-500/60 via-emerald-500/80 to-teal-500/60 h-full"></div>
-            <div className="absolute left-4 top-1/2 w-3 h-3 bg-teal-500 rounded-full transform -translate-y-1/2 connection-point"></div>
-            <div className="absolute right-4 top-1/2 w-3 h-3 bg-green-500 rounded-full transform -translate-y-1/2 connection-point"></div>
-          </div>
-        );
-      case 'bottom':
-        return (
-          <div className="absolute bottom-0 left-1/2 w-1 h-full transform -translate-x-1/2 z-[80]">
-            <div className="connection-line-vertical bg-gradient-to-t from-orange-500/60 via-yellow-500/80 to-red-500/60 w-full"></div>
-            <div className="absolute top-4 left-1/2 w-3 h-3 bg-red-500 rounded-full transform -translate-x-1/2 connection-point"></div>
-            <div className="absolute bottom-4 left-1/2 w-3 h-3 bg-orange-500 rounded-full transform -translate-x-1/2 connection-point"></div>
-          </div>
-        );
-      case 'top':
-        return (
-          <div className="absolute top-0 left-1/2 w-1 h-full transform -translate-x-1/2 z-[80]">
-            <div className="connection-line-vertical bg-gradient-to-b from-cyan-500/60 via-indigo-500/80 to-purple-500/60 w-full"></div>
-            <div className="absolute top-4 left-1/2 w-3 h-3 bg-cyan-500 rounded-full transform -translate-x-1/2 connection-point"></div>
-            <div className="absolute bottom-4 left-1/2 w-3 h-3 bg-purple-500 rounded-full transform -translate-x-1/2 connection-point"></div>
-          </div>
-        );
-      default:
-        return null;
-    }
+    // 연결선 제거됨
+    return null;
   };
 
   return (
