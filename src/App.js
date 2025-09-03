@@ -2,7 +2,7 @@ import './App.css';
 import { useState } from 'react';
 import NavBar from './components/NavBar';
 import ModalPageSystem from './components/ModalPageSystem';
-import PerformanceMonitor from './components/PerformanceMonitor';
+// import PerformanceMonitor from './components/PerformanceMonitor';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -19,7 +19,7 @@ function App() {
 
   return (
     <div className="bg-black relative overflow-hidden">
-      <PerformanceMonitor />
+      {/* <PerformanceMonitor /> */}
       
       {/* 기존 도르레 네비게이션 - 로딩 중에는 숨김 */}
       <NavBar 

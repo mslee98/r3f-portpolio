@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Hero from '../sections/Hero';
 import About from '../sections/About';
-// import Projects from '../sections/Projects'; // 주석처리
+import Projects from '../sections/Projects';
 import ProjectsNew from '../sections/ProjectsNew';
 import Contact from '../sections/Contact';
 
@@ -48,7 +48,7 @@ const ModalPageSystem = ({ currentPage, onPageChange, onLoadingComplete }) => {
   const getPageComponent = (pageName) => {
     const components = {
       'about': About,
-      'projects': ProjectsNew, // Cards를 Projects로 변경
+      'projects': Projects, // Projects 컴포넌트로 변경
       'projects-new': ProjectsNew, // 새로운 카드 스타일 프로젝트
       'contact': Contact
     };
@@ -59,7 +59,7 @@ const ModalPageSystem = ({ currentPage, onPageChange, onLoadingComplete }) => {
     console.log('Page transition:', prevPage, '→', currentPage);
     
     // 전체 페이지 모드 페이지들
-    const fullPageModes = ['projects']; // projects-new를 projects로 변경
+    const fullPageModes = ['projects', 'about']; // about도 전체 페이지 모드로 추가
     const isCurrentFullPage = fullPageModes.includes(currentPage);
     const wasPrevFullPage = fullPageModes.includes(prevPage);
     
@@ -181,10 +181,18 @@ const ModalPageSystem = ({ currentPage, onPageChange, onLoadingComplete }) => {
 
       {/* 전체 페이지 모드 */}
       {isFullPageMode && displayPage === 'projects' && (
-        <ProjectsNew 
-          isActive={isFullPageMode} 
+        <Projects 
           onClose={() => {
             console.log('ModalPageSystem: Projects onClose called');
+            onPageChange('home');
+          }}
+        />
+      )}
+
+      {isFullPageMode && displayPage === 'about' && (
+        <About 
+          onClose={() => {
+            console.log('ModalPageSystem: About onClose called');
             onPageChange('home');
           }}
         />

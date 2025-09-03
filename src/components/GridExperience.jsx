@@ -1,11 +1,10 @@
-import { Canvas, useFrame} from "@react-three/fiber";
-import { PerspectiveCamera, useTexture, useGLTF, MeshReflectorMaterial, MapControls, OrbitControls, Html, Environment, Lightformer, MeshTransmissionMaterial } from '@react-three/drei'
-import { EffectComposer, Bloom, Vignette, N8AO } from '@react-three/postprocessing'
-import { useState, useRef, useEffect, useMemo, Suspense, useReducer } from 'react';
-import { Physics, RigidBody, CuboidCollider, BallCollider } from '@react-three/rapier';
-import * as THREE from 'three';
-import { easing } from 'maath';
-import { useInView } from 'framer-motion';
+import * as THREE from 'three'
+import { useRef, useReducer, useMemo, useState, useEffect } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { useGLTF, MeshTransmissionMaterial, Environment, Lightformer } from '@react-three/drei'
+import { CuboidCollider, BallCollider, Physics, RigidBody } from '@react-three/rapier'
+import { EffectComposer, N8AO } from '@react-three/postprocessing'
+import { easing } from 'maath'
 
 
 const accents = ['#4060ff', '#20ffa0', '#ff4060', '#ffcc00']
@@ -23,75 +22,58 @@ const shuffle = (accent = 0) => [
 
 const GridExperience = () => {
     const [accent, click] = useReducer((state) => ++state % accents.length, 0)
-    const [contextLost, setContextLost] = useState(false)
+    const [isRendererReady, setIsRendererReady] = useState(false)
     const connectors = useMemo(() => shuffle(accent), [accent])
 
-    // WebGL 컨텍스트 손실 처리
-    if (contextLost) {
-        return (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-[#282b4b] to-[#1f1e39]">
-                <div className="text-center">
-                    <p className="text-white/60 text-sm mb-4">WebGL Context Lost</p>
-                    <button 
-                        onClick={() => setContextLost(false)}
-                        className="px-4 py-2 bg-white/20 rounded-full text-white text-sm hover:bg-white/30 transition-colors"
-                    >
-                        Retry
-                    </button>
-                </div>
-            </div>
-        );
-    }
+    useEffect(() => {
+        // 렌더러가 준비될 때까지 잠시 대기
+        const timer = setTimeout(() => {
+            setIsRendererReady(true)
+        }, 100)
+        
+        return () => clearTimeout(timer)
+    }, [])
 
     return (
         <>
         <Canvas 
             onClick={click} 
-            shadows={false}
-            dpr={[0.5, 1]}
-            frameloop="demand"
-            gl={{ 
-                antialias: false, 
-                powerPreference: "low-power",
-                stencil: false,
-                depth: true,
-                preserveDrawingBuffer: false,
-                failIfMajorPerformanceCaveat: false,
-                alpha: false
-            }} 
+            shadows 
+            dpr={[1, 1.5]} 
+            gl={{ antialias: false }} 
             camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}
             style={{ width: '100%', height: '100%' }}
-            onContextLost={(event) => {
-                console.log('WebGL Context Lost:', event);
-                setContextLost(true);
-            }}
-            onContextRestored={() => {
-                console.log('WebGL Context Restored');
-                setContextLost(false);
-            }}
         >
             <color attach="background" args={['#141622']} />
             <ambientLight intensity={0.4} />
-            <Physics gravity={[0, 0, 0]} maxStabilizationIterations={1} maxSolverIterations={1} timeStep={1/30}>
+            <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
+            <Physics gravity={[0, 0, 0]}>
                 <Pointer />
                 {connectors.map((props, i) => <Connector key={i} {...props} />) /* prettier-ignore */}
                 <Connector position={[10, 10, 5]}>
                 <Model>
                     <MeshTransmissionMaterial 
-                        clearcoat={0.5} 
-                        thickness={0.05} 
-                        anisotropicBlur={0.02} 
-                        chromaticAberration={0.02} 
-                        samples={1} 
-                        resolution={64} 
+                        clearcoat={1} 
+                        thickness={0.1} 
+                        anisotropicBlur={0.1} 
+                        chromaticAberration={0.1} 
+                        samples={8} 
+                        resolution={512} 
                     />
                 </Model>
                 </Connector>
             </Physics>
-            <Environment resolution={64}>
+            {isRendererReady && (
+                <EffectComposer disableNormalPass multisampling={8}>
+                    <N8AO distanceFalloff={1} aoRadius={1} intensity={4} />
+                </EffectComposer>
+            )}
+            <Environment resolution={256}>
                 <group rotation={[-Math.PI / 3, 0, 1]}>
-                <Lightformer form="circle" intensity={2} rotation-x={Math.PI / 2} position={[0, 5, -9]} scale={2} />
-                <Lightformer form="circle" intensity={1} rotation-y={Math.PI / 2} position={[-5, 1, -1]} scale={2} />
+                    <Lightformer form="circle" intensity={4} rotation-x={Math.PI / 2} position={[0, 5, -9]} scale={2} />
+                    <Lightformer form="circle" intensity={2} rotation-y={Math.PI / 2} position={[-5, 1, -1]} scale={2} />
+                    <Lightformer form="circle" intensity={2} rotation-y={Math.PI / 2} position={[-5, -1, -1]} scale={2} />
+                    <Lightformer form="circle" intensity={2} rotation-y={-Math.PI / 2} position={[10, 1, 0]} scale={8} />
                 </group>
             </Environment>
         </Canvas>
@@ -105,9 +87,8 @@ function Connector({ position, children, vec = new THREE.Vector3(), scale, r = T
     const api = useRef()
     const pos = useMemo(() => position || [r(10), r(10), r(10)], [])
     useFrame((state, delta) => {
-      if (api.current && state.clock.elapsedTime % 0.5 < delta) {
-        api.current.applyImpulse(vec.copy(api.current.translation()).negate().multiplyScalar(0.05))
-      }
+        delta = Math.min(0.1, delta)
+        api.current?.applyImpulse(vec.copy(api.current.translation()).negate().multiplyScalar(0.2))
     })
     return (
       <RigidBody linearDamping={4} angularDamping={1} friction={0.1} position={pos} ref={api} colliders={false}>

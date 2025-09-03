@@ -1,8 +1,33 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import CopyEmailButton from '../components/CopyEmailButton';
+import GradientSpheres from '../components/GradientSpheres';
 
-const About2 = () => {
+const About2 = ({ onClose }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
   const containerRef = useRef();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px 0px',
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
 
   // 경량화된 IntersectionObserver
   useEffect(() => {
@@ -36,9 +61,40 @@ const About2 = () => {
   }, []);
 
   return (
-    <section className="c-space py-8 font-moneygraphy" id="about" ref={containerRef}>
-      <h2 className="text-heading">About Me</h2>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-[18rem] mt-12">
+    <section 
+      ref={sectionRef}
+      className="c-space section-spacing font-moneygraphy relative" 
+      id="about"
+    >
+      {/* 헤더 - 최상위 z-index */}
+      <div className="flex justify-between items-center relative z-[100] mb-8">
+        <h2 className="text-heading">About Me</h2>
+        {onClose && (
+          <button
+            onClick={() => {
+              console.log('About2: Close button clicked');
+              if (onClose) onClose();
+            }}
+            className="w-8 h-8 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full border border-white/30 flex items-center justify-center text-white text-sm font-bold transition-all duration-300 hover:scale-110 cursor-pointer"
+            style={{ zIndex: 100 }}
+          >
+            ✕
+          </button>
+        )}
+      </div>
+      
+      {/* 배경 그라데이션 */}
+      <div className="gradient-box w-full h-1/2 absolute bottom-0 left-0 z-0">
+          <GradientSpheres
+              sphere1Class="gradient-sphere sphere-1"
+              sphere2Class="gradient-sphere sphere-2"
+          />
+      </div>
+
+      {/* 메인 컨텐츠 */}
+      <div className="w-full relative z-10 flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col justify-center">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-[18rem]" ref={containerRef}>
         
         {/* Grid 1 - 메인 소개 (3D 컴포넌트 대신 CSS 애니메이션) */}
         <div className="flex items-end grid-default-color grid-1 cursor-pointer grid-item grid-slide-left">
@@ -236,6 +292,8 @@ const About2 = () => {
                 <div className="tech-connection-5"></div>
               </div>
             </div>
+          </div>
+        </div>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ const SimpleProjectGrid = () => {
   const [selectedProject, setSelectedProject] = useState(0);
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full flex flex-col">
       {/* 프로젝트 그리드 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
         {slides.map((project, index) => (

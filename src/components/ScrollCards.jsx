@@ -133,9 +133,9 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
         
         // 복합적인 사인파로 자연스러운 움직임 생성 (90% 미만에서만)
         // 스크롤 중일 때는 더 부드럽고 느리게
-        const primaryWave = Math.sin(elapsed * 0.2) * 0.6; // 주 파동 (더 느림)
-        const secondaryWave = Math.sin(elapsed * 0.5) * 0.2; // 보조 파동 (더 느림)
-        const tertiaryWave = Math.sin(elapsed * 0.8) * 0.05; // 미세 파동 (더 느림)
+        const primaryWave = Math.sin(elapsed * 0.1) * 0.6; // 주 파동 (더 느림)
+        const secondaryWave = Math.sin(elapsed * 0.25) * 0.2; // 보조 파동 (더 느림)
+        const tertiaryWave = Math.sin(elapsed * 0.4) * 0.05; // 미세 파동 (더 느림)
         
         // 0~0.9 범위로 정규화 (90% 이상으로는 자동으로 가지 않음)
         const combinedWave = (primaryWave + secondaryWave + tertiaryWave) / 2;
@@ -146,8 +146,8 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       });
       
       // 추가적인 몽환적 오프셋 (카드들의 미세한 떨림) - 스크롤 중일 때는 더 작게
-      const dreamyX = Math.sin(elapsed * 1.5) * 3; // 더 작은 움직임
-      const dreamyY = Math.cos(elapsed * 1.2) * 5; // 더 작은 움직임
+      const dreamyX = Math.sin(elapsed * 0.8) * 3; // 더 작은 움직임
+      const dreamyY = Math.cos(elapsed * 0.6) * 5; // 더 작은 움직임
       setDreamyOffset({ x: dreamyX, y: dreamyY });
       
       dreamAnimationRef.current = requestAnimationFrame(dreamyAnimation);
@@ -170,6 +170,8 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
     let isScrolling = false;
 
     const handleWheel = (e) => {
+      console.log('🎯 Wheel event triggered!', e.deltaY); // 강제 디버깅
+      
       e.preventDefault(); // 기본 스크롤 방지
       
       // 스크롤 중임을 표시하고 자동 애니메이션 완전 차단
@@ -181,10 +183,41 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
         clearTimeout(scrollTimeout);
       }
       
-      const delta = e.deltaY > 0 ? 0.05 : -0.05; // 스크롤 방향에 따른 증감
+      // 트랙패드 스크롤 감지 및 제한
+      const isTrackpad = Math.abs(e.deltaY) < 100; // 트랙패드는 보통 작은 값
+      const isMouseWheel = Math.abs(e.deltaY) >= 100; // 마우스 휠은 큰 값
+      
+      let delta;
+      if (isTrackpad) {
+        // 트랙패드: 매우 작은 증감으로 제한
+        delta = e.deltaY > 0 ? 0.005 : -0.005; // 더 작게
+      } else if (isMouseWheel) {
+        // 마우스 휠: 적절한 증감
+        delta = e.deltaY > 0 ? 0.01 : -0.01; // 더 작게
+      } else {
+        // 기본값
+        delta = e.deltaY > 0 ? 0.008 : -0.008; // 더 작게
+      }
       
       setScrollY(prev => {
         const newValue = Math.max(0, Math.min(1, prev + delta));
+        
+        // 디버깅 로그 추가
+        console.log(`🔄 Scroll Debug:`, {
+          deltaY: e.deltaY,
+          isTrackpad,
+          isMouseWheel,
+          delta,
+          prevValue: prev.toFixed(3),
+          newValue: newValue.toFixed(3),
+          progress: `${(newValue * 100).toFixed(1)}%`,
+          stage: newValue <= 0.2 ? 'Stage 1 (Stack)' :
+                 newValue <= 0.4 ? 'Stage 2 (Fan)' :
+                 newValue <= 0.6 ? 'Stage 3 (Flip)' :
+                 newValue <= 0.8 ? 'Stage 4 (Final)' :
+                 'Stage 5 (Complete)'
+        });
+        
         return newValue;
       });
       
@@ -201,11 +234,11 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       switch(e.key) {
         case 'ArrowDown':
         case 'ArrowRight':
-          delta = 0.1;
+          delta = 0.1; // 기존 값으로 복원
           break;
         case 'ArrowUp':
         case 'ArrowLeft':
-          delta = -0.1;
+          delta = -0.1; // 기존 값으로 복원
           break;
         case 'Home':
           setScrollY(0);
@@ -234,8 +267,10 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
     };
 
     // 이벤트 리스너 등록
+    console.log('📝 Adding wheel event listener...');
     window.addEventListener('wheel', handleWheel, { passive: false });
     window.addEventListener('keydown', handleKeyDown);
+    console.log('✅ Event listeners added successfully');
 
     return () => {
       window.removeEventListener('wheel', handleWheel);
@@ -247,22 +282,27 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
     };
   }, [isVisible]);
 
+  // 부드러운 easing 함수들
+  const easeInOutCubic = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
+  const easeInOutSine = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
+
   // 순차적 애니메이션 단계별 계산
   const getCardTransform = (index, progress) => {
     const totalCards = projects.length;
     const centerIndex = (totalCards - 1) / 2;
     
-    // 5단계 애니메이션 구간 정의
-    const stage2 = 0.2;  // 스택 형성 (20-40%)
-    const stage3 = 0.4;  // 부채꼴 펼침 (40-60%)
-    const stage4 = 0.6;  // 카드 뒤집기 (60-80%)
-    const stage5 = 0.8;  // 최종 배치 (80-100%)
+    // 5단계 애니메이션 구간 정의 (기존 코드와 동일하게)
+    const stage2 = 0.2;   // 스택 형성 (20%)
+    const stage3 = 0.4;   // 부채꼴 펼침 (40%)
+    const stage4 = 0.6;   // 카드 뒤집기 (60%)
+    const stage5 = 0.8;   // 최종 배치 (80%)
     
     let currentX = 0, currentY = 0, currentRotateZ = 0, rotateY = 0, scale = 1, opacity = 1;
     
     if (progress <= stage2) {
       // Stage 1-2: 단일 카드에서 스택으로 (모두 뒷면으로 시작)
-      const stageProgress = progress / stage2;
+      const stageProgress = easeInOutSine(progress / stage2);
       
       if (index === 0) {
         // 첫 번째 카드는 항상 보임 (뒷면)
@@ -273,85 +313,127 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
         opacity = 1;
       } else {
         // 나머지 카드들이 순차적으로 나타나며 스택 형성 (뒷면)
-        const cardDelay = (index / totalCards) * 0.5;
+        const cardDelay = (index / totalCards) * 0.5; // 지연 시간 증가
         const cardProgress = Math.max(0, Math.min(1, (stageProgress - cardDelay) / (1 - cardDelay)));
+        const easedProgress = easeOutQuart(cardProgress);
         
+        // 자연스러운 스택 형성: 카드가 위에서 아래로 떨어지며 쌓임
         currentX = 0;
-        currentY = index * -3 * cardProgress; // 스택처럼 쌓임
-        currentRotateZ = index * 2 * cardProgress; // 약간의 회전
-        scale = 0.3 + (0.7 * cardProgress);
-        opacity = cardProgress;
+        currentY = index * -6 * easedProgress; // 스택처럼 쌓임 (더 두껍게)
+        currentRotateZ = index * 3 * easedProgress; // 약간의 회전 (더 자연스럽게)
+        scale = 0.2 + (0.8 * easedProgress); // 더 자연스러운 스케일
+        opacity = easedProgress;
+        
+        // 카드가 나타날 때 약간의 바운스 효과
+        if (cardProgress < 0.4) {
+          scale *= 1 + Math.sin(cardProgress * Math.PI * 2) * 0.15;
+        }
       }
       rotateY = 180; // 모든 카드가 뒷면으로 시작
       
     } else if (progress <= stage3) {
-      // Stage 2-3: 스택에서 부채꼴로 펼침 (여전히 뒷면)
-      const stageProgress = (progress - stage2) / (stage3 - stage2);
+      // Stage 2-3: 스택에서 일렬로 펼침 (여전히 뒷면)
+      const stageProgress = easeInOutCubic((progress - stage2) / (stage3 - stage2));
       
+      // 시작 위치 (스택 상태)
       const stackX = 0;
-      const stackY = index * -3;
-      const stackRotateZ = index * 2;
+      const stackY = index * -6;
+      const stackRotateZ = index * 3;
       
-      const fanX = (index - centerIndex) * 80 * stageProgress; // 부채꼴 X 위치 (6장이 화면 안에 들어오도록 조정)
-      const fanY = stackY + Math.abs(index - centerIndex) * 20 * stageProgress; // 부채꼴 Y 위치 (6장에 맞게 적당한 깊이)
-      const fanRotateZ = stackRotateZ + (index - centerIndex) * 8 * stageProgress; // 부채꼴 회전 (6장에 맞게 조정)
+      // 목표 위치 (일렬 배치) - 일렬로 펼쳐짐
+      const linearX = (index - centerIndex) * 200; // 일렬 X 위치 (더 넓게)
+      const linearY = 0; // 일렬 Y 위치 (모두 같은 높이)
+      const linearRotateZ = 0; // 일렬 회전 (모두 0도)
       
-      currentX = stackX + (fanX - stackX) * stageProgress;
-      currentY = stackY + (fanY - stackY) * stageProgress;
-      currentRotateZ = stackRotateZ + (fanRotateZ - stackRotateZ) * stageProgress;
+      // 자연스러운 전환: 카드가 순차적으로 펼쳐짐
+      const cardDelay = index * 0.1; // 순차적으로 펼쳐짐
+      const cardProgress = Math.max(0, Math.min(1, (stageProgress - cardDelay) / (1 - cardDelay)));
+      const easedCardProgress = easeOutQuart(cardProgress);
+      
+      currentX = stackX + (linearX - stackX) * easedCardProgress;
+      currentY = stackY + (linearY - stackY) * easedCardProgress;
+      currentRotateZ = stackRotateZ + (linearRotateZ - stackRotateZ) * easedCardProgress;
       scale = 1;
       opacity = 1;
-      rotateY = 180; // 부채꼴 펼침 시에도 여전히 뒷면
+      rotateY = 180; // 일렬 펼침 시에도 여전히 뒷면
       
     } else if (progress <= stage4) {
-      // Stage 3-4: 부채꼴에서 카드 뒤집기 (뒷면 → 앞면)
-      const stageProgress = (progress - stage3) / (stage4 - stage3);
+      // Stage 3-4: 일렬에서 카드 뒤집기 (뒷면 → 앞면)
+      const stageProgress = easeInOutSine((progress - stage3) / (stage4 - stage3));
       
-      currentX = (index - centerIndex) * 80; // 6장이 화면 안에 들어오도록 조정
-      currentY = index * -3 + Math.abs(index - centerIndex) * 20; // 6장에 맞게 적당한 깊이
-      currentRotateZ = index * 2 + (index - centerIndex) * 8; // 6장에 맞게 조정
+      // 일렬 상태 유지
+      currentX = (index - centerIndex) * 200; // 일렬 X 위치
+      currentY = 0; // 일렬 Y 위치 (모두 같은 높이)
+      currentRotateZ = 0; // 일렬 회전 (모두 0도)
       
       // 순차적 뒤집기 (각 카드마다 다른 타이밍) - 뒷면(180도)에서 앞면(0도)으로
-      const flipDelay = index * 0.2;
+      const flipDelay = index * 0.1; // 지연 시간 조정
       const flipProgress = Math.max(0, Math.min(1, (stageProgress - flipDelay) / (1 - flipDelay)));
-      rotateY = 180 - (flipProgress * 180); // 180도에서 0도로 (뒷면에서 앞면으로)
+      const easedFlipProgress = easeInOutCubic(flipProgress);
       
-      scale = 1 + Math.sin(flipProgress * Math.PI) * 0.2; // 뒤집을 때 약간 커짐
+      // 자연스러운 뒤집기: 카드가 3D로 회전하며 뒤집힘
+      rotateY = 180 - (easedFlipProgress * 180); // 180도에서 0도로 (뒷면에서 앞면으로)
+      
+      // 뒤집을 때 자연스러운 스케일 변화
+      if (easedFlipProgress < 0.5) {
+        // 뒤집기 전반부: 카드가 약간 커짐
+        scale = 1 + Math.sin(easedFlipProgress * Math.PI * 2) * 0.15;
+    } else {
+        // 뒤집기 후반부: 카드가 원래 크기로 돌아옴
+        scale = 1 + Math.sin((1 - easedFlipProgress) * Math.PI * 2) * 0.15;
+      }
+      
       opacity = 1;
       
     } else {
-      // Stage 4-5: 뒤집기에서 최종 일렬 배치 (앞면 완전 노출)
-      const stageProgress = (progress - stage4) / (stage5 - stage4);
+      // Stage 4-5: 뒤집기에서 최종 일렬 배치 (앞면 완전 노출) - 부드러운 전환
+      const stageProgress = easeInOutCubic((progress - stage4) / (stage5 - stage4));
       
-      const fanX = (index - centerIndex) * 100;
-      const fanY = index * -3 + Math.abs(index - centerIndex) * 20;
-      const fanRotateZ = index * 2 + (index - centerIndex) * 15;
+      // 시작 위치 (일렬 배치)
+      const startX = (index - centerIndex) * 200;
+      const startY = 0;
+      const startRotateZ = 0;
       
-      // 60% 이상에서는 카드 아래에 간격을 두어 버튼이 보이도록 조정
-      if (progress >= 0.6) {
-        const buttonStageProgress = (progress - 0.6) / 0.4; // 60%에서 100%까지의 진행도
-        
-        // 기존 애니메이션 유지하면서 Y 위치만 조정
-        const finalX = (index - centerIndex) * 180; // 최종 X 위치 (6장이 화면 안에 들어오도록 조정 - 200에서 180으로 줄임)
-        const finalY = Math.sin((index - centerIndex) * 0.3) * 30; // 최종 Y 위치 (곡선, 적당한 깊이)
-        const finalRotateZ = (index - centerIndex) * 3; // 최종 회전 (6장에 맞게 조정)
-        
-        // 60% 이상에서만 Y 위치를 아래로 조정하여 버튼 공간 확보
-        const buttonSpaceY = 80; // 버튼을 위한 여백
-        const adjustedFinalY = finalY + buttonSpaceY * buttonStageProgress;
-        
-        currentX = fanX + (finalX - fanX) * stageProgress;
-        currentY = fanY + (adjustedFinalY - fanY) * stageProgress;
-        currentRotateZ = fanRotateZ + (finalRotateZ - fanRotateZ) * stageProgress;
+      // 중간 위치 (버튼 공간 확보)
+      const midX = (index - centerIndex) * 220;
+      const midY = 60; // 버튼 공간 확보
+      const midRotateZ = (index - centerIndex) * 2;
+      
+      // 최종 위치 (파도타기 애니메이션)
+      const finalX = (index - centerIndex) * 280;
+      const finalY = 80; // 최종 Y 위치
+      const finalRotateZ = (index - centerIndex) * 3;
+      
+      // 부드러운 3단계 전환
+      if (progress <= 0.7) {
+        // 60-70%: 일렬에서 중간 위치로 (버튼 공간 확보)
+        const midProgress = easeInOutCubic((progress - 0.6) / 0.1);
+        currentX = startX + (midX - startX) * midProgress;
+        currentY = startY + (midY - startY) * midProgress;
+        currentRotateZ = startRotateZ + (midRotateZ - startRotateZ) * midProgress;
+      } else if (progress <= 0.85) {
+        // 70-85%: 중간에서 최종 위치로 (부드러운 전환)
+        const finalProgress = easeInOutCubic((progress - 0.7) / 0.15);
+        currentX = midX + (finalX - midX) * finalProgress;
+        currentY = midY + (finalY - midY) * finalProgress;
+        currentRotateZ = midRotateZ + (finalRotateZ - midRotateZ) * finalProgress;
       } else {
-        // 60% 미만에서는 기존 로직 유지
-        const finalX = (index - centerIndex) * 180; // 최종 X 위치 (6장이 화면 안에 들어오도록 조정 - 200에서 180으로 줄임)
-        const finalY = Math.sin((index - centerIndex) * 0.3) * 30; // 최종 Y 위치 (곡선, 적당한 깊이)
-        const finalRotateZ = (index - centerIndex) * 3; // 최종 회전 (6장에 맞게 조정)
+        // 85-100%: 파도타기 애니메이션
+        const waveProgress = easeInOutSine((progress - 0.85) / 0.15);
+        const waveDelay = index * 0.1; // 각 카드마다 0.1초씩 지연
+        const wavePhase = Math.max(0, Math.min(1, (waveProgress - waveDelay) / (1 - waveDelay)));
+        const easedWavePhase = easeInOutCubic(wavePhase);
         
-        currentX = fanX + (finalX - fanX) * stageProgress;
-        currentY = fanY + (finalY - fanY) * stageProgress;
-        currentRotateZ = fanRotateZ + (finalRotateZ - fanRotateZ) * stageProgress;
+        // 파도타기 효과
+        const waveY = Math.sin(easedWavePhase * Math.PI * 2) * 15; // 파도타기 Y 움직임
+        const waveRotateZ = Math.sin(easedWavePhase * Math.PI * 2) * 5; // 파도타기 회전
+        
+        currentX = finalX;
+        currentY = finalY + waveY;
+        currentRotateZ = finalRotateZ + waveRotateZ;
+        
+        // 파도타기 시 스케일 효과
+        scale = 1 + Math.sin(easedWavePhase * Math.PI * 2) * 0.08;
       }
       
       rotateY = 0; // 앞면 완전 노출
@@ -384,436 +466,52 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 w-full h-full bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 z-40 overflow-hidden"
-      style={{
-        background: `
-          radial-gradient(circle at ${50 + (dreamyOffset.x || 0) * 2}% ${50 + (dreamyOffset.y || 0) * 2}%, 
-            rgba(59, 130, 246, 0.15) 0%, 
-            rgba(147, 51, 234, 0.1) 30%, 
-            rgba(15, 23, 42, 0.95) 70%,
-            rgba(0, 0, 0, 0.98) 100%),
-          linear-gradient(135deg, 
-            rgba(0, 0, 0, 0.95) 0%, 
-            rgba(15, 23, 42, 0.9) 50%, 
-            rgba(0, 0, 0, 0.95) 100%)
-        `
-      }}
+      className="w-full h-full relative z-10"
     >
-      {/* 닫기 버튼 */}
-      {onClose && (
-        <button
-          onClick={onClose}
-          className="fixed top-8 right-8 z-50 w-14 h-14 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full border-2 border-white/30 flex items-center justify-center text-white text-xl font-bold transition-all duration-300 hover:scale-110"
-        >
-          ✕
-        </button>
-      )}
+
 
       {/* 고정된 화면 - 스크롤 없음 */}
-      <div className="w-full h-full relative c-space">
-        {/* 헤더 영역 - About 섹션과 동일한 스타일 */}
-        <div className="absolute top-0 left-0 right-0 z-30 px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <h2 className="text-heading text-white">Projects</h2>
-            <button
-              onClick={onClose}
-              className="w-8 h-8 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full border border-white/30 flex items-center justify-center text-white text-sm font-bold transition-all duration-300 hover:scale-110"
-            >
-              ✕
-            </button>
+      <div className="w-full h-full relative">
+
+        {/* 미니멀한 진행률 표시 - 카드 애니메이션에 집중 */}
+        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
+          <div className="flex items-center space-x-4">
+            {/* 진행률 바 */}
+            <div className="w-32 h-1 bg-white/20 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-white transition-all duration-300 ease-out"
+                style={{ width: `${scrollY * 100}%` }}
+              />
+            </div>
+            
+            {/* 현재 단계 표시 */}
+            <div className="text-white/60 text-sm font-medium">
+              {scrollY <= 0.2 ? '1' :
+               scrollY <= 0.4 ? '2' :
+               scrollY <= 0.6 ? '3' :
+               scrollY <= 0.8 ? '4' : '5'}
+            </div>
           </div>
         </div>
-        
-        {/* 메인 헤더 - Lusion 스타일 큰 대제목 */}
-        <div className="absolute top-0 left-0 right-0 text-center py-32 z-20">
-          <h1 className="text-8xl md:text-9xl font-black text-white mb-8 tracking-tighter leading-none">
-            {scrollY <= 0.2 ? (
-              <span className="flex items-center justify-center space-x-4">
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.05 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.05 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '3rem',
-                  fontWeight: '600'
-                }}>E</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.08 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.08 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '3rem',
-                  fontWeight: '600'
-                }}>X</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.11 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.11 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '3rem',
-                  fontWeight: '600'
-                }}>P</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.14 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.14 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '3rem',
-                  fontWeight: '600'
-                }}>L</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.17 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.17 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '3rem',
-                  fontWeight: '600'
-                }}>O</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.20 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.20 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '3rem',
-                  fontWeight: '600'
-                }}>R</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.23 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.23 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '3rem',
-                  fontWeight: '600'
-                }}>E</span>
-              </span>
-            ) : scrollY <= 0.4 ? (
-              <span className="flex items-center justify-center space-x-4">
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.22 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.22 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>I</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.25 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.25 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>N</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.28 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.28 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>T</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.31 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.31 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>E</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.34 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.34 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>R</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.37 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.37 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>A</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.40 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.40 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>C</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.43 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.43 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>T</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.46 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.46 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>I</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.49 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.49 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>V</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.52 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.52 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>E</span>
-              </span>
-            ) : scrollY <= 0.6 ? (
-              <span className="flex items-center justify-center space-x-2">
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.41 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.41 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>↓</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.43 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.43 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>S</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.45 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.45 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>c</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.47 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.47 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>r</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.49 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.49 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>o</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.51 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.51 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>l</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.53 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.53 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>l</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.53 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.53 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>D</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.55 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.55 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>o</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.57 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.57 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>w</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.59 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.59 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>n</span>
-              </span>
-            ) : scrollY <= 0.8 ? (
-              <span className="flex items-center justify-center space-x-4">
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.62 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.62 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>F</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.65 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.65 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>r</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.68 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.68 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>o</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.71 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.71 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>n</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.74 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.74 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>t</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.77 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.77 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>e</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.80 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.80 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>n</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.83 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.83 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>d</span>
-              </span>
-            ) : (
-              <span className="flex items-center justify-center space-x-4">
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.82 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.82 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>P</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.85 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.85 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>r</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.88 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.88 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>o</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.91 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.91 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>j</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.94 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.94 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>e</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 0.97 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 0.97 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>c</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 1.00 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 1.00 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>t</span>
-                <span className="char" style={{ 
-                  display: 'inline-block', 
-                  opacity: scrollY >= 1.03 ? 1 : 0,
-                  transform: `translate3d(${scrollY >= 1.03 ? 0 : -200}px, 0px, 0px)`,
-                  transition: 'all 0.5s ease-out',
-                  fontSize: '2.5rem',
-                  fontWeight: '600'
-                }}>s</span>
-              </span>
-            )}
-          </h1>
-          
-          {/* 서브 타이틀 */}
-          <div className="text-2xl md:text-3xl text-white/70 font-light tracking-wide">
-            {scrollY <= 0.2 ? 'DISCOVER POTENTIAL' :
-             scrollY <= 0.4 ? 'BUILD FOUNDATION' :
-             scrollY <= 0.6 ? 'CREATE EXPERIENCE' :
-             scrollY <= 0.8 ? 'DRIVE ENGAGEMENT' :
-             'SHOWCASE EXCELLENCE'}
+
+        {/* Scroll Down 인디케이터 - 화면 중앙에 크게 표시 */}
+        {scrollY < 0.3 && (
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="text-white text-2xl font-bold tracking-wide animate-pulse">
+                Scroll Down
+              </div>
+              <div className="flex flex-col items-center space-y-2">
+                <div className="w-8 h-12 border-3 border-white rounded-full flex justify-center relative">
+                  <div className="w-2 h-4 bg-white rounded-full mt-2 animate-bounce" />
+                </div>
+                <div className="text-white/80 text-sm">
+                  Use mouse wheel or trackpad
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 미니멀한 광원 효과 - 세련되고 우아하게 */}
         <div className="absolute inset-0 z-1 overflow-hidden">
@@ -866,10 +564,10 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
           ))}
         </div>
 
-        {/* 카드 컨테이너 (화면 중앙 고정) */}
+        {/* 카드 컨테이너 (서브 타이틀 아래 영역) */}
         <div 
           ref={containerRef}
-          className="absolute inset-0 flex items-center justify-center perspective-1000 z-30"
+          className="absolute top-[28rem] left-0 right-0 bottom-0 flex items-end justify-center perspective-1000 z-30"
         >
           {projects.map((project, index) => {
             const cardStyle = getCardTransform(index, scrollY);
@@ -877,7 +575,7 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
             return (
               <div
                 key={project.id}
-                className="absolute w-64 h-80 cursor-pointer scroll-card card-stack-shadow"
+                className="absolute w-72 h-96 cursor-pointer scroll-card card-stack-shadow"
                 style={{
                   ...cardStyle,
                   pointerEvents: 'auto'
@@ -1048,13 +746,7 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-8 pointer-events-auto"
-            onClick={(e) => {
-              // 팝업 외부 영역을 클릭했을 때만 닫기
-              if (e.target === e.currentTarget) {
-                setSelectedProject(null);
-              }
-            }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-8 pointer-events-none"
           >
             <div className="relative w-full max-w-4xl max-h-[90vh] bg-black/95 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl overflow-hidden pointer-events-auto">
               {/* 팝업 헤더 */}
@@ -1302,7 +994,7 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
                 ? 'bg-white/10 border border-white/30' 
                 : 'bg-white/5 border border-white/20'
             }`}>
-              {isAutoDreaming ? '✨ Auto' : '🎮 Manual'}
+              {isAutoDreaming ? 'Auto' : 'Manual'}
             </div>
             
             {/* 조작 가이드 - 단계별로 다르게 표시 */}

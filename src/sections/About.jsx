@@ -1,404 +1,256 @@
-import { useRef, useEffect, useState } from "react";
-import TechStackMarquee from "../components/TechStackMarquee";
+import { useRef, useEffect, useState, memo, lazy, Suspense } from "react";
+import Card from "../components/Card";
+import CopyEmailButton from '../components/CopyEmailButton';
+import GradientSpheres from '../components/GradientSpheres';
+
+// 3D 컴포넌트들을 lazy 로딩으로 변경
+const Globe = lazy(() => import("../components/Globe").then(module => ({ default: module.Globe })));
+const Frameworks = lazy(() => import("../components/FrameWorks").then(module => ({ default: module.Frameworks })));
+const GridExperience = lazy(() => import("../components/GridExperience"));
+
+// 3D 컴포넌트 로딩 플레이스홀더
+const Component3DLoader = () => (
+  <div className="w-full h-full flex items-center justify-center">
+    <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+  </div>
+);
 
 const About = ({ onClose }) => {
-  const [activeSection, setActiveSection] = useState(0);
-  const [hoveredTech, setHoveredTech] = useState(null);
-  const [scrollY, setScrollY] = useState(0);
-  const canvasRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
+  const grid1Ref = useRef();
+  const grid2Ref = useRef();
+  const grid3Ref = useRef();
+  const grid4Ref = useRef();
+  const grid5Ref = useRef();
 
-  // 자동 섹션 전환
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveSection((prev) => (prev + 1) % 3);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // 스크롤 이벤트 리스너
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // 파티클 애니메이션
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    let animationId;
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    // 파티클 클래스
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = (Math.random() - 0.5) * 0.5;
-        this.speedY = (Math.random() - 0.5) * 0.5;
-        this.opacity = Math.random() * 0.5 + 0.3;
-        this.pulse = Math.random() * Math.PI * 2;
-        this.pulseSpeed = Math.random() * 0.02 + 0.01;
-        this.connectionDistance = 150;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px 0px',
       }
+    );
 
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        this.pulse += this.pulseSpeed;
-
-        // 화면 경계 처리
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-
-        // 스크롤에 따른 추가 움직임
-        this.x += Math.sin(this.pulse) * 0.5;
-        this.y += Math.cos(this.pulse) * 0.3;
-      }
-
-      draw() {
-        ctx.save();
-        ctx.globalAlpha = this.opacity * (0.5 + Math.sin(this.pulse) * 0.3);
-        
-        // 글로우 효과
-        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
-        gradient.addColorStop(0, 'rgba(0, 255, 255, 0.8)');
-        gradient.addColorStop(0.5, 'rgba(0, 128, 255, 0.4)');
-        gradient.addColorStop(1, 'rgba(0, 255, 255, 0)');
-        
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
-        ctx.fill();
-
-        // 핵심 파티클
-        ctx.fillStyle = 'rgba(0, 255, 255, 0.9)';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.restore();
-      }
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
     }
-
-    // 파티클 생성
-    const particles = [];
-    for (let i = 0; i < 100; i++) {
-      particles.push(new Particle());
-    }
-
-    // 애니메이션 루프
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // 배경 그라데이션
-      const bgGradient = ctx.createRadialGradient(
-        canvas.width / 2, canvas.height / 2, 0,
-        canvas.width / 2, canvas.height / 2, canvas.width / 2
-      );
-      bgGradient.addColorStop(0, 'rgba(20, 22, 34, 0.1)');
-      bgGradient.addColorStop(1, 'rgba(10, 10, 10, 0.1)');
-      ctx.fillStyle = bgGradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // 파티클 업데이트 및 그리기
-      particles.forEach(particle => {
-        particle.update();
-        particle.draw();
-      });
-
-      // 파티클 연결선 그리기
-      ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
-      ctx.lineWidth = 1;
-      
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < particles[i].connectionDistance) {
-            const opacity = (1 - distance / particles[i].connectionDistance) * 0.3;
-            ctx.strokeStyle = `rgba(0, 255, 255, ${opacity})`;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      animationId = requestAnimationFrame(animate);
-    };
-
-    animate();
 
     return () => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener('resize', resizeCanvas);
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
     };
   }, []);
 
+  // IntersectionObserver로 애니메이션 트리거만 처리
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const gridId = entry.target.dataset.gridId;
+          if (entry.isIntersecting) {
+            // CSS 클래스 추가로 애니메이션 트리거 (상태 업데이트 제거)
+            entry.target.classList.add('animate-in');
+            // 한 번 관찰되면 더 이상 관찰하지 않음
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { 
+        threshold: 0.15,
+        rootMargin: '50px 0px'
+      }
+    );
+
+    const grids = [grid1Ref, grid2Ref, grid3Ref, grid4Ref, grid5Ref];
+    grids.forEach((ref, index) => {
+      if (ref.current) {
+        ref.current.dataset.gridId = `grid${index + 1}`;
+        observer.observe(ref.current);
+      }
+    });
+
+    return () => {
+      grids.forEach((ref) => {
+        if (ref.current) {
+          observer.unobserve(ref.current);
+        }
+      });
+    };
+  }, []);
+
+
+
   return (
-    <div className="w-full h-full relative bg-gradient-to-br from-[#0a0a0a] via-[#141622] to-[#0a0a0a] overflow-hidden">
-      {/* 파티클 캔버스 배경 */}
-      <canvas
-        ref={canvasRef}
-        className="fixed inset-0 w-full h-full pointer-events-none z-0"
-        style={{ opacity: 0.6 }}
-      />
+    <section 
+      ref={sectionRef}
+      className="c-space section-spacing relative" 
+      id="about"
+    >
+      {/* 헤더 - 최상위 z-index */}
+      <div className="flex justify-between items-center relative z-[100] mb-6 mt-2 px-8">
+        <h2 className="text-3xl md:text-4xl font-medium text-white tracking-wide">
+          ABOUT ME
+        </h2>
+        <button
+          onClick={() => {
+            console.log('About: Close button clicked');
+            if (onClose) onClose();
+          }}
+          className="w-8 h-8 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full border border-white/30 flex items-center justify-center text-white text-sm font-bold transition-all duration-300 hover:scale-110 cursor-pointer"
+          style={{ zIndex: 100 }}
+        >
+          ✕
+        </button>
+      </div>
       
-      {/* 헤더 영역 - 간소화 */}
-      <div className="absolute top-0 left-0 right-0 z-30 px-4 lg:px-6">
-        <div className="flex justify-between items-center py-4">
-          <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 tracking-tight">
-            ABOUT ME
-          </h2>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 bg-cyan-400/10 hover:bg-cyan-400/20 backdrop-blur-sm rounded-full border border-cyan-400/30 flex items-center justify-center text-cyan-400 text-sm font-bold transition-all duration-300 hover:scale-110 hover:border-cyan-400/50"
-          >
-            ✕
-          </button>
-        </div>
+      {/* 배경 그라데이션 */}
+      <div className="gradient-box w-full h-1/2 absolute bottom-0 left-0 z-0">
+          <GradientSpheres
+              sphere1Class="gradient-sphere sphere-1"
+              sphere2Class="gradient-sphere sphere-2"
+          />
       </div>
 
-      {/* 메인 콘텐츠 - 한 페이지에 모든 내용 표시 */}
-      <div className="pt-40 px-8 lg:px-12 relative z-20 overflow-hidden h-full flex flex-col justify-start items-center max-h-screen">
-        
-        {/* 1. 나에 대한 소개 및 가치관 */}
-        <section className="mb-6">
-          <div className="max-w-6xl mx-auto">
-
-            {/* 별자리 스타일 소개 - 공간 절약 */}
-            <div className="relative mb-6">
-              {/* 배경 별들 */}
-              <div className="absolute inset-0 pointer-events-none">
-                {[...Array(10)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute w-1 h-1 bg-cyan-400/80 rounded-full animate-pulse"
-                    style={{
-                      left: `${10 + Math.random() * 80}%`,
-                      top: `${20 + Math.random() * 60}%`,
-                      animationDelay: `${Math.random() * 3}s`,
-                      animationDuration: `${2 + Math.random() * 2}s`
-                    }}
-                  />
-                ))}
-                {[...Array(5)].map((_, i) => (
-                  <div
-                    key={`large-${i}`}
-                    className="absolute w-2 h-2 bg-blue-400/60 rounded-full animate-pulse"
-                    style={{
-                      left: `${15 + Math.random() * 70}%`,
-                      top: `${25 + Math.random() * 50}%`,
-                      animationDelay: `${Math.random() * 4}s`,
-                      animationDuration: `${3 + Math.random() * 2}s`
-                    }}
-                  />
-                ))}
+      {/* 메인 컨텐츠 */}
+      <div className="w-full relative z-10 flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col justify-center">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-[15rem]">
+        {/* Grid 1 */}
+        <div 
+          ref={grid1Ref}
+          className="flex items-end grid-default-color grid-1 cursor-pointer grid-item grid-slide-left"
+        >
+          <div className="absolute inset-0">
+            <Suspense fallback={<Component3DLoader />}>
+              <GridExperience key="grid-experience" />
+            </Suspense>
           </div>
 
-                            {/* 메인 소개 텍스트 - 간소화 */}
-              <div className="relative z-10 text-center space-y-4">
-                <div className="max-w-2xl mx-auto">
-                  <p className="text-xl text-white font-medium leading-relaxed mb-4">
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
-                      UI/UX를 통해 사용자들에게
-                    </span>
-                    <br />
-                    <span className="text-white">
-                      간단하고 직관적인 경험을 제공하는 것이 저의 목표입니다
-                    </span>
+          {/* <img 
+            src={'/assets/images/coding-pov.png'}
+            className="absolute scale-[1.75] -right-[5rem] -top-[1rem] md:scale-[3] md:left-50 md:inset-y-10 lg:scale-[2.5]"
+            /> */}
+          <div className="z-10 pointer-events-none select-none relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#1f1e39]/80 to-transparent rounded-lg"></div>
+            <div className="relative z-10 p-4">
+              <p className="headtext font-moneygraphy pointer-events-none select-none text-white">아이디어가 현실이 되는 공간</p>
+              <p className="subtext font-moneygraphy pointer-events-none select-none text-white/90">
+                사용자 경험을 최우선으로 생각하며, 기능과 디자인이 조화를 이루는 혁신적인 웹 솔루션을 만듭니다.  
+                최신 기술과 깊은 경험을 바탕으로 빠르게 변화하는 디지털 세상 속에서 안정적이고 확장 가능한 소프트웨어를 개발하며,  
+                아이디어가 현실이 되는 공간에서 상상을 구체화하고 사용자의 삶을 바꾸는 경험을 디자인합니다.  
+                미래를 열어가는 기술력으로 더 나은 디지털 세상을 만들어 갑니다.
+              </p>
+            </div>
+          </div>
+
+          <div className="absolute inset-x-0 pointer-evets-none -bottom-4 h-1/2 sm:h-1/3 bg-gradient-to-t from-[#1f1e39]" />
+        
+        </div>
+
+        {/* Grid 2-1: 포트폴리오 */}
+        {/* Grid 2 - 3개 카드로 분할 */}
+        <div 
+          ref={grid2Ref}
+          className="grid-2 font-moneygraphy cursor-pointer grid-item grid-slide-up" 
+        >
+          <div className="grid grid-cols-3 gap-2 w-full h-[95%]">
+            <a
+              href="https://github.com/mslee98.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center justify-center bg-gradient-to-br from-blue-300 to-purple-500 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-all duration-300 group cursor-pointer card-hover"
+            >
+                <img 
+                  src={'/assets/images/github-logo.png'} alt="portfolio" className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 card-image"
+                />
+              
+              <h3 className="text-sm font-semibold text-white mb-1">Github</h3>
+              <p className="text-xs text-gray-300 text-center">코드저장소 모음 확인하기</p>
+            </a>
+
+            <a
+              href="https://mslee98pf.notion.site/?v=a65cd98d4a0e4c9c85214eb0acb17eb1&pvs=74"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center justify-center bg-gradient-to-br from-red-300 to-orange-500 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-all duration-300 group cursor-pointer card-hover"
+            >         
+                <img 
+                  src={'/assets/images/link.png'} alt="portfolio" className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 card-image"
+                />
+              <h3 className="text-sm font-semibold text-white mb-1">포트폴리오</h3>
+              <p className="text-xs text-gray-300 text-center">포트폴리오 확인하기</p>
+            </a>
+
+            <a
+              href="https://linkedin.com/in/your-profile"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center justify-center bg-gradient-to-br from-rose-200 to-pink-500 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-all duration-300 group cursor-pointer card-hover"
+            > 
+                <img 
+                  src={'/assets/images/storybook.png'} alt="portfolio" className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 card-image"
+                />
+              <h3 className="text-sm font-semibold text-white mb-1">스토리북</h3>
+              <p className="text-xs text-gray-300 text-center">스토리북 확인하기</p>
+            </a>
+          </div>
+        </div>
+        
+        {/* Grid 3 */}
+        <div 
+          ref={grid3Ref}
+          className="grid-black-color grid-3 cursor-pointer grid-item grid-slide-right flex items-center justify-between p-4"
+        >
+          <div className="z-10 w-[45%]">
+            <p className="headtext font-moneygraphy text-white mb-2">Time Zone</p>
+            <p className="subtext font-moneygraphy text-white/90 leading-relaxed">
+              대한민국 대전을 중심으로 활동하며, 전 세계 원격 협업이 가능합니다
             </p>
           </div>
-
-                {/* 별자리 연결선 효과 - 간소화 */}
-                <div className="flex justify-center items-center gap-6 mt-6">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                    <span className="text-cyan-400 text-sm font-medium">Simple UX</span>
-                  </div>
-                  <div className="w-12 h-0.5 bg-gradient-to-r from-cyan-400/40 to-blue-400/40"></div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                    <span className="text-blue-400 text-sm font-medium">Performance</span>
-                  </div>
-                  <div className="w-12 h-0.5 bg-gradient-to-r from-blue-400/40 to-purple-400/40"></div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-                    <span className="text-purple-400 text-sm font-medium">Innovation</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 포트폴리오 링크 위젯들 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 overflow-x-hidden mb-12 mt-4">
-              {/* GitHub */}
-              <a
-                href="https://github.com/mslee98"
-              target="_blank"
-              rel="noopener noreferrer"
-                className="group relative p-5 bg-black/30 backdrop-blur-sm rounded-2xl border border-cyan-400/20 hover:border-cyan-400/50 transition-all duration-300"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/5 to-transparent rounded-2xl"></div>
-                {/* 뭉퉁한 선 효과 */}
-                <div className="absolute top-4 left-4 right-4 h-1 bg-gradient-to-r from-cyan-400/40 to-transparent rounded-full blur-sm"></div>
-                <div className="relative z-10 text-center">
-                  <div className="w-14 h-14 bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform duration-300">
-                    <img 
-                      src="/assets/images/logos/github.svg" 
-                      alt="GitHub"
-                      className="w-8 h-8 object-contain filter brightness-0 invert"
-                    />
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-2">GitHub</h3>
-                  <p className="text-gray-300 text-sm">코드 저장소 & 프로젝트</p>
-                  <div className="mt-3 text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm">
-                    → 방문하기
-                  </div>
-                </div>
-              </a>
-
-              {/* Notion Portfolio */}
-              <a
-              href="https://mslee98.notion.site/d120fd679bb54c7ba1816df3f89ae2dc?v=a65cd98d4a0e4c9c85214eb0acb17eb1&pvs=74"
-              target="_blank"
-              rel="noopener noreferrer"
-                className="group relative p-5 bg-black/30 backdrop-blur-sm rounded-2xl border border-blue-400/20 hover:border-blue-400/50 transition-all duration-300 "
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-2xl"></div>
-                {/* 뭉퉁한 선 효과 */}
-                <div className="absolute top-4 left-4 right-4 h-1 bg-gradient-to-r from-blue-400/40 to-transparent rounded-full blur-sm"></div>
-                <div className="relative z-10 text-center">
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-2xl">📄</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-2">Portfolio</h3>
-                  <p className="text-gray-300 text-sm">상세 포트폴리오</p>
-                  <div className="mt-3 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm">
-                    → 방문하기
-                  </div>
-                </div>
-              </a>
-
-              {/* Tech Blog */}
-              <a
-                href="https://mslee98.notion.site/c2dd3d50669648a3add995d342c170b8?pvs=74"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative p-5 bg-black/30 backdrop-blur-sm rounded-2xl border border-purple-400/20 hover:border-purple-400/50 transition-all duration-300 "
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent rounded-2xl"></div>
-                {/* 뭉퉁한 선 효과 */}
-                <div className="absolute top-4 left-4 right-4 h-1 bg-gradient-to-r from-purple-400/40 to-transparent rounded-full blur-sm"></div>
-                <div className="relative z-10 text-center">
-                  <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform duration-300">
-                    <img 
-                      src="/assets/images/logos/notion.svg" 
-                      alt="Notion"
-                      className="w-8 h-8 object-contain filter brightness-0 invert"
-                    />
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-2">Tech Blog</h3>
-                  <p className="text-gray-300 text-sm">기술 블로그 & 학습</p>
-                  <div className="mt-3 text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm">
-                    → 방문하기
-                  </div>
+          <figure className="w-[50%] h-full flex items-center justify-center">
+            <Suspense fallback={<Component3DLoader />}>
+              <Globe />
+            </Suspense>
+          </figure>
+        </div>
+        {/* Grid 4 */}
+        <div 
+          ref={grid4Ref}
+          className="grid-special-color grid-4 cursor-pointer grid-item grid-scale-in"
+        >
+          <div className="flex flex-col items-center justify-center gap-4 size-full">
+            <p className="text-center headtext">
+              Do you want to start a project together?
+            </p>
+            <CopyEmailButton />
           </div>
-              </a>
-
-              {/* Resume */}
-              <a
-                href="https://www.rallit.com/hub/resumes/144107/%EC%9D%B4%EB%AF%BC%EC%84%B1"
-              target="_blank"
-              rel="noopener noreferrer"
-                className="group relative p-5 bg-black/30 backdrop-blur-sm rounded-2xl border border-green-400/20 hover:border-green-400/50 transition-all duration-300 "
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent rounded-2xl"></div>
-                {/* 뭉퉁한 선 효과 */}
-                <div className="absolute top-4 left-4 right-4 h-1 bg-gradient-to-r from-green-400/40 to-transparent rounded-full blur-sm"></div>
-                <div className="relative z-10 text-center">
-                  <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform duration-300">
-                    <img 
-                      src="/assets/images/logos/rallit.svg" 
-                      alt="Rallit"
-                      className="w-8 h-8 object-contain filter brightness-0 invert"
-                    />
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-2">Resume</h3>
-                  <p className="text-gray-300 text-sm">이력서 & 경력</p>
-                  <div className="mt-3 text-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm">
-                    → 방문하기
-                  </div>
-          </div>
-              </a>
-                      </div>
-
-            {/* 중간 텍스트 - 느낌 있게 */}
-            <div className="mt-12 mb-8 text-center">
-              <div className="max-w-2xl mx-auto">
-                <p className="text-lg text-gray-300 leading-relaxed mb-4">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 font-medium">
-                    "코드 한 줄 한 줄이 사용자의 경험을 만들어간다"
-                  </span>
-                </p>
-                <p className="text-sm text-gray-400 italic">
-                  지속적인 학습과 도전을 통해 더 나은 웹 경험을 만들어가고 있습니다
-                </p>
-              </div>
-            </div>
-            
-          </div>
-        </section>
-
-
-      </div>
-
-      {/* 기술 스택 마키 - 전체 화면 너비로 배경 앞에 배치 */}
-      <div className="fixed bottom-0 left-0 right-0 z-10 pointer-events-none">
-        <div className="w-full">
-          <div className="text-center mb-6">
-            <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 mb-3">
-              TECH STACK
-            </h3>
-            <p className="text-sm text-gray-300">
-              사용하는 기술 스택들
+        </div>
+        {/* Grid 5 */}
+        <div 
+          ref={grid5Ref}
+          className="grid-default-color grid-5 cursor-pointer grid-item grid-slide-down"
+        >
+          <div className="z-10 w-[50%]">
+            <p className="headText">기술 스택</p>
+            <p className="subtext">
+              안정적이고 확장 가능한 애플리케이션을 구축하기 위한 다양한 언어, 프레임워크, 도구들을 활용합니다
             </p>
           </div>
-          <TechStackMarquee />
+          <div className="absolute inset-y-0 md:inset-y-9 w-full h-full left-[50%] md:scale-125">
+            <Suspense fallback={<Component3DLoader />}>
+              <Frameworks />
+            </Suspense>
+          </div>
         </div>
           </div>
-
-      {/* 창의적인 배경 요소들 */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {/* 움직이는 그라데이션 원들 */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-pink-500/20 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1s'}}></div>
-        <div className="absolute bottom-40 left-20 w-28 h-28 bg-gradient-to-br from-green-400/20 to-cyan-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
-        
-        {/* 움직이는 선들 */}
-        <div className="absolute top-1/4 left-0 w-1 h-32 bg-gradient-to-b from-transparent via-cyan-400/30 to-transparent animate-pulse"></div>
-        <div className="absolute top-1/3 right-0 w-1 h-24 bg-gradient-to-b from-transparent via-blue-400/30 to-transparent animate-pulse" style={{animationDelay: '0.5s'}}></div>
-        <div className="absolute bottom-1/4 left-1/4 w-1 h-20 bg-gradient-to-b from-transparent via-purple-400/30 to-transparent animate-pulse" style={{animationDelay: '1.5s'}}></div>
+        </div>
       </div>
-
-
-    </div>
+    </section>
   );
 };
 
