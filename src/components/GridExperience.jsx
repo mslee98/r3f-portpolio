@@ -1,10 +1,33 @@
 import * as THREE from 'three'
-import { useRef, useReducer, useMemo, useState, useEffect } from 'react'
+import React, { useRef, useReducer, useMemo, useState, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF, MeshTransmissionMaterial, Environment, Lightformer } from '@react-three/drei'
 import { CuboidCollider, BallCollider, Physics, RigidBody } from '@react-three/rapier'
 import { EffectComposer, N8AO } from '@react-three/postprocessing'
 import { easing } from 'maath'
+
+// Error Boundary 컴포넌트
+class WebGLErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false };
+    }
+
+    static getDerivedStateFromError(error) {
+        return { hasError: true };
+    }
+
+    componentDidCatch(error, errorInfo) {
+        console.error('WebGL Error:', error, errorInfo);
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return <div className="w-full h-full flex items-center justify-center text-white">WebGL Error</div>;
+        }
+        return this.props.children;
+    }
+}
 
 
 const accents = ['#4060ff', '#20ffa0', '#ff4060', '#ffcc00']
@@ -23,13 +46,14 @@ const shuffle = (accent = 0) => [
 const GridExperience = () => {
     const [accent, click] = useReducer((state) => ++state % accents.length, 0)
     const [isRendererReady, setIsRendererReady] = useState(false)
+    const [isContextValid, setIsContextValid] = useState(true)
     const connectors = useMemo(() => shuffle(accent), [accent])
 
     useEffect(() => {
         // 렌더러가 준비될 때까지 잠시 대기
         const timer = setTimeout(() => {
             setIsRendererReady(true)
-        }, 100)
+        }, 200)
         
         return () => clearTimeout(timer)
     }, [])
@@ -40,9 +64,24 @@ const GridExperience = () => {
             onClick={click} 
             shadows 
             dpr={[1, 1.5]} 
-            gl={{ antialias: false }} 
+            gl={{ 
+                antialias: false,
+                preserveDrawingBuffer: true,
+                powerPreference: "high-performance"
+            }} 
             camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}
             style={{ width: '100%', height: '100%' }}
+            onCreated={({ gl }) => {
+                gl.domElement.addEventListener('webglcontextlost', (event) => {
+                    event.preventDefault();
+                    console.warn('WebGL context lost, attempting to restore...');
+                    setIsContextValid(false);
+                });
+                gl.domElement.addEventListener('webglcontextrestored', () => {
+                    console.log('WebGL context restored');
+                    setIsContextValid(true);
+                });
+            }}
         >
             <color attach="background" args={['#141622']} />
             <ambientLight intensity={0.4} />
@@ -63,10 +102,12 @@ const GridExperience = () => {
                 </Model>
                 </Connector>
             </Physics>
-            {isRendererReady && (
-                <EffectComposer disableNormalPass multisampling={8}>
-                    <N8AO distanceFalloff={1} aoRadius={1} intensity={4} />
-                </EffectComposer>
+            {isRendererReady && isContextValid && (
+                <WebGLErrorBoundary>
+                    <EffectComposer disableNormalPass multisampling={8}>
+                        <N8AO distanceFalloff={1} aoRadius={1} intensity={4} />
+                    </EffectComposer>
+                </WebGLErrorBoundary>
             )}
             <Environment resolution={256}>
                 <group rotation={[-Math.PI / 3, 0, 1]}>
