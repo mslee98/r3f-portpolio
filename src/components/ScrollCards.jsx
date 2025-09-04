@@ -16,8 +16,8 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       title: "IoT 자율안전솔루션",
       shortDescription: "중대재해예방 관제 시스템",
       longDescription: "중대 재해법을 예방하기 위한 관제 시스템으로, 시스템 내에서 각종 서약서, 활선작업 모니터링이 가능하며 바이오 데이터를 통해 관리자에게 알림을 제공하는 대규모 프로젝트입니다. 국토지리정보원으로부터 GIS 데이터를 제공받아 GeoServer를 통해 내부망에서도 사용 가능한 로컬 GIS 서버를 구축했습니다.",
-      image: "/assets/images/projects/Frame 3.png",
-      detailImage: "/assets/images/projects/Frame 3.png",
+      image: "/assets/images/projects/Frame%203.png",
+      detailImage: "/assets/images/projects/Frame%203.png",
       category: "IoT Platform",
       status: "모니터링",
       year: "2023",
@@ -33,8 +33,8 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       title: "IoT 모니터링 관제 시스템",
       shortDescription: "계룡시 IoT 무선통신 모니터링",
       longDescription: "계룡시에서 관리하는 CCTV, Gateway, Relay를 실시간으로 감지하기 위한 모니터링 시스템으로, 데이터 차트와 지도로 시각화하여 표현합니다. 각종 장비 등록, 수정, 삭제 관리 및 알림 가중치/임계치 설정을 통해 알림에 따른 문자 전송 내역을 관리합니다.",
-      image: "/assets/images/projects/Frame 4.png",
-      detailImage: "/assets/images/projects/Frame 4.png",
+      image: "/assets/images/projects/Frame%204.png",
+      detailImage: "/assets/images/projects/Frame%204.png",
       category: "IoT Platform",
       status: "모니터링",
       year: "2023",
@@ -50,8 +50,8 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       title: "태양광 시뮬레이션",
       shortDescription: "BIPV 건물형 태양광 시뮬레이션",
       longDescription: "디지털 트윈 사업으로 BIPV(건물형 태양광) 비용을 예측하고 시뮬레이션을 통해 설치할 수 있는 솔루션입니다. WebGL/Three.js를 활용한 디지털 트윈을 구현하여 태양 위치에 따른 건물에 음영이 태양광 패널에 미치는 영향을 정량적 수치로 정의했습니다.",
-      image: "/assets/images/projects/Frame 5.png",
-      detailImage: "/assets/images/projects/Frame 5.png",
+      image: "/assets/images/projects/Frame%205.png",
+      detailImage: "/assets/images/projects/Frame%205.png",
       category: "Digital Twin",
       status: "PoC",
       year: "2023",
@@ -67,8 +67,8 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       title: "3D GIS",
       shortDescription: "웹 3차원 공간 GIS 시스템",
       longDescription: "GIS 데이터를 가공해서 웹 3차원 공간에 나타내는 것이 목적인 3D 지도 시스템입니다. OSM 타일 데이터를 정제하고 가공하여 512 수준의 타일 데이터를 만들고, 서버를 생성하여 3D 지도를 구축했습니다.",
-      image: "/assets/images/projects/Frame 6.png",
-      detailImage: "/assets/images/projects/Frame 6.png",
+      image: "/assets/images/projects/Frame%206.png",
+      detailImage: "/assets/images/projects/Frame%206.png",
       category: "GIS Platform",
       status: "R&D",
       year: "2023",
@@ -84,8 +84,8 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       title: "스포츠 커뮤니티",
       shortDescription: "Next.js 13 기반 커뮤니티 플랫폼",
       longDescription: "위젯형 디자인을 위한 피그마 기반 웹 디자인을 먼저 진행했으며, TypeORM을 통해 엔티티 객체를 생성하고 관리하는 커뮤니티 서비스입니다. 모던한 웹 기술을 활용하여 사용자 친화적인 인터페이스를 제공합니다.",
-      image: "/assets/images/projects/Frame 1.png",
-      detailImage: "/assets/images/projects/Frame 1.png",
+      image: "/assets/images/projects/Frame%201.png",
+      detailImage: "/assets/images/projects/Frame%201.png",
       category: "Web Platform",
       status: "MVP",
       year: "2024",
@@ -101,8 +101,8 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       title: "모바일 커뮤니티",
       shortDescription: "Expo 기반 모바일 앱",
       longDescription: "Expo 52 버전 이하에서 React 18로 작성된 모바일 커뮤니티 앱으로, 피그마를 통해 디자인을 완성했습니다. 크로스 플랫폼 지원으로 iOS와 Android 모두에서 사용할 수 있습니다.",
-      image: "/assets/images/projects/Frame 2.png",
-      detailImage: "/assets/images/projects/Frame 2.png",
+      image: "/assets/images/projects/Frame%202.png",
+      detailImage: "/assets/images/projects/Frame%202.png",
       category: "Mobile App",
       status: "R&D",
       year: "2024",
@@ -616,10 +616,10 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
                 {/* 조건부 렌더링으로 앞면/뒷면 전환 */}
                 {cardStyle.rotateYValue > 90 ? (
                   
-                                    /* 카드 뒷면 (card-back.png 이미지) */
+                                    /* 카드 뒷면 (card-back2.png 이미지) */
                   <div className="relative w-full h-full rounded-2xl overflow-hidden border-2 border-white/10">
                     <img 
-                      src="/assets/images/card-back.png"
+                      src="/assets/images/card-back2.png"
                       alt="Card Back"
                       className="w-full h-full object-cover pointer-events-none"
                       onError={(e) => {
@@ -629,9 +629,9 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
                         
                         // 다른 경로들 시도
                         const altPaths = [
-                          './assets/images/card-back.png',
-                          '/public/assets/images/card-back.png',
-                          `${process.env.PUBLIC_URL}/assets/images/card-back.png`
+                          './assets/images/card-back2.png',
+                          '/public/assets/images/card-back2.png',
+                          `${process.env.PUBLIC_URL}/assets/images/card-back2.png`
                         ];
                         
                         console.error('Alternative paths to try:', altPaths);
@@ -677,7 +677,21 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
                         className="w-full h-full object-cover pointer-events-none"
                         onError={(e) => {
                           console.error('Project image failed to load:', e.target.src);
+                          console.error('Trying alternative paths...');
+                          
+                          // 다른 경로들 시도
+                          const altPaths = [
+                            project.image,
+                            `./assets/images/projects/${project.image.split('/').pop()}`,
+                            `/public/assets/images/projects/${project.image.split('/').pop()}`,
+                            `${process.env.PUBLIC_URL}/assets/images/projects/${project.image.split('/').pop()}`
+                          ];
+                          
+                          console.error('Alternative paths to try:', altPaths);
                           e.target.style.display = 'none';
+                        }}
+                        onLoad={(e) => {
+                          console.log('Project image loaded successfully:', e.target.src);
                         }}
                       />
                       {/* 이미지 위에 그라데이션 오버레이 */}
