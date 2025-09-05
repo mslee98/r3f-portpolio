@@ -16,35 +16,8 @@ const Contact = () => {
     }
 
     return (
-        <section className="c-space py-8 relative" id="contact">
-
-            {/* <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 text-center">
-                <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-                    Contact Me
-                </h1>
-                <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                    사용자 경험을 최우선으로 하는 UI/UX 엔지니어링으로<br/>
-                    더 나은 디지털 경험을 만들어가고 싶습니다
-                </p>
-                <p className="text-gray-300 md:text-lg mt-4 max-w-xl mx-auto">
-                    풀스택 개발 역량도 함께 성장시켜 나가겠습니다
-                </p>
-
-                <div className="flex justify-center">
-                    <button 
-                        onClick={handleClick}
-                        className="group relative overflow-hidden bg-gradient-to-r from-[#b5404a] to-[#d95949] text-white px-8 py-4 rounded-xl mt-6 flex items-center gap-3 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-red-500/25 border border-red-400/20"
-                    >
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#d95949] to-[#b5404a] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <img src="/assets/images/send.png" alt="email" className="w-6 h-6 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
-                        <span className="text-lg font-semibold relative z-10 tracking-wide">Contact</span>
-                        <div className="absolute inset-0 bg-white/10 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                    </button>
-                </div>
-                
-            </div> */}
-            
-            <div className="w-full h-96 relative z-20">
+        <section className="h-screen overflow-hidden" id="contact">
+            <div className="w-full h-full relative z-20">
                 <ContactExperience btnClicked={btnClicked} handleClick={handleClick}/>
             </div>
 
