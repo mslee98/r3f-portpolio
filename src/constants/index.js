@@ -12,10 +12,6 @@ export const navItems = [
     href: "#projects",
   },
   {
-    name: "Cards",
-    href: "#projects-new",
-  },
-  {
     name: "Contact",
     href: "#contact",
   },
