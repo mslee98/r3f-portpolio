@@ -58,9 +58,7 @@ const Hero = ({ onLoadingComplete }) => {
     // 로딩 완료 핸들러
     const handleLoadingComplete = (loadingState) => {
         setLoadingYn(loadingState);
-        if (loadingState && onLoadingComplete) {
-            onLoadingComplete();
-        }
+        // onLoadingComplete는 HeroExperience에서 직접 호출하므로 여기서는 제거
     };
 
     return (
@@ -241,6 +239,7 @@ const Hero = ({ onLoadingComplete }) => {
                     loadingYn={loadingYn} 
                     setLoadingYn={handleLoadingComplete}
                     onLoadingComplete={onLoadingComplete}
+                    step={step}
                 />
             </div>
         </section>

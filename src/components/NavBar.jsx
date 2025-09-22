@@ -45,15 +45,20 @@ const NavBar = ({ currentPage, onPageChange, isLoading = false }) => {
     setPrevPage(currentPage); // Update previous page for next change
   }, [currentPage, prevPage]);
 
-  // 로딩 중에는 도르레 메뉴 숨김
-  if (isLoading) {
-    return null;
-  }
+  // 디버깅용 로그
+  console.log('🔄 NavBar: isLoading =', isLoading);
 
   return (
     <>
       {/* 기존 상단 네비게이션 (모바일용) */}
-      <div className="w-full flex-center fixed z-[100] top-0 left-0 md:hidden px-5">
+      <div 
+        className={`w-full flex-center fixed z-[100] top-0 left-0 md:hidden px-5 transition-all duration-1000 ease-out ${
+          isLoading ? 'opacity-0 pointer-events-none -translate-y-2' : 'opacity-100 pointer-events-auto translate-y-0'
+        }`}
+        style={{
+          transitionDelay: isLoading ? '0ms' : '300ms' // 로딩 완료 후 0.3초 지연
+        }}
+      >
         <div className="mx-5 my-5 flex items-center justify-between w-full">
           <span className="text-white font-semibold">Mslee PortFolio</span>
         </div>
@@ -61,7 +66,14 @@ const NavBar = ({ currentPage, onPageChange, isLoading = false }) => {
 
       {/* 도르레 스타일 네비게이션 (데스크톱용) - 화면에 맞게 조정 */}
       <div 
-        className="fixed right-4 top-1/2 transform -translate-y-1/2 z-[100] hidden md:block"
+        className={`fixed right-4 top-1/2 transform -translate-y-1/2 z-[100] hidden md:block transition-all duration-1000 ease-out ${
+          isLoading 
+            ? 'opacity-0 pointer-events-none scale-95 translate-x-4' 
+            : 'opacity-100 pointer-events-auto scale-100 translate-x-0'
+        }`}
+        style={{
+          transitionDelay: isLoading ? '0ms' : '300ms' // 로딩 완료 후 0.3초 지연
+        }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >

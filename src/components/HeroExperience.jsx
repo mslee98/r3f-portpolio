@@ -13,7 +13,7 @@ import { gsap } from "gsap";
 
 import {SpredingPoint} from '../components/SpreadingPoint';
 
-const HeroExperience = ({hue, speed, brightness, selectedVideoType = 'TYPE1', setIsInteracting, loadingYn, setLoadingYn, onLoadingComplete}) => {
+const HeroExperience = ({hue, speed, brightness, selectedVideoType = 'TYPE1', setIsInteracting, loadingYn, setLoadingYn, onLoadingComplete, step}) => {
     const buildingRef = useRef();
     const cameraRef = useRef();
     // const [isAnimating, setIsAnimating] = useState(false);
@@ -84,17 +84,30 @@ const HeroExperience = ({hue, speed, brightness, selectedVideoType = 'TYPE1', se
 
     //로딩 종료 후 작업
    const handleLoaderFinish = () => {
-      if (!cameraRef.current) return;
-
-      const cam = cameraRef.current;
-
+      console.log('🚀 HeroExperience: handleLoaderFinish called!');
+      
       setLoadingYn(true);
       // setIsAnimating(true); // 애니메이션 시작
 
-      // 로딩 완료 콜백 호출
+      // 로딩 완료 콜백 호출 (카메라와 관계없이 먼저 호출)
+      console.log('🚀 HeroExperience: Calling onLoadingComplete');
       if (onLoadingComplete) {
+        console.log('🚀 HeroExperience: onLoadingComplete exists, calling it');
         onLoadingComplete();
+      } else {
+        console.log('❌ HeroExperience: onLoadingComplete is null/undefined!');
       }
+
+      // 카메라가 준비되면 애니메이션 실행 (약간의 지연 후 시도)
+      const tryStartCameraAnimation = () => {
+        if (!cameraRef.current) {
+          console.log('⚠️ HeroExperience: cameraRef.current is null, retrying in 100ms');
+          setTimeout(tryStartCameraAnimation, 100);
+          return;
+        }
+
+        console.log('✅ HeroExperience: cameraRef.current found, starting camera animation');
+        const cam = cameraRef.current;
 
       // GSAP를 사용한 애니메이션
       gsap.timeline()
@@ -116,6 +129,10 @@ const HeroExperience = ({hue, speed, brightness, selectedVideoType = 'TYPE1', se
           // setLoadingYn(false);
           // setIsAnimating(false); // 애니메이션 완료
         });
+      };
+
+      // 카메라 애니메이션 시작 시도
+      tryStartCameraAnimation();
     };
 
     return (
@@ -196,7 +213,7 @@ const HeroExperience = ({hue, speed, brightness, selectedVideoType = 'TYPE1', se
           
             
             {/* 조건부 렌더링 제거하고 항상 렌더링 */}
-            {loadingYn && <LimitedControls setIsInteracting={setIsInteracting}/>}
+            {loadingYn && <LimitedControls setIsInteracting={setIsInteracting} step={step}/>}
 
 
           </Suspense>
@@ -210,7 +227,7 @@ const HeroExperience = ({hue, speed, brightness, selectedVideoType = 'TYPE1', se
  * @param {*} param0 
  * @returns 
  */
-const LimitedControls = ({ bounds = 20, setIsInteracting }) => {
+const LimitedControls = ({ bounds = 20, setIsInteracting, step }) => {
   const { camera, gl } = useThree();
   const controls = useRef();
 
@@ -218,7 +235,12 @@ const LimitedControls = ({ bounds = 20, setIsInteracting }) => {
     if (!controls.current) return;
 
     const handleStart = () => {
-      setIsInteracting(true);
+      // 텍스트 애니메이션이 완료된 후에만 인터랙션 허용 (step >= 2)
+      if (step >= 2) {
+        setIsInteracting(true);
+      } else {
+        console.log('⚠️ Interaction blocked: Text animation still in progress (step:', step, ')');
+      }
     };
 
     controls.current.addEventListener('start', handleStart);
@@ -226,7 +248,7 @@ const LimitedControls = ({ bounds = 20, setIsInteracting }) => {
     return () => {
       controls.current?.removeEventListener('start', handleStart);
     };
-  }, [setIsInteracting]);
+  }, [setIsInteracting, step]);
 
   useFrame(() => {
     if (!controls.current) return;

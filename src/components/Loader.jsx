@@ -11,12 +11,30 @@ const Loader = ({onFinish}) => {
   const loaderRef = useRef(null);
   const [startTime] = useState(() => Date.now()); // 로딩 시작 시간 저장
   const hasAnimated = useRef(false);
+  
+  // 컴포넌트가 다시 마운트될 때마다 hasAnimated 리셋
+  useEffect(() => {
+    hasAnimated.current = false;
+    console.log('📦 Loader: Component mounted, hasAnimated reset to false');
+  }, []);
 
-  console.log("Loader render");
+  console.log("📦 Loader render, progress:", progress);
 
   useEffect(() => {
-    if (progress === 100 && !hasAnimated.current) {
+    console.log('📦 Loader useEffect: progress =', progress, 'hasAnimated =', hasAnimated.current);
+    // progress가 99% 이상이거나 100이면 로딩 완료로 처리
+    if (progress >= 99 && !hasAnimated.current) {
+      console.log('📦 Loader: Conditions met! Setting hasAnimated to true');
       hasAnimated.current = true;
+
+      // 로딩 완료 즉시 onFinish 호출 (메뉴 표시용)
+      console.log('📦 Loader: Progress 100%! Calling onFinish');
+      if (onFinish) {
+        console.log('📦 Loader: onFinish exists, calling it now');
+        onFinish();
+      } else {
+        console.log('❌ Loader: onFinish is null/undefined!');
+      }
 
       const elapsed = (Date.now() - startTime) / 1000; // 초 단위 경과 시간
       const delay = Math.max(MIN_DISPLAY_TIME - elapsed, 0);
@@ -51,7 +69,6 @@ const Loader = ({onFinish}) => {
             ease: "power2.in",
             onComplete: () => {
               loaderRef.current.style.display = "none";
-              onFinish?.();
             },
           }, "-=0.3");
       });

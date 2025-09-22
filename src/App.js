@@ -7,10 +7,15 @@ import PerformanceMonitor from './components/PerformanceMonitor';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
+  const [isLoading, setIsLoading] = useState(true);
 
   const handlePageChange = (newPage) => {
-
     setCurrentPage(newPage);
+  };
+
+  const handleLoadingComplete = () => {
+    console.log('🎉 App.js: Loading completed! Setting isLoading to false');
+    setIsLoading(false);
   };
 
   return (
@@ -23,13 +28,15 @@ function App() {
       {/* 기존 도르레 네비게이션 */}
       <NavBar 
         currentPage={currentPage} 
-        onPageChange={handlePageChange} 
+        onPageChange={handlePageChange}
+        isLoading={isLoading}
       />
       
       {/* 모달 페이지 시스템 */}
       <ModalPageSystem 
         currentPage={currentPage}
         onPageChange={handlePageChange}
+        onLoadingComplete={handleLoadingComplete}
       />
     </div>
   );
