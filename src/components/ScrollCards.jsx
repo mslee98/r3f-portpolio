@@ -25,8 +25,6 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       features: ["실시간 모니터링", "바이오 데이터 분석", "알림 시스템", "GIS 서버 구축", "좌표계 변환"],
       challenges: "대용량 GIS 데이터 처리 및 실시간 모니터링 시스템 구축",
       solutions: "PostgreSQL을 통한 GIS 데이터 가공 및 Proj 라이브러리를 활용한 좌표계 변환, Docker Compose로 지도 서버 및 알림 서버 구축",
-      demoUrl: "#",
-      githubUrl: "#"
     },
     {
       id: 2,
@@ -42,8 +40,6 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       features: ["실시간 모니터링", "장비 CRUD 관리", "알림 시스템", "문자 전송", "재전송 시스템"],
       challenges: "다양한 IoT 장비의 통합 모니터링 및 알림 시스템 구축",
       solutions: "Leaflet.js 기반 지도 시각화 및 Spring 기반 백엔드 시스템, Docker를 통한 안정적인 운영 환경 구축",
-      demoUrl: "#",
-      githubUrl: "#"
     },
     {
       id: 3,
@@ -59,8 +55,6 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       features: ["3D 시뮬레이션", "태양 위치 분석", "음영 영향 계산", "날씨 예측", "열 반사율 계산"],
       challenges: "태양 위치에 따른 음영 영향 정량화 및 성능 최적화",
       solutions: "법선 벡터를 활용한 열 반사율 계산, LSTM 기반 날씨 분석, 파티클을 통한 성능 최적화 및 Displacement Map을 활용한 Terrain 표현",
-      demoUrl: "#",
-      githubUrl: "#"
     },
     {
       id: 4,
@@ -76,8 +70,6 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       features: ["3D 타일맵", "좌표계 변환", "GIS 데이터 가공", "지형 표현", "타일 데이터 요청"],
       challenges: "OSM 데이터 최신화 및 대용량 GIS 데이터 처리, 좌표계 정확한 매칭",
       solutions: "osmconvert로 BBOX 추출, Osmosis로 필터링, Mapsplit을 통한 타일 형식 분할, PBF를 GeoJSON으로 가공하여 3D 타일맵 구축",
-      demoUrl: "#",
-      githubUrl: "#"
     },
     {
       id: 5,
@@ -93,8 +85,6 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       features: ["위젯형 디자인", "엔티티 관리", "커뮤니티 기능", "모던 웹 기술"],
       challenges: "위젯형 디자인을 위한 UI/UX 설계 및 TypeORM을 활용한 데이터 관리",
       solutions: "피그마를 활용한 상세한 디자인 시스템 구축 및 TypeORM을 통한 효율적인 엔티티 관리",
-      demoUrl: "#",
-      githubUrl: "#"
     },
     {
       id: 6,
@@ -110,8 +100,6 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
       features: ["모바일 최적화", "커뮤니티 기능", "크로스 플랫폼", "피그마 디자인"],
       challenges: "Expo 버전 호환성 및 모바일 최적화, 크로스 플랫폼 호환성",
       solutions: "React 18 기반으로 안정적인 구조 설계 및 피그마를 통한 일관된 디자인 시스템 구축",
-      demoUrl: "#",
-      githubUrl: "#"
     }
   ];
 
@@ -862,25 +850,6 @@ const ScrollCards = ({ isVisible = true, onClose }) => {
                       </div>
                     </div>
 
-                    {/* 링크 */}
-                    <div className="flex space-x-4">
-                                              <a
-                          href={selectedProject.demoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/30 rounded-full text-white text-sm font-medium transition-all duration-300 hover:scale-105"
-                        >
-                          🚀 Live Demo
-                        </a>
-                        <a
-                          href={selectedProject.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-6 py-3 bg-black/50 hover:bg-black/70 border border-white/20 rounded-full text-white text-sm font-medium transition-all duration-300 hover:scale-105"
-                        >
-                          📁 GitHub
-                        </a>
-                    </div>
                   </div>
                 </div>
               </div>
