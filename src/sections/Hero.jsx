@@ -229,25 +229,6 @@ const Hero = ({ onLoadingComplete }) => {
                     </div>
                 </div>
 
-                {/* 오른쪽: Default Angle 버튼 */}
-                <div 
-                    onClick={(e) => {
-                        e.preventDefault();
-                        const section = document.getElementById('about');
-                        if (section) {
-                            setIsInteracting(true)
-                            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                    }}
-                    className="hidden flex-col items-center mr-10 md:gap-5 gap-1 min-w-[100px] md:flex cursor-pointer"
-                >
-                    <p className="md:text-white text-xs">살펴보기</p>
-                    <img
-                        src="/assets/images/arrowdown.svg"
-                        alt="arrowdown"
-                        className="size-7 animate-bounce"
-                    />
-                </div>
             </footer>
             
             <div className="w-full h-full absolute top-0 left-0">
